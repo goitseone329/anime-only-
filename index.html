@@ -55,7 +55,7 @@
             line-height: 1;
         }
 
-        /* Video Streaming Player Frame Panel */
+        /* Video Streaming Player Panel */
         .player-wrapper {
             background-color: #151515;
             border-bottom: 3px solid #ff001e;
@@ -91,7 +91,7 @@
             color: #a5a5a5;
         }
 
-        /* Top Horizontal Banner Ad Container Area */
+        /* Top Banner Ad Container */
         .top-banner-space {
             width: 100%;
             margin: 0 auto;
@@ -142,7 +142,7 @@
             width: 100%;
         }
 
-        /* 16:9 Image Container Box Wrapper */
+        /* 16:9 Image Wrapper */
         .poster-container {
             position: relative;
             width: 100%;
@@ -159,7 +159,7 @@
             object-fit: cover;
         }
 
-        /* Red Details Indicators Corner Badges */
+        /* Badge Layering */
         .episode-badge {
             position: absolute;
             top: 0;
@@ -175,7 +175,7 @@
             position: absolute;
             top: 0;
             left: 0;
-            background-color: #9000ff; /* Purple for Full Films */
+            background-color: #9000ff; /* Purple for Movies */
             color: white;
             font-size: 18px;
             font-weight: 700;
@@ -229,7 +229,6 @@
             margin: 0;
         }
 
-        /* No Results Fallback Label Styling */
         #no-results-msg {
             text-align: center;
             padding: 30px;
@@ -267,16 +266,14 @@
     <nav class="navbar">
         <div class="nav-logo">💀</div>
         <div class="search-container">
-            <!-- Functional Live Search Hook -->
             <input type="text" id="anime-search-input" onkeyup="filterAnimeCatalog()" placeholder="Search catalog...">
         </div>
         <div class="menu-icon">&#9776;</div>
     </nav>
 
-    <!-- LIVE DYNAMIC EMBDEDDABLE PLAYER CONTROLLER PANEL -->
+    <!-- LIVE DYNAMIC EMBEDDABLE PLAYER CONTROLLER PANEL -->
     <section class="player-wrapper">
         <div class="video-container">
-            <!-- Initial clean stream baseline using open embed proxy pipelines -->
             <iframe id="main-stream-player" src="https://youtube.com" allowfullscreen></iframe>
         </div>
         <div class="player-info">
@@ -295,23 +292,41 @@
 
     <!-- CATEGORY BLOCK 1: TV SERIES SCHEDULE -->
     <h2 class="section-title">Subbed Anime Schedule</h2>
-    <main class="anime-feed" id="series-feed-grid">
+    <main class="anime-feed" id="series-feed-grid"></main>
 
-        <!-- Card 1: A Returner's Magic Should Be Special -->
-        <a class="anime-card-link" data-title="A Returner's Magic Should Be Special Kikansha no Mahou wa Tokubetsu desu" onclick="changeVideo('https://youtube.com', 'A Returner\'s Magic Should Be Special - Episode 12', 'Subbed | Kikansha no Mahou wa Tokubetsu desu')">
-            <article class="anime-card">
-                <div class="poster-container">
-                    <div class="episode-badge">12</div>
-                    <div class="action-btn">▶</div>
-                    <img src="https://placeholder.com" alt="A Returner's Magic Should Be Special">
-                </div>
-                <div class="anime-details">
-                    <h3 class="anime-title-main">A Returner's Magic Should ...</h3>
-                    <h4 class="anime-title-sub">Kikansha no Mahou wa Tokubets...</h4>
-                    <p class="anime-status">Episode Released</p>
-                </div>
-            </article>
-        </a>
+    <!-- CATEGORY BLOCK 2: MOVIES FEED -->
+    <h2 class="section-title">Featured Anime Movies</h2>
+    <main class="anime-feed" id="movies-feed-grid" style="margin-bottom: 85px;"></main>
 
-        <!-- Card 2: Reincarnated as a Sword -->
-        <a class="anime-card-link" data-title="Reincarnated as a Sword Tensei Shitara Ken deshita 2nd Season" onclick="changeVideo('https://youtube.com', 'Reincarnated as a Sword - Episode 2', 'Subbed | Tensei Shitara Ken deshita')">
+    <!-- Mobile Menu Footer -->
+    <div class="mobile-footer-nav">
+        <a href="#" class="footer-nav-item active">&#8962;</a>
+        <a href="#" class="footer-nav-item">&#129517;</a>
+        <a href="#" class="footer-nav-item">&#128278;</a>
+        <a href="#" class="footer-nav-item">&#128269;</a>
+    </div>
+
+    <!-- Dynamic Database Loading Script Engine -->
+    <script>
+        let animeCatalogData = [];
+
+        // Fetch dataset directly from the local JSON file repository
+        fetch('anime.json')
+            .then(response => response.json())
+            .then(data => {
+                animeCatalogData = data;
+                renderCatalog(data);
+            })
+            .catch(error => console.error('Error loading anime library database:', error));
+
+        // Inject HTML structural blocks into the page loops dynamically
+        function renderCatalog(items) {
+            const seriesGrid = document.getElementById('series-feed-grid');
+            const moviesGrid = document.getElementById('movies-feed-grid');
+            
+            seriesGrid.innerHTML = '';
+            moviesGrid.innerHTML = '';
+
+            items.forEach(item => {
+                const badgeClass = item.type === 'movie' ? 'movie-badge' : 'episode-badge';
+                const cardHTML = `
