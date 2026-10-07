@@ -23,15 +23,20 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 3px solid #ff0022; /* Vibrant red accent */
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         .logo {
             color: #ff0022;
             font-size: 1.5rem;
             font-weight: bold;
             text-shadow: 0 0 10px rgba(255, 0, 34, 0.5);
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            text-decoration: none;
         }
         /* Placeholder for a Ghost Rider / Skull themed logo graphic later */
         .logo-icon {
@@ -40,6 +45,25 @@
             background: radial-gradient(circle, #ff5500, #ff0022);
             border-radius: 50%;
             display: inline-block;
+        }
+        /* Search Box styling */
+        .search-container {
+            flex-grow: 1;
+            max-width: 400px;
+            margin: 0 10px;
+        }
+        .search-box {
+            width: 100%;
+            padding: 8px 15px;
+            background-color: #0d0202;
+            border: 1px solid #ff0022;
+            border-radius: 20px;
+            color: #fff;
+            outline: none;
+            font-size: 0.9rem;
+        }
+        .search-box::placeholder {
+            color: #777;
         }
         .nav-links a {
             color: #b3b3b3;
@@ -123,11 +147,18 @@
 <body>
 
     <header>
-        <div class="logo">
-            <span class="logo-icon"></span> AnimeOnly
+        <div class="logo-section">
+            <span class="logo-icon"></span> 
+            <a href="#" class="logo">AnimeOnly</a>
         </div>
+        
+        <!-- Live Title Search Box integration -->
+        <div class="search-container">
+            <input type="text" id="animeSearch" class="search-box" placeholder="Search anime titles..." onkeyup="searchAnime()">
+        </div>
+
         <nav class="nav-links">
-            <a href="#">Home</a>
+            <a href="#" onclick="loadTrendingAnime()">Home</a>
             <a href="#">Trending</a>
             <a href="#">Movies</a>
         </nav>
@@ -135,35 +166,99 @@
 
     <div class="container">
         <!-- Placeholder for pop-ads / display integration -->
-        <div class="ad-space">
+        <div class="ad-space" id="monetization-zone">
             ADVERTISEMENT SPACE (MONETIZATION ZONE)
+            <!-- Future PopAds network script code can be placed inside here safely -->
         </div>
 
-        <h2>Trending Releases</h2>
-        <div class="anime-grid">
-            <div class="anime-card">
-                <div class="poster-placeholder">Naruto</div>
-                <div class="anime-details">
-                    <h3>Naruto Shippuden</h3>
-                    <p>Episodes: 500</p>
-                </div>
-            </div>
-            <div class="anime-card">
-                <div class="poster-placeholder">Demon Slayer</div>
-                <div class="anime-details">
-                    <h3>Demon Slayer</h3>
-                    <p>Episodes: 26</p>
-                </div>
-            </div>
-            <div class="anime-card">
-                <div class="poster-placeholder">Attack On Titan</div>
-                <div class="anime-details">
-                    <h3>Attack On Titan</h3>
-                    <p>Episodes: 87</p>
-                </div>
-            </div>
+        <h2 id="section-title">Trending Releases</h2>
+        
+        <!-- Fixed layout container ID linked directly to script below -->
+        <div class="anime-grid" id="anime-grid-container">
+            <p style="padding: 20px; color: #a6a6a6;">Loading latest anime updates...</p>
         </div>
     </div>
+
+    <script>
+        // Global storage for anime data results to enable instant filtering
+        let currentAnimeList = [];
+
+        // Fetch top trending anime automatically from public MyAnimeList API
+        async function loadTrendingAnime() {
+            const grid = document.getElementById('anime-grid-container');
+            const heading = document.getElementById('section-title');
+            if(!grid) return;
+
+            heading.innerText = "Trending Releases";
+            grid.innerHTML = '<p style="padding: 20px; color: #a6a6a6;">Loading latest anime updates...</p>';
+
+            try {
+                const response = await fetch('https://jikan.moe');
+                const data = await response.json();
+                
+                currentAnimeList = data.data;
+                renderCards(currentAnimeList);
+            } catch (error) {
+                console.error('Error fetching live anime data:', error);
+                grid.innerHTML = '<p style="padding: 20px; color: #ff0022;">Failed to load live data. Try refreshing!</p>';
+            }
+        }
+
+        // Search algorithm to handle input query changes dynamically
+        async function searchAnime() {
+            const query = document.getElementById('animeSearch').value.trim();
+            const grid = document.getElementById('anime-grid-container');
+            const heading = document.getElementById('section-title');
+            
+            if (query.length < 3) {
+                if (query.length === 0) {
+                    loadTrendingAnime();
+                }
+                return;
+            }
+
+            heading.innerText = `Search Results for "${query}"`;
+            grid.innerHTML = '<p style="padding: 20px; color: #a6a6a6;">Searching database...</p>';
+
+            try {
+                const response = await fetch(`https://jikan.moe{encodeURIComponent(query)}&limit=12`);
+                const data = await response.json();
+                renderCards(data.data);
+            } catch (error) {
+                console.error('Error searching anime:', error);
+            }
+        }
+
+        // Helper framework script to inject generated cards into the DOM
+        function renderCards(list) {
+            const grid = document.getElementById('anime-grid-container');
+            grid.innerHTML = '';
+
+            if(!list || list.length === 0) {
+                grid.innerHTML = '<p style="padding: 20px; color: #a6a6a6;">No matching anime titles found.</p>';
+                return;
+            }
+
+            list.forEach(anime => {
+                const card = document.createElement('div');
+                card.className = 'anime-card';
+                card.innerHTML = `
+                    <div class="poster-placeholder" style="background: url('${anime.images.jpg.image_url}') no-repeat center/cover; height: 230px; font-size:0;">
+                        ${anime.title}
+                    </div>
+                    <div class="anime-details">
+                        <h3>${anime.title}</h3>
+                        <p>Episodes: ${anime.episodes || 'Ongoing'}</p>
+                        <p style="font-size: 0.75rem; color: #ff0022; margin-top: 5px;">★ ${anime.score || 'N/A'}</p>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Initialize execution setup right when site loads up
+        window.onload = loadTrendingAnime;
+    </script>
 
 </body>
 </html>
