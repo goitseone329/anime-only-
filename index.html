@@ -4,214 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AnimeOnly - Streaming Hub</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Arial, sans-serif;
-        }
-        body {
-            background-color: #0d0202; /* Ultra dark red-tinted black */
-            color: #e5e5e5;
-        }
-        /* Navigation Header */
-        header {
-            background-color: #1a0505;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 3px solid #ff0022;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-        .logo-section {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .logo {
-            color: #ff0022;
-            font-size: 1.5rem;
-            font-weight: bold;
-            text-shadow: 0 0 10px rgba(255, 0, 34, 0.5);
-            text-decoration: none;
-        }
-        .search-container {
-            flex-grow: 1;
-            max-width: 400px;
-        }
-        .search-box {
-            width: 100%;
-            padding: 8px 15px;
-            background-color: #0d0202;
-            border: 1px solid #ff0022;
-            border-radius: 20px;
-            color: #fff;
-            outline: none;
-        }
-        .nav-links a {
-            color: #b3b3b3;
-            text-decoration: none;
-            margin-left: 15px;
-            font-size: 0.9rem;
-            cursor: pointer;
-        }
-        .nav-links a:hover { color: #ff0022; }
-
-        .container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 0 15px;
-        }
-        
-        .ad-space {
-            background-color: #1a0909;
-            border: 1px dashed #ff0022;
-            padding: 15px;
-            text-align: center;
-            margin-bottom: 20px;
-            border-radius: 6px;
-            color: #802020;
-            font-size: 0.85rem;
-        }
-
-        /* Catalog Grid Home Panel */
-        .anime-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 20px;
-        }
-        .anime-card {
-            background-color: #1a0505;
-            border-radius: 6px;
-            overflow: hidden;
-            border: 1px solid #2d0c0c;
-            cursor: pointer;
-        }
-        .anime-card:hover { border-color: #ff0022; }
-        .poster-placeholder {
-            width: 100%;
-            height: 230px;
-            background-size: cover !important;
-        }
-        .anime-details { padding: 12px; }
-
-        /* Dynamic Details Screen Panels */
-        .hidden { display: none; }
-        .back-btn {
-            background: none;
-            border: 1px solid #ff0022;
-            color: #ff0022;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-bottom: 20px;
-        }
-        .details-header {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-        .details-title {
-            font-size: 1.8rem;
-            color: #fff;
-            margin-bottom: 15px;
-        }
-        .tag-container {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        .tag {
-            background-color: #ff0022;
-            color: #fff;
-            padding: 6px 16px;
-            border-radius: 4px;
-            font-weight: bold;
-            font-size: 0.9rem;
-        }
-        .meta-info {
-            font-size: 1.1rem;
-            margin-bottom: 8px;
-            color: #fff;
-        }
-        .meta-info span { color: #ff0022; font-weight: bold; }
-        .action-container {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin: 20px 0;
-        }
-        .btn-action {
-            background-color: #ff0022;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(255,0,34,0.3);
-        }
-        
-        /* Interactive Countdown Timer Dashboard */
-        .countdown-box {
-            border-top: 1px solid #2d0c0c;
-            border-bottom: 1px solid #2d0c0c;
-            padding: 20px 0;
-            text-align: center;
-            margin: 25px 0;
-        }
-        .countdown-box h3 {
-            color: #b3b3b3;
-            font-size: 1.1rem;
-            margin-bottom: 10px;
-            font-weight: normal;
-        }
-        .timer-display {
-            color: #ff0022;
-            font-size: 1.6rem;
-            font-weight: bold;
-            margin-top: 5px;
-        }
-
-        /* Responsive Episode Grid Layout */
-        .episode-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-top: 15px;
-        }
-        .episode-card {
-            background-color: #0d0202;
-            border: 1px solid #ff0022;
-            border-radius: 6px;
-            padding: 15px 10px;
-            text-align: center;
-            cursor: pointer;
-        }
-        .episode-card div { font-size: 0.75rem; color: #777; margin-top: 4px; }
-        .episode-card strong { font-size: 1.3rem; color: #fff; display: block; }
-        
-        .episode-card-wide {
-            grid-column: span 1.5;
-        }
-
-        .section-heading {
-            color: #fff;
-            margin: 30px 0 15px 0;
-            border-left: 4px solid #ff0022;
-            padding-left: 10px;
-            font-size: 1.25rem;
-        }
-    </style>
+    <!-- Linked directly to your brand new Styles folder sheet -->
+    <link rel="stylesheet" href="Styles/style.css">
 </head>
 <body>
 
     <header>
         <div class="logo-section">
-            <span class="logo-icon"></span> 
+            <!-- Ghost Rider Flame Skull Pure Code Block Component -->
+            <div class="skull-logo">
+                <div class="fire-glow"></div>
+                <div class="skull-eyes"></div>
+                <div class="skull-eyes right"></div>
+            </div> 
             <a href="#" class="logo" onclick="showHome()">AnimeOnly</a>
         </div>
         <div class="search-container">
@@ -236,7 +41,7 @@
             </div>
         </div>
 
-        <!-- DETAILED ANIME WATCH VIEW SCREEN (Matching layout context reference style) -->
+        <!-- DETAILED ANIME WATCH VIEW SCREEN -->
         <div id="details-view" class="hidden">
             <button class="back-btn" onclick="showHome()">← Back to Catalog</button>
             
@@ -265,12 +70,12 @@
 
             <h3 class="section-heading">Available Episodes</h3>
             <div class="episode-grid" id="episode-container">
-                <!-- Generated clickable episode selector items block -->
+                <!-- Clickable episode items list generated here -->
             </div>
 
             <h3 class="section-heading">Similar Shows</h3>
             <div class="anime-grid" id="similar-container">
-                <!-- Similar shows recommendations items block -->
+                <!-- Similar recommendation cards generated here -->
             </div>
         </div>
     </div>
@@ -305,3 +110,100 @@
         // Render generic home cards list block
         function renderCards(list, container) {
             container.innerHTML = '';
+            if(!list || list.length === 0) return;
+            list.forEach(anime => {
+                const card = document.createElement('div');
+                card.className = 'anime-card';
+                card.onclick = () => openAnimeDetails(anime.mal_id);
+                card.innerHTML = `
+                    <div class="poster-placeholder" style="background: url('${anime.images.jpg.image_url}') no-repeat center/cover;"></div>
+                    <div class="anime-details">
+                        <h3 style="font-size:0.95rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${anime.title}</h3>
+                        <p style="font-size:0.8rem; color:#777;">★ ${anime.score || 'N/A'}</p>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Deep-dive watch view screen layout activation
+        async function openAnimeDetails(id) {
+            document.getElementById('home-view').style.display = 'none';
+            document.getElementById('details-view').classList.remove('hidden');
+            window.scrollTo(0,0);
+
+            try {
+                const res = await fetch(`https://jikan.moe{id}`);
+                const data = await res.json();
+                const anime = data.data;
+
+                document.getElementById('det-title').innerText = anime.title;
+                document.getElementById('det-episodes').innerText = anime.episodes ? `${anime.episodes}+` : 'Ongoing';
+                document.getElementById('det-year').innerText = anime.year || '2026';
+                document.getElementById('det-score').innerText = anime.score || '?';
+
+                const genresBox = document.getElementById('det-genres');
+                genresBox.innerHTML = '';
+                const displayGenres = anime.genres.slice(0, 2);
+                if(displayGenres.length === 0) displayGenres.push({name: 'Fantasy'}, {name: 'Comedy'});
+                displayGenres.forEach(g => {
+                    genresBox.innerHTML += `<span class="tag">${g.name}</span>`;
+                });
+
+                const epContainer = document.getElementById('episode-container');
+                epContainer.innerHTML = '';
+                const totalEps = anime.episodes || 5;
+                for(let i = totalEps; i >= 1; i--) {
+                    const isWide = (i === 2 || i === 1) ? 'episode-card-wide' : '';
+                    epContainer.innerHTML += `
+                        <div class="episode-card ${isWide}">
+                            <strong>${i}</strong>
+                            <div>${i === totalEps ? '2 h ago' : '5 d ago'}</div>
+                        </div>
+                    `;
+                }
+
+                setupCountdown(anime.title, totalEps + 1);
+
+                const simRes = await fetch(`https://jikan.moe{id}/recommendations`);
+                const simData = await simRes.json();
+                const simContainer = document.getElementById('similar-container');
+                simContainer.innerHTML = '';
+                
+                const recList = simData.data.slice(0, 3).map(r => r.entry);
+                if(recList.length > 0) {
+                    renderCards(recList, simContainer);
+                } else {
+                    simContainer.innerHTML = '<p style="color:#777; font-size:0.9rem;">No similar entries cataloged yet.</p>';
+                }
+
+            } catch (error) { console.error(error); }
+        }
+
+        function setupCountdown(title, nextEp) {
+            clearInterval(countdownInterval);
+            document.getElementById('countdown-label').innerText = `Countdown to Episode ${nextEp}`;
+            
+            let days = 6, hours = 21, minutes = 51;
+            const clock = document.getElementById('timer-clock');
+            
+            countdownInterval = setInterval(() => {
+                minutes--;
+                if(minutes < 0) { minutes = 59; hours--; }
+                if(hours < 0) { hours = 23; days--; }
+                if(days < 0) { clearInterval(countdownInterval); clock.innerText = "Streaming Live Now!"; return; }
+                clock.innerText = `${days} Days ${hours} Hours ${minutes} Min`;
+            }, 60000);
+            clock.innerText = `${days} Days ${hours} Hours ${minutes} Min`;
+        }
+
+        function showHome() {
+            clearInterval(countdownInterval);
+            document.getElementById('details-view').classList.add('hidden');
+            document.getElementById('home-view').style.display = 'block';
+        }
+
+        window.onload = loadTrendingAnime;
+    </script>
+</body>
+</html>
