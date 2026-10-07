@@ -124,6 +124,7 @@
             display: flex; 
             flex-direction: column; 
             box-shadow: 0 0 8px rgba(255, 69, 0, 0.2);
+            cursor: pointer;
         }
         .episode-card:hover { 
             background: #220a02; 
@@ -158,8 +159,8 @@
     <!-- Interactive Streaming Frame Box -->
     <div class="video-container">
         <div class="player-wrapper">
-            <!-- Replace the sample source link below with any stream URL when ready -->
-            <iframe src="https://youtube.com" allowfullscreen></iframe>
+            <!-- Starting Source (Episode 5 Placeholder) -->
+            <iframe id="main-player" src="https://youtube.com" allowfullscreen></iframe>
         </div>
     </div>
 
@@ -184,41 +185,78 @@
     <!-- Fire Timer Display -->
     <div class="countdown-box">
         <div class="countdown-title">Countdown to Next Soul</div>
-        <div class="countdown-timer" id="timer">6 Days 21 Hours 51 Min</div>
+        <div class="countdown-timer" id="timer">Loading Engine...</div>
     </div>
 
-    <!-- Episode Selection System Grid -->
+    <!-- Episode Selection System Grid with Data Attributes -->
     <div class="episode-grid">
-        <a href="#" class="episode-card">
+        <div class="episode-card" data-video="https://youtube.com">
             <span class="ep-label">Chapter</span>
             <span class="ep-num">5</span>
             <span class="ep-time">2 h ago</span>
-        </a>
-        <a href="#" class="episode-card">
+        </div>
+        <div class="episode-card" data-video="https://youtube.com">
             <span class="ep-label">Chapter</span>
             <span class="ep-num">4</span>
             <span class="ep-time">5 d ago</span>
-        </a>
-        <a href="#" class="episode-card">
+        </div>
+        <div class="episode-card" data-video="https://youtube.com">
             <span class="ep-label">Chapter</span>
             <span class="ep-num">3</span>
             <span class="ep-time">5 d ago</span>
-        </a>
+        </div>
         <div class="row-2">
-            <a href="#" class="episode-card">
+            <div class="episode-card" data-video="https://youtube.com">
                 <span class="ep-label">Chapter</span>
                 <span class="ep-num">2</span>
                 <span class="ep-time">5 d ago</span>
-            </a>
-            <a href="#" class="episode-card">
+            </div>
+            <div class="episode-card" data-video="https://youtube.com">
                 <span class="ep-label">Chapter</span>
                 <span class="ep-num">1</span>
                 <span class="ep-time">5 d ago</span>
-            </a>
+            </div>
         </div>
     </div>
 
     <div class="section-title">More Hellfire Streams</div>
 
+    <!-- Script Automation Layer -->
+    <script>
+        // 1. Episode Video Switching Logic
+        const player = document.getElementById('main-player');
+        document.querySelectorAll('.episode-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const targetUrl = card.getAttribute('data-video');
+                if (targetUrl) {
+                    player.src = targetUrl;
+                }
+            });
+        });
+
+        // 2. Real-time Live Ticking Countdown Script (Set for 7 days into the future)
+        const targetDate = new Date().getTime() + (7 * 24 * 60 * 60 * 1000);
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const difference = targetDate - now;
+
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+            document.getElementById('timer').innerHTML = 
+                `${days}d ${hours}h ${minutes}m ${seconds}s`;
+
+            if (difference < 0) {
+                clearInterval(intervalId);
+                document.getElementById('timer').innerHTML = "NEW EPISODE RELEASED!";
+            }
+        }
+
+        const intervalId = setInterval(updateCountdown, 1000);
+        updateCountdown();
+    </script>
 </body>
 </html>
