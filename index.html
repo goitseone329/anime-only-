@@ -4,41 +4,247 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anime Only</title>
+    <!-- Link to your external stylesheet -->
     <link rel="stylesheet" href="Styles/style.css">
+    <style>
+        /* Base Page Setup mirroring Anime Heaven layout */
+        body {
+            background-color: #0c0c0c;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Top Navigation Bar */
+        .navbar {
+            background-color: #111;
+            border-bottom: 2px solid #b00;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 15px;
+        }
+        .nav-logo {
+            background-color: #b00;
+            color: white;
+            font-weight: bold;
+            padding: 5px 10px;
+            font-size: 20px;
+            text-transform: uppercase;
+        }
+        .search-container {
+            flex-grow: 1;
+            margin: 0 15px;
+            position: relative;
+        }
+        .search-container input {
+            width: 100%;
+            background-color: #222;
+            border: 1px solid #b00;
+            color: white;
+            padding: 8px 35px 8px 10px;
+            border-radius: 3px;
+            box-sizing: border-box;
+        }
+
+        /* Top Banner Ad Box Placement Area */
+        .top-banner-space {
+            max-width: 100%;
+            margin: 10px auto;
+            text-align: center;
+        }
+        .top-banner-space img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Schedule Title Header */
+        .section-title {
+            background-color: #181818;
+            text-align: center;
+            padding: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #222;
+            margin: 0;
+        }
+
+        /* Anime List Card Layout Feed */
+        .anime-feed {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .anime-card {
+            background-color: #111;
+            border-bottom: 4px solid #0c0c0c;
+            text-align: center;
+            position: relative;
+        }
+
+        /* Poster Wrapper with Badge Layering */
+        .poster-container {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* Forces clean 16:9 widescreen ratio box */
+            background-color: #222;
+            overflow: hidden;
+        }
+        .poster-container img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Red Left-Corner Counter Badge */
+        .episode-badge {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: #d00;
+            color: white;
+            font-size: 22px;
+            font-weight: bold;
+            padding: 8px 15px;
+            z-index: 2;
+        }
+
+        /* Plus Action Overlay Button */
+        .action-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background-color: rgba(221, 0, 0, 0.85);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            z-index: 2;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
+
+        /* Text Sub-Containers */
+        .anime-details {
+            padding: 15px 10px;
+        }
+        .anime-title {
+            font-size: 19px;
+            font-weight: bold;
+            margin: 0 0 8px 0;
+            color: #eee;
+        }
+        .anime-status {
+            color: #d00;
+            font-size: 15px;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        /* Bottom Fixed Navigation Bar for Mobile */
+        .mobile-footer-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #111;
+            border-top: 1px solid #222;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 10;
+        }
+        .footer-nav-item {
+            color: #888;
+            text-decoration: none;
+            font-size: 20px;
+            text-align: center;
+        }
+        .footer-nav-item.active {
+            color: #fff;
+        }
+    </style>
 </head>
 <body>
 
-    <!-- Header Section -->
-    <header style="background-color: #900; color: white; padding: 20px; text-align: center;">
-        <h1>Anime Only</h1>
-        <p>Your Ultimate Streaming Destination</p>
-    </header>
+    <!-- Anime Heaven Styled Header Navbar -->
+    <nav class="navbar">
+        <div class="nav-logo">AI</div>
+        <div class="search-container">
+            <input type="text" placeholder="Search...">
+        </div>
+        <div style="color: #b00; font-size: 24px; padding-right: 5px;">&#9776;</div>
+    </nav>
 
-    <!-- Main Content Area -->
-    <main style="max-width: 1200px; margin: 20px auto; padding: 0 20px; color: #fff;">
-        <section class="trending">
-            <h2>Trending Releases</h2>
-            <!-- Your streaming video elements and anime cards belong here -->
-        </section>
+    <!-- Top Promo Banner Area -->
+    <div class="top-banner-space">
+        <img src="https://placeholder.com" alt="Promo Banner">
+    </div>
+
+    <!-- Layout Section Title -->
+    <h2 class="section-title">Subbed Anime Schedule</h2>
+
+    <!-- Grid Feed Container for Shows -->
+    <main class="anime-feed" style="margin-bottom: 60px;">
+
+        <!-- Show Card 1 -->
+        <article class="anime-card">
+            <div class="poster-container">
+                <div class="episode-badge">5</div>
+                <div class="action-btn">+</div>
+                <img src="https://placeholder.com" alt="Ghost Meets Gal!">
+            </div>
+            <div class="anime-details">
+                <h3 class="anime-title">Ghost Meets Gal!</h3>
+                <p class="anime-status">— <br><br> Episode Released</p>
+            </div>
+        </article>
+
+        <!-- Show Card 2 -->
+        <article class="anime-card">
+            <div class="poster-container">
+                <div class="episode-badge">1</div>
+                <div class="action-btn">+</div>
+                <img src="https://placeholder.com" alt="Action Series">
+            </div>
+            <div class="anime-details">
+                <h3 class="anime-title">Ghost Rider: Legacy</h3>
+                <p class="anime-status">— <br><br> Episode Released</p>
+            </div>
+        </article>
+
     </main>
 
-    <!-- Footer Section -->
-    <footer style="background-color: #111; color: #888; text-align: center; padding: 15px; margin-top: 50px;">
-        <p>&copy; 2026 Anime Only. All Rights Reserved.</p>
-    </footer>
+    <!-- Mobile Screen Bottom Icon Navigation Bar -->
+    <div class="mobile-footer-nav">
+        <a href="#" class="footer-nav-item active">&#8962;</a> <!-- Home -->
+        <a href="#" class="footer-nav-item">&#129517;</a> <!-- Compass/Explore -->
+        <a href="#" class="footer-nav-item">&#128278;</a> <!-- Bookmark -->
+        <a href="#" class="footer-nav-item">&#128269;</a> <!-- Search -->
+    </div>
 
     <!-- Combined Monetization Ad Scripts -->
     <script data-cfasync="false">
       // First Ad Network Script (Adsterra)
       var s = document.createElement('script');
-      s.src = 'https://bauval.org/14/03738da88e83e45cef0139139e468b4d';
+      s.src = 'https://bauval.org';
       document.body.appendChild(s);
 
       // Second Ad Network Script (Abscloud)
       var n = document.createElement('script');
-      n.src = 'https://abscloud.org/1/5ec643c2eee71989ff01bebde414a570';
+      n.src = 'https://abscloud.org';
       document.body.appendChild(n);
     </script>
 
-  </body>
+</body>
 </html>
