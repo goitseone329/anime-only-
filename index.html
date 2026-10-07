@@ -55,7 +55,7 @@
             line-height: 1;
         }
 
-        /* Interactive Embeddable Video Player Frame */
+        /* Video Streaming Player Frame Panel */
         .player-wrapper {
             background-color: #151515;
             border-bottom: 3px solid #ff001e;
@@ -91,7 +91,7 @@
             color: #a5a5a5;
         }
 
-        /* Top Banner Ad Container */
+        /* Top Horizontal Banner Ad Container Area */
         .top-banner-space {
             width: 100%;
             margin: 0 auto;
@@ -106,27 +106,28 @@
             display: block;
         }
 
-        /* Schedule Title Header */
+        /* Category Section Headers */
         .section-title {
             background-color: #121212;
             color: #d1d1d1;
-            text-align: center;
-            padding: 14px 10px;
-            font-size: 20px;
-            font-weight: 400;
+            text-align: left;
+            padding: 14px 15px;
+            font-size: 18px;
+            font-weight: 600;
             letter-spacing: 0.3px;
+            border-left: 4px solid #ff001e;
             border-bottom: 1px solid #1c1c1c;
             margin: 0;
+            text-transform: uppercase;
         }
 
-        /* Anime Feed Stack */
+        /* Anime List Array Stacks */
         .anime-feed {
             display: flex;
             flex-direction: column;
             width: 100%;
         }
 
-        /* Card Anchor Setup */
         .anime-card-link {
             text-decoration: none;
             color: inherit;
@@ -141,7 +142,7 @@
             width: 100%;
         }
 
-        /* 16:9 Widescreen Image Wrapper */
+        /* 16:9 Image Container Box Wrapper */
         .poster-container {
             position: relative;
             width: 100%;
@@ -158,20 +159,30 @@
             object-fit: cover;
         }
 
-        /* Left Corner Episode Box */
+        /* Red Details Indicators Corner Badges */
         .episode-badge {
             position: absolute;
             top: 0;
             left: 0;
             background-color: #ff001e;
             color: white;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
-            padding: 6px 16px;
+            padding: 5px 14px;
+            z-index: 2;
+        }
+        .movie-badge {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: #9000ff; /* Purple for Full Films */
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+            padding: 5px 14px;
             z-index: 2;
         }
 
-        /* Right Corner Play Icon */
         .action-btn {
             position: absolute;
             top: 8px;
@@ -188,7 +199,7 @@
             z-index: 2;
         }
 
-        /* Left-Aligned Double Title Layout Details */
+        /* Metadata Details Layout */
         .anime-details {
             padding: 14px 15px;
             text-align: left;
@@ -213,14 +224,21 @@
         }
         .anime-status {
             color: #ff001e;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 600;
             margin: 0;
-            letter-spacing: 0.2px;
-            text-align: center;
         }
 
-        /* Fixed Mobile Floating Bottom Bar Menu */
+        /* No Results Fallback Label Styling */
+        #no-results-msg {
+            text-align: center;
+            padding: 30px;
+            color: #888;
+            font-size: 16px;
+            display: none;
+        }
+
+        /* Fixed Mobile Tab Navigation Header */
         .mobile-footer-nav {
             position: fixed;
             bottom: 0;
@@ -245,40 +263,42 @@
 </head>
 <body>
 
-    <!-- Top Menu Header Layout -->
+    <!-- Header Navbar Container Interface -->
     <nav class="navbar">
         <div class="nav-logo">💀</div>
         <div class="search-container">
-            <input type="text" placeholder="Search">
+            <!-- Functional Live Search Hook -->
+            <input type="text" id="anime-search-input" onkeyup="filterAnimeCatalog()" placeholder="Search catalog...">
         </div>
         <div class="menu-icon">&#9776;</div>
     </nav>
 
-    <!-- LIVE INTERACTIVE EMBEDDABLE VIDEO PLAYER DOCK -->
+    <!-- LIVE DYNAMIC EMBDEDDABLE PLAYER CONTROLLER PANEL -->
     <section class="player-wrapper">
         <div class="video-container">
-            <!-- Initial default video stream iframe container box -->
+            <!-- Initial clean stream baseline using open embed proxy pipelines -->
             <iframe id="main-stream-player" src="https://youtube.com" allowfullscreen></iframe>
         </div>
         <div class="player-info">
-            <h2 id="player-stream-title">Select a show below to start streaming</h2>
-            <p id="player-stream-meta">Language: Subbed | Quality: 1080p HD</p>
+            <h2 id="player-stream-title">A Returner's Magic Should Be Special - Episode 12</h2>
+            <p id="player-stream-meta">Language: Subbed | Source: Primary Mirror 1080p</p>
         </div>
     </section>
 
-    <!-- Top Horizontal Banner Space -->
+    <!-- Adsterra Header Banner Box Area Placement Node -->
     <div class="top-banner-space">
         <img src="https://placeholder.com" alt="Featured Promo Banner">
     </div>
 
-    <!-- Main Title Block Header -->
-    <h2 class="section-title">Subbed Anime Schedule</h2>
+    <!-- Live Search Fallback Text Notification Container -->
+    <div id="no-results-msg">No titles match your search entry.</div>
 
-    <!-- Anime Grid Feed Section List -->
-    <main class="anime-feed" style="margin-bottom: 75px;">
+    <!-- CATEGORY BLOCK 1: TV SERIES SCHEDULE -->
+    <h2 class="section-title">Subbed Anime Schedule</h2>
+    <main class="anime-feed" id="series-feed-grid">
 
         <!-- Card 1: A Returner's Magic Should Be Special -->
-        <a class="anime-card-link" onclick="changeVideo('https://youtube.com', 'A Returner\'s Magic Should Be Special - Episode 12', 'Subbed | Kikansha no Mahou wa Tokubetsu desu')">
+        <a class="anime-card-link" data-title="A Returner's Magic Should Be Special Kikansha no Mahou wa Tokubetsu desu" onclick="changeVideo('https://youtube.com', 'A Returner\'s Magic Should Be Special - Episode 12', 'Subbed | Kikansha no Mahou wa Tokubetsu desu')">
             <article class="anime-card">
                 <div class="poster-container">
                     <div class="episode-badge">12</div>
@@ -294,21 +314,4 @@
         </a>
 
         <!-- Card 2: Reincarnated as a Sword -->
-        <a class="anime-card-link" onclick="changeVideo('https://youtube.com', 'Reincarnated as a Sword - Episode 2', 'Subbed | Tensei Shitara Ken deshita 2nd Season')">
-            <article class="anime-card">
-                <div class="poster-container">
-                    <div class="episode-badge">2</div>
-                    <div class="action-btn">▶</div>
-                    <img src="https://placeholder.com" alt="Reincarnated as a Sword">
-                </div>
-                <div class="anime-details">
-                    <h3 class="anime-title-main">Reincarnated as a Sword 2...</h3>
-                    <h4 class="anime-title-sub">Tensei Shitara Ken deshita 2nd S...</h4>
-                    <p class="anime-status">Episode Released</p>
-                </div>
-            </article>
-        </a>
-
-        <!-- Card 3: Kaiju No. 8 -->
-        <a class="anime-card-link" onclick="changeVideo('https://youtube.com', 'Kaiju No. 8 - Episode 1', 'Subbed | Kaijuu 8-gou')">
-            <article class="anime-card">
+        <a class="anime-card-link" data-title="Reincarnated as a Sword Tensei Shitara Ken deshita 2nd Season" onclick="changeVideo('https://youtube.com', 'Reincarnated as a Sword - Episode 2', 'Subbed | Tensei Shitara Ken deshita')">
