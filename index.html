@@ -3,28 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anime Streaming</title>
-    
-    <!-- PASTE YOUR POPADS CODE DIRECTLY BELOW THIS LINE -->
-    
-    
-    <!-- PASTE YOUR POPADS CODE DIRECTLY ABOVE THIS LINE -->
-
+    <title>AnimeHeaven - Streaming Portal</title>
     <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background-color: #121212; color: #ffffff; font-family: sans-serif; text-align: center; padding: 20px; }
-        .container { max-width: 600px; margin: auto; }
-        .player { background: #000; width: 100%; height: 300px; margin: 20px 0; display: flex; align-items: center; justify-content: center; border: 2px solid #ff4500; }
-        h1 { color: #ff4500; }
+        .tags-container { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; }
+        .tag { background-color: #d31212; color: white; padding: 6px 15px; font-weight: bold; border-radius: 3px; font-size: 14px; }
+        .meta-info { font-size: 18px; margin: 10px 0; line-height: 1.6; }
+        .highlight-red { color: #d31212; font-weight: bold; }
+        .btn-container { display: flex; justify-content: center; gap: 15px; margin: 15px 0 25px; }
+        .action-btn { background-color: #d31212; color: white; border: none; padding: 8px 18px; font-size: 16px; font-weight: bold; border-radius: 20px; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        .countdown-box { margin: 25px 0; border-top: 1px solid #222; border-bottom: 1px solid #222; padding: 15px 0; }
+        .countdown-title { font-size: 20px; color: #bbbbbb; margin-bottom: 8px; font-weight: normal; }
+        .countdown-timer { font-size: 24px; color: #d31212; font-weight: bold; letter-spacing: 0.5px; }
+        .episode-grid { max-width: 450px; margin: 0 auto 30px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 0 10px; }
+        .episode-card { border: 2px solid #d31212; background: #181818; padding: 12px 5px; border-radius: 4px; text-decoration: none; color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: background 0.2s; }
+        .episode-card:hover { background: #251010; }
+        .ep-label { font-size: 12px; color: #aaaaaa; margin-bottom: 2px; }
+        .ep-num { font-size: 28px; font-weight: bold; margin-bottom: 4px; }
+        .ep-time { font-size: 11px; color: #888888; }
+        .row-2 { grid-column: span 3; display: flex; justify-content: center; gap: 10px; }
+        .row-2 .episode-card { width: calc(33.33% - 7px); }
+        .section-title { font-size: 22px; color: #dddddd; margin-top: 20px; border-top: 1px solid #222; padding-top: 15px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Anime Streaming Portal</h1>
-        <p>Your ultimate destination for anime streaming.</p>
-        <div class="player">
-            <p>Video Player Placeholder</p>
+    <div class="tags-container">
+        <div class="tag">Comedy</div>
+        <div class="tag">Fantasy</div>
+    </div>
+    <div class="meta-info">
+        <p>Episodes: <span class="highlight-red">5+</span> Year: <span class="highlight-red">2026</span></p>
+        <p>Score: <span class="highlight-red">?</span></p>
+    </div>
+    <div class="btn-container">
+        <button class="action-btn">Bookmark <span>＋</span></button>
+        <button class="action-btn">Rate <span>＋</span></button>
+    </div>
+    <div class="countdown-box">
+        <div class="countdown-title">Countdown to Episode 6</div>
+        <div class="countdown-title">:</div>
+        <div class="countdown-timer" id="timer">6 Days 21 Hours 51 Min</div>
+    </div>
+    <div class="episode-grid">
+        <a href="#" class="episode-card">
+            <span class="ep-label">Episode</span>
+            <span class="ep-num">5</span>
+            <span class="ep-time">2 h ago</span>
+        </a>
+        <a href="#" class="episode-card">
+            <span class="ep-label">Episode</span>
+            <span class="ep-num">4</span>
+            <span class="ep-time">5 d ago</span>
+        </a>
+        <a href="#" class="episode-card">
+            <span class="ep-label">Episode</span>
+            <span class="ep-num">3</span>
+            <span class="ep-time">5 d ago</span>
+        </a>
+        <div class="row-2">
+            <a href="#" class="episode-card">
+                <span class="ep-label">Episode</span>
+                <span class="ep-num">2</span>
+                <span class="ep-time">5 d ago</span>
+            </a>
+            <a href="#" class="episode-card">
+                <span class="ep-label">Episode</span>
+                <span class="ep-num">1</span>
+                <span class="ep-time">5 d ago</span>
+            </a>
         </div>
     </div>
+    <div class="section-title">Similar Shows</div>
 </body>
 </html>
-
