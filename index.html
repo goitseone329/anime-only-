@@ -36,6 +36,31 @@
             100% { text-shadow: 0 0 15px #ff0000, 0 0 30px #ff4500, 0 0 40px #ff8c00; transform: scale(1.05); }
         }
 
+        /* Responsive Hellfire Video Player Box */
+        .video-container {
+            max-width: 450px;
+            margin: 15px auto 25px;
+            padding: 0 10px;
+        }
+        .player-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            border: 2px solid #ff4500;
+            border-radius: 6px;
+            background: #000000;
+            box-shadow: 0 0 15px rgba(255, 69, 0, 0.4);
+        }
+        .player-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
         /* Metadata & Category Tags */
         .tags-container { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; }
         .tag { 
@@ -87,7 +112,7 @@
             text-shadow: 0 0 8px #ff4500;
         }
 
-        /* Chains & Episode Grid Setup */
+        /* Episode Grid Setup */
         .episode-grid { max-width: 450px; margin: 0 auto 30px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 0 10px; font-family: sans-serif; }
         .episode-card { 
             border: 2px solid #ff4500; 
@@ -124,31 +149,45 @@
 </head>
 <body>
 
+    <!-- Ghost Rider Skull Visual Brand Indicator -->
     <div class="skull-container">
         <span class="skull-icon">💀</span>
         <div class="skull-header">Ghost Rider Stream</div>
     </div>
 
+    <!-- Interactive Streaming Frame Box -->
+    <div class="video-container">
+        <div class="player-wrapper">
+            <!-- Replace the sample source link below with any stream URL when ready -->
+            <iframe src="https://youtube.com" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <!-- Category Tags -->
     <div class="tags-container">
         <div class="tag">Comedy</div>
         <div class="tag">Fantasy</div>
     </div>
 
+    <!-- Metadata Details -->
     <div class="meta-info">
         <p>Episodes: <span class="highlight-flame">5+</span> Year: <span class="highlight-flame">2026</span></p>
         <p>Score: <span class="highlight-flame">?</span></p>
     </div>
 
+    <!-- Action Buttons -->
     <div class="btn-container">
         <button class="action-btn">Bookmark ＋</button>
         <button class="action-btn">Rate ＋</button>
     </div>
 
+    <!-- Fire Timer Display -->
     <div class="countdown-box">
         <div class="countdown-title">Countdown to Next Soul</div>
         <div class="countdown-timer" id="timer">6 Days 21 Hours 51 Min</div>
     </div>
 
+    <!-- Episode Selection System Grid -->
     <div class="episode-grid">
         <a href="#" class="episode-card">
             <span class="ep-label">Chapter</span>
