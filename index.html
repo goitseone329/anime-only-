@@ -166,7 +166,7 @@
             left: 0;
             background-color: #ff001e;
             color: white;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 700;
             padding: 5px 14px;
             z-index: 2;
@@ -177,7 +177,7 @@
             left: 0;
             background-color: #9000ff;
             color: white;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 700;
             padding: 5px 14px;
             z-index: 2;
@@ -277,8 +277,8 @@
             <iframe id="main-stream-player" src="https://youtube.com" allowfullscreen></iframe>
         </div>
         <div class="player-info">
-            <h2 id="player-stream-title">Select a show below to start streaming</h2>
-            <p id="player-stream-meta">Language: Subbed | Source: Primary Mirror 1080p</p>
+            <h2 id="player-stream-title">Select an episode below to play</h2>
+            <p id="player-stream-meta">Language: Subbed | Source: High-Definition Widescreen Mirror</p>
         </div>
     </section>
 
@@ -306,27 +306,25 @@
         <a href="#" class="footer-nav-item">&#128269;</a>
     </div>
 
-    <!-- Embedded Local Catalog Database Driver -->
+    <!-- Live Automated Database API Pipeline Script Engine -->
     <script>
-        // Data is embedded directly here to completely fix external fetch 404 errors!
-        const animeCatalogData = [
-          {
-            "id": 1,
-            "type": "series",
-            "badge": "12",
-            "titleMain": "A Returner's Magic Should ...",
-            "titleSub": "Kikansha no Mahou wa Tokubets...",
-            "status": "Episode Released",
-            "poster": "https://placeholder.com",
-            "embed": "https://youtube.com",
-            "meta": "Subbed | Kikansha no Mahou wa Tokubetsu desu"
-          },
-          {
-            "id": 2,
-            "type": "series",
-            "badge": "2",
-            "titleMain": "Reincarnated as a Sword 2...",
-            "titleSub": "Tensei Shitara Ken deshita 2nd S...",
-            "status": "Episode Released",
-            "poster": "https://placeholder.com",
-            "embed": "https://youtube.com",
+        const apiSeriesUrl = 'https://jikan.moe';
+        const apiMoviesUrl = 'https://jikan.moe';
+
+        Promise.all([
+            fetch(apiSeriesUrl).then(res => res.json()),
+            fetch(apiMoviesUrl).then(res => res.json())
+        ])
+        .then(([seriesData, moviesData]) => {
+            renderList(seriesData.data, 'series-feed-grid', 'series');
+            renderList(moviesData.data, 'movies-feed-grid', 'movie');
+        })
+        .catch(err => console.error('Database bridge pipeline error:', err));
+
+        function renderList(animeArray, targetGridId, catalogType) {
+            const grid = document.getElementById(targetGridId);
+            grid.innerHTML = '';
+
+            animeArray.forEach(anime => {
+                const mainTitle = anime.title_english ? anime.title_english : anime.title;
+                const subTitle = anime.title_japanese ? anime.title_japanese : '';
