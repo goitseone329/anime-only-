@@ -4,315 +4,275 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anime Only</title>
-    <!-- Link to your external stylesheet -->
     <link rel="stylesheet" href="Styles/style.css">
     <style>
-        /* Base Page Setup mirroring Anime Heaven layout */
+        /* Base Setup Mirroring Anime Heaven */
         body {
-            background-color: #0c0c0c;
+            background-color: #070707;
             color: #ffffff;
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
             padding: 0;
         }
 
-        /* Top Navigation Bar */
+        /* Navigation Bar */
         .navbar {
-            background-color: #111;
-            border-bottom: 2px solid #b00;
+            background-color: #151515;
+            border-bottom: 2px solid #ff001e;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 10px 15px;
+            padding: 10px 12px;
         }
         .nav-logo {
-            background-color: #b00;
+            background-color: #ff001e;
             color: white;
-            font-weight: bold;
-            padding: 5px 10px;
-            font-size: 20px;
+            font-weight: 900;
+            padding: 4px 10px;
+            font-size: 22px;
             text-transform: uppercase;
+            display: flex;
+            align-items: center;
         }
         .search-container {
             flex-grow: 1;
-            margin: 0 15px;
-            position: relative;
+            margin: 0 12px;
         }
         .search-container input {
             width: 100%;
-            background-color: #222;
-            border: 1px solid #b00;
+            background-color: #0f0f0f;
+            border: 1px solid #ff001e;
             color: white;
-            padding: 8px 35px 8px 10px;
-            border-radius: 3px;
+            padding: 8px 12px;
+            font-size: 15px;
+            border-radius: 2px;
             box-sizing: border-box;
         }
+        .menu-icon {
+            color: #ff001e;
+            font-size: 28px;
+            font-weight: bold;
+            line-height: 1;
+        }
 
-        /* Top Banner Ad Box Placement Area */
+        /* Top Banner Ad Container */
         .top-banner-space {
-            max-width: 100%;
-            margin: 10px auto;
+            width: 100%;
+            margin: 0 auto;
             text-align: center;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
         }
         .top-banner-space img {
             max-width: 100%;
             height: auto;
+            display: block;
         }
 
-        /* Schedule Title Header */
+        /* Subbed Anime Schedule Section Header */
         .section-title {
-            background-color: #181818;
-            text-align: left;
-            padding: 12px 15px;
-            font-size: 16px;
-            font-weight: bold;
-            letter-spacing: 0.5px;
-            border-bottom: 2px solid #b00;
-            margin: 20px 0 0 0;
-            color: #fff;
-            text-transform: uppercase;
+            background-color: #121212;
+            color: #d1d1d1;
+            text-align: center;
+            padding: 14px 10px;
+            font-size: 20px;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+            border-bottom: 1px solid #1c1c1c;
+            margin: 0;
         }
 
-        /* Responsive CSS Grid Layout Feed */
+        /* Anime Feed Stack */
         .anime-feed {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
+            display: flex;
+            flex-direction: column;
             width: 100%;
-            padding: 10px;
-            box-sizing: border-box;
         }
 
         .anime-card {
-            background-color: #111;
-            border-bottom: 4px solid #0c0c0c;
-            text-align: center;
+            background-color: #0f0f0f;
+            border-bottom: 5px solid #070707;
             position: relative;
+            width: 100%;
         }
 
-        /* Responsive 16:9 Widescreen Aspect Ratio Box */
+        /* 16:9 Widescreen Image Wrapper */
         .poster-container {
             position: relative;
             width: 100%;
-            padding-top: 56.25%; 
-            background-color: #000;
+            padding-top: 56.25%; /* Clean aspect ratio */
+            background-color: #151515;
             overflow: hidden;
         }
-        
-        /* Direct Video Embed Iframe Setup */
-        .poster-container iframe {
+        .poster-container img {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            border: 0;
-            z-index: 1;
+            object-fit: cover;
         }
 
-        /* Red Left-Corner Counter Badge */
+        /* Left Corner Episode Box */
         .episode-badge {
             position: absolute;
             top: 0;
             left: 0;
-            background-color: #d00;
+            background-color: #ff001e;
             color: white;
-            font-size: 22px;
-            font-weight: bold;
-            padding: 8px 15px;
+            font-size: 20px;
+            font-weight: 700;
+            padding: 6px 16px;
             z-index: 2;
         }
 
-        /* Plus Action Overlay Button */
+        /* Right Corner Add Button */
         .action-btn {
             position: absolute;
-            top: 10px;
-            right: 15px;
-            background-color: rgba(221, 0, 0, 0.85);
+            top: 8px;
+            right: 12px;
+            background-color: rgba(255, 0, 30, 0.85);
             color: white;
-            width: 36px;
-            height: 36px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            font-weight: bold;
+            font-size: 26px;
+            font-weight: 300;
             z-index: 2;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-            border: none;
-            cursor: pointer;
         }
 
-        /* Text Sub-Containers */
+        /* Left-Aligned Double Title Layout Details */
         .anime-details {
-            padding: 15px 10px;
+            padding: 14px 15px;
+            text-align: left;
         }
-        .anime-title {
+        .anime-title-main {
             font-size: 19px;
-            font-weight: bold;
+            font-weight: 400;
+            margin: 0 0 3px 0;
+            color: #e3e3e3;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .anime-title-sub {
+            font-size: 16px;
+            font-weight: 400;
             margin: 0 0 8px 0;
-            color: #eee;
+            color: #a5a5a5;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
         .anime-status {
-            color: #d00;
-            font-size: 15px;
-            font-weight: 500;
+            color: #ff001e;
+            font-size: 16px;
+            font-weight: 600;
             margin: 0;
+            letter-spacing: 0.2px;
+            text-align: center;
         }
 
-        /* Responsive Layout for Tablets/Desktops */
-        @media (min-width: 600px) {
-            .anime-feed {
-                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-                padding: 20px;
-                gap: 20px;
-            }
-            .anime-card {
-                border-radius: 6px;
-                border: 1px solid #222;
-                border-bottom: 4px solid #b00;
-                overflow: hidden;
-            }
-        }
-
-        /* Bottom Fixed Navigation Bar for Mobile */
+        /* Fixed Mobile Floating Bottom Bar Menu Nodes */
         .mobile-footer-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            background-color: #111;
-            border-top: 1px solid #222;
+            background-color: #121212;
+            border-top: 1px solid #1c1c1c;
             display: flex;
             justify-content: space-around;
-            padding: 10px 0;
+            padding: 12px 0;
             z-index: 10;
         }
         .footer-nav-item {
-            color: #888;
+            color: #7a7a7a;
             text-decoration: none;
-            font-size: 20px;
-            text-align: center;
+            font-size: 22px;
         }
         .footer-nav-item.active {
-            color: #fff;
+            color: #ffffff;
         }
     </style>
 </head>
 <body>
 
-    <!-- Header Navbar -->
+    <!-- Top Menu Header Layout -->
     <nav class="navbar">
-        <div class="nav-logo">AI</div>
+        <div class="nav-logo">💀</div>
         <div class="search-container">
-            <input type="text" placeholder="Search anime...">
+            <input type="text" placeholder="Search">
         </div>
-        <div style="color: #b00; font-size: 24px; padding-right: 5px; cursor: pointer;">☰</div>
+        <div class="menu-icon">&#9776;</div>
     </nav>
 
-    <!-- Top Promo Banner Area -->
+    <!-- Top Horizontal Banner Space -->
     <div class="top-banner-space">
-        <img src="https://placeholder.com" alt="Promo Banner">
+        <img src="https://placeholder.com" alt="Featured Promo Banner">
     </div>
 
-    <!-- 1. ANIME TV SERIES SECTION -->
-    <h2 class="section-title">Subbed Anime Episodes</h2>
-    <main class="anime-feed" id="series-feed"></main>
+    <!-- Main Title Block Header -->
+    <h2 class="section-title">Subbed Anime Schedule</h2>
 
-    <!-- 2. ANIME MOVIES SECTION -->
-    <h2 class="section-title">Anime Movies</h2>
-    <main class="anime-feed" id="movies-feed" style="margin-bottom: 70px;"></main>
+    <!-- Anime Grid Feed Section List -->
+    <main class="anime-feed" style="margin-bottom: 75px;">
 
-    <!-- Mobile Bottom Navigation Bar -->
+        <!-- Show Card 1 -->
+        <article class="anime-card">
+            <div class="poster-container">
+                <div class="episode-badge">1</div>
+                <div class="action-btn">+</div>
+                <!-- Graphic Image source block links -->
+                <img src="https://placeholder.com" alt="A Returner's Magic Should Be Special">
+            </div>
+            <div class="anime-details">
+                <h3 class="anime-title-main">A Returner's Magic Should ...</h3>
+                <h4 class="anime-title-sub">Kikansha no Mahou wa Tokubets...</h4>
+                <p class="anime-status">Episode Released</p>
+            </div>
+        </article>
+
+        <!-- Show Card 2 -->
+        <article class="anime-card">
+            <div class="poster-container">
+                <div class="episode-badge">2</div>
+                <div class="action-btn">+</div>
+                <img src="https://placeholder.com" alt="Reincarnated as a Sword">
+            </div>
+            <div class="anime-details">
+                <h3 class="anime-title-main">Reincarnated as a Sword 2...</h3>
+                <h4 class="anime-title-sub">Tensei Shitara Ken deshita 2nd S...</h4>
+                <p class="anime-status">Episode Released</p>
+            </div>
+        </article>
+
+    </main>
+
+    <!-- Bottom Tab Navigation System Bar -->
     <div class="mobile-footer-nav">
-        <a href="#" class="footer-nav-item active">⌂</a>
-        <a href="#" class="footer-nav-item">🧭</a>
-        <a href="#" class="footer-nav-item">🔖</a>
-        <a href="#" class="footer-nav-item">🔍</a>
+        <a href="#" class="footer-nav-item active">&#8962;</a> <!-- Home Icon -->
+        <a href="#" class="footer-nav-item">&#129517;</a> <!-- Compass Icon -->
+        <a href="#" class="footer-nav-item">&#128278;</a> <!-- Bookmark Icon -->
+        <a href="#" class="footer-nav-item">&#128269;</a> <!-- Search Icon -->
     </div>
 
-    <!-- Ad Injection Scripts -->
+    <!-- Combined Monetization Ad Scripts (Preserved Intact) -->
     <script data-cfasync="false">
+      // First Ad Network Script (Adsterra)
       var s = document.createElement('script');
       s.src = 'https://bauval.org';
       document.body.appendChild(s);
 
+      // Second Ad Network Script (Abscloud)
       var n = document.createElement('script');
       n.src = 'https://abscloud.org';
       document.body.appendChild(n);
     </script>
 
-    <!-- ENGINE CODE: Dynamic JavaScript Array Rendering -->
-    <script>
-        // Database array for regular TV Series episodes
-        const animeSeries = [
-            {
-                title: "Attack on Titan: The Final Season",
-                badge: "E75",
-                status: "Episode Released",
-                videoUrl: "https://youtube.com"
-            },
-            {
-                title: "Naruto: Shippuden",
-                badge: "E500",
-                status: "Episode Released",
-                videoUrl: "https://youtube.com"
-            },
-            {
-                title: "Demon Slayer: Entertainment District Arc",
-                badge: "E11",
-                status: "Episode Released",
-                videoUrl: "https://youtube.com"
-            },
-            {
-                title: "One Piece",
-                badge: "E1100",
-                status: "Episode Released",
-                videoUrl: "https://youtube.com"
-            }
-        ];
-
-        // Database array for standalone Movie files
-        const animeMovies = [
-            {
-                title: "Demon Slayer: Mugen Train",
-                badge: "HD",
-                status: "Full Movie Available",
-                videoUrl: "https://youtube.com"
-            },
-            {
-                title: "Jujutsu Kaisen 0: The Movie",
-                badge: "HD",
-                status: "Full Movie Available",
-                videoUrl: "https://youtube.com"
-            },
-            {
-                title: "The Last: Naruto the Movie",
-                badge: "HD",
-                status: "Full Movie Available",
-                videoUrl: "https://youtube.com"
-            }
-        ];
-
-        // Core compilation function to convert object sets into card elements
-        function renderFeed(dataArray, targetElementId) {
-            const feedContainer = document.getElementById(targetElementId);
-            
-            // Loop over the array items to build out cards automatically
-            dataArray.forEach(item => {
-                const cardMarkup = `
-                    <article class="anime-card">
-                        <div class="poster-container">
-                            <div class="episode-badge">${item.badge}</div>
-                            <button class="action-btn">+</button>
-                            <iframe src="${item.videoUrl}" title="${item.title}" allowfullscreen></iframe>
-                        </div>
-                        <div class="anime-details">
-                            <h3 class="anime-title">${item.title}</h3>
-                            <p class="anime-status">${item.status}</p>
-                        </div>
-                    </article>
-                `;
-                feedContainer.innerHTML += cardMarkup;
-            });
+</body>
+</html>
