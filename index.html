@@ -3,77 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AnimeHeaven - Streaming Portal</title>
+    <title>AnimeHeaven - Ghost Rider Edition</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background-color: #121212; color: #ffffff; font-family: sans-serif; text-align: center; padding: 20px; }
+        body { 
+            background-color: #0a0a0a; 
+            color: #ffffff; 
+            font-family: 'Impact', 'Arial Black', sans-serif; 
+            text-align: center; 
+            padding: 20px;
+            background-image: linear-gradient(rgba(10, 10, 10, 0.9), rgba(10, 10, 10, 0.95));
+        }
+        
+        /* Hellfire & Skull Elements */
+        .skull-header {
+            font-size: 32px;
+            color: #ff4500;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px #ff4500, 0 0 20px #ff8c00, 0 0 30px #ff0000;
+            margin-bottom: 20px;
+        }
+        .skull-icon {
+            font-size: 50px;
+            animation: flame 1.5s ease-in-out infinite alternate;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        @keyframes flame {
+            0% { text-shadow: 0 0 10px #ff4500, 0 0 20px #ff8c00; transform: scale(1); }
+            100% { text-shadow: 0 0 15px #ff0000, 0 0 30px #ff4500, 0 0 40px #ff8c00; transform: scale(1.05); }
+        }
+
+        /* Metadata & Category Tags */
         .tags-container { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; }
-        .tag { background-color: #d31212; color: white; padding: 6px 15px; font-weight: bold; border-radius: 3px; font-size: 14px; }
-        .meta-info { font-size: 18px; margin: 10px 0; line-height: 1.6; }
-        .highlight-red { color: #d31212; font-weight: bold; }
+        .tag { 
+            background: linear-gradient(45deg, #ff0000, #ff5722); 
+            color: white; 
+            padding: 6px 15px; 
+            font-weight: bold; 
+            border-radius: 4px; 
+            font-size: 14px;
+            box-shadow: 0 0 8px rgba(255, 69, 0, 0.6);
+        }
+        .meta-info { font-size: 18px; margin: 10px 0; font-family: sans-serif; }
+        .highlight-flame { color: #ff5722; font-weight: bold; text-shadow: 0 0 5px rgba(255, 87, 34, 0.5); }
+        
+        /* Brimstone Action Buttons */
         .btn-container { display: flex; justify-content: center; gap: 15px; margin: 15px 0 25px; }
-        .action-btn { background-color: #d31212; color: white; border: none; padding: 8px 18px; font-size: 16px; font-weight: bold; border-radius: 20px; cursor: pointer; display: flex; align-items: center; gap: 5px; }
-        .countdown-box { margin: 25px 0; border-top: 1px solid #222; border-bottom: 1px solid #222; padding: 15px 0; }
-        .countdown-title { font-size: 20px; color: #bbbbbb; margin-bottom: 8px; font-weight: normal; }
-        .countdown-timer { font-size: 24px; color: #d31212; font-weight: bold; letter-spacing: 0.5px; }
-        .episode-grid { max-width: 450px; margin: 0 auto 30px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 0 10px; }
-        .episode-card { border: 2px solid #d31212; background: #181818; padding: 12px 5px; border-radius: 4px; text-decoration: none; color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: background 0.2s; }
-        .episode-card:hover { background: #251010; }
-        .ep-label { font-size: 12px; color: #aaaaaa; margin-bottom: 2px; }
-        .ep-num { font-size: 28px; font-weight: bold; margin-bottom: 4px; }
+        .action-btn { 
+            background: #1a1a1a; 
+            color: #ff5722; 
+            border: 2px solid #ff5722; 
+            padding: 8px 22px; 
+            font-size: 16px; 
+            font-weight: bold; 
+            border-radius: 4px; 
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(255, 87, 34, 0.3);
+            text-transform: uppercase;
+        }
+        .action-btn:hover {
+            background: #ff5722;
+            color: #000;
+            box-shadow: 0 0 15px #ff5722;
+        }
+
+        /* Hellfire Countdown Box */
+        .countdown-box { 
+            margin: 25px 0; 
+            border-top: 2px solid #ff4500; 
+            border-bottom: 2px solid #ff4500; 
+            padding: 15px 0;
+            background: rgba(255, 69, 0, 0.05);
+            box-shadow: inset 0 0 15px rgba(255, 69, 0, 0.1);
+        }
+        .countdown-title { font-size: 20px; color: #bbbbbb; margin-bottom: 8px; font-family: sans-serif; }
+        .countdown-timer { 
+            font-size: 26px; 
+            color: #ff4500; 
+            font-weight: bold; 
+            text-shadow: 0 0 8px #ff4500;
+        }
+
+        /* Chains & Episode Grid Setup */
+        .episode-grid { max-width: 450px; margin: 0 auto 30px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 0 10px; font-family: sans-serif; }
+        .episode-card { 
+            border: 2px solid #ff4500; 
+            background: #111111; 
+            padding: 14px 5px; 
+            border-radius: 4px; 
+            text-decoration: none; 
+            color: white; 
+            display: flex; 
+            flex-direction: column; 
+            box-shadow: 0 0 8px rgba(255, 69, 0, 0.2);
+        }
+        .episode-card:hover { 
+            background: #220a02; 
+            border-color: #ff8c00;
+            box-shadow: 0 0 15px #ff4500;
+        }
+        .ep-label { font-size: 12px; color: #ff8c00; font-weight: bold; text-transform: uppercase; }
+        .ep-num { font-size: 28px; font-weight: bold; margin: 2px 0; color: #ffffff; }
         .ep-time { font-size: 11px; color: #888888; }
-        .row-2 { grid-column: span 3; display: flex; justify-content: center; gap: 10px; }
-        .row-2 .episode-card { width: calc(33.33% - 7px); }
-        .section-title { font-size: 22px; color: #dddddd; margin-top: 20px; border-top: 1px solid #222; padding-top: 15px; }
+        
+        .row-2 { grid-column: span 3; display: flex; justify-content: center; gap: 12px; }
+        .row-2 .episode-card { width: calc(33.33% - 8px); }
+
+        .section-title { 
+            font-size: 22px; 
+            color: #ff4500; 
+            margin-top: 20px; 
+            border-top: 2px dashed #333; 
+            padding-top: 15px;
+            text-shadow: 0 0 5px #ff4500;
+        }
     </style>
 </head>
 <body>
+
+    <div class="skull-container">
+        <span class="skull-icon">💀</span>
+        <div class="skull-header">Ghost Rider Stream</div>
+    </div>
+
     <div class="tags-container">
         <div class="tag">Comedy</div>
         <div class="tag">Fantasy</div>
     </div>
+
     <div class="meta-info">
-        <p>Episodes: <span class="highlight-red">5+</span> Year: <span class="highlight-red">2026</span></p>
-        <p>Score: <span class="highlight-red">?</span></p>
+        <p>Episodes: <span class="highlight-flame">5+</span> Year: <span class="highlight-flame">2026</span></p>
+        <p>Score: <span class="highlight-flame">?</span></p>
     </div>
+
     <div class="btn-container">
-        <button class="action-btn">Bookmark <span>＋</span></button>
-        <button class="action-btn">Rate <span>＋</span></button>
+        <button class="action-btn">Bookmark ＋</button>
+        <button class="action-btn">Rate ＋</button>
     </div>
+
     <div class="countdown-box">
-        <div class="countdown-title">Countdown to Episode 6</div>
-        <div class="countdown-title">:</div>
+        <div class="countdown-title">Countdown to Next Soul</div>
         <div class="countdown-timer" id="timer">6 Days 21 Hours 51 Min</div>
     </div>
+
     <div class="episode-grid">
         <a href="#" class="episode-card">
-            <span class="ep-label">Episode</span>
+            <span class="ep-label">Chapter</span>
             <span class="ep-num">5</span>
             <span class="ep-time">2 h ago</span>
         </a>
         <a href="#" class="episode-card">
-            <span class="ep-label">Episode</span>
+            <span class="ep-label">Chapter</span>
             <span class="ep-num">4</span>
             <span class="ep-time">5 d ago</span>
         </a>
         <a href="#" class="episode-card">
-            <span class="ep-label">Episode</span>
+            <span class="ep-label">Chapter</span>
             <span class="ep-num">3</span>
             <span class="ep-time">5 d ago</span>
         </a>
         <div class="row-2">
             <a href="#" class="episode-card">
-                <span class="ep-label">Episode</span>
+                <span class="ep-label">Chapter</span>
                 <span class="ep-num">2</span>
                 <span class="ep-time">5 d ago</span>
             </a>
             <a href="#" class="episode-card">
-                <span class="ep-label">Episode</span>
+                <span class="ep-label">Chapter</span>
                 <span class="ep-num">1</span>
                 <span class="ep-time">5 d ago</span>
             </a>
         </div>
     </div>
-    <div class="section-title">Similar Shows</div>
+
+    <div class="section-title">More Hellfire Streams</div>
+
 </body>
 </html>
