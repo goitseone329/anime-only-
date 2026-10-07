@@ -73,11 +73,14 @@
             text-transform: uppercase;
         }
 
-        /* Anime List Card Layout Feed */
+        /* Responsive CSS Grid Layout Feed */
         .anime-feed {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
             width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
         }
 
         .anime-card {
@@ -158,6 +161,21 @@
             margin: 0;
         }
 
+        /* Responsive Layout for Tablets/Desktops */
+        @media (min-width: 600px) {
+            .anime-feed {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+                padding: 20px;
+                gap: 20px;
+            }
+            .anime-card {
+                border-radius: 6px;
+                border: 1px solid #222;
+                border-bottom: 4px solid #b00;
+                overflow: hidden;
+            }
+        }
+
         /* Bottom Fixed Navigation Bar for Mobile */
         .mobile-footer-nav {
             position: fixed;
@@ -200,105 +218,101 @@
 
     <!-- 1. ANIME TV SERIES SECTION -->
     <h2 class="section-title">Subbed Anime Episodes</h2>
-    
-    <main class="anime-feed">
-        <!-- Show 1: Attack on Titan -->
-        <article class="anime-card">
-            <div class="poster-container">
-                <div class="episode-badge">E75</div>
-                <button class="action-btn">+</button>
-                <iframe src="https://youtube.com" title="Attack on Titan" allowfullscreen></iframe>
-            </div>
-            <div class="anime-details">
-                <h3 class="anime-title">Attack on Titan: The Final Season</h3>
-                <p class="anime-status">Episode Released</p>
-            </div>
-        </article>
-
-        <!-- Show 2: Naruto Shippuden -->
-        <article class="anime-card">
-            <div class="poster-container">
-                <div class="episode-badge">E500</div>
-                <button class="action-btn">+</button>
-                <iframe src="https://youtube.com" title="Naruto Shippuden" allowfullscreen></iframe>
-            </div>
-            <div class="anime-details">
-                <h3 class="anime-title">Naruto: Shippuden</h3>
-                <p class="anime-status">Episode Released</p>
-            </div>
-        </article>
-
-        <!-- Show 3: Demon Slayer Series -->
-        <article class="anime-card">
-            <div class="poster-container">
-                <div class="episode-badge">E11</div>
-                <button class="action-btn">+</button>
-                <iframe src="https://youtube.com" title="Demon Slayer" allowfullscreen></iframe>
-            </div>
-            <div class="anime-details">
-                <h3 class="anime-title">Demon Slayer: Entertainment District Arc</h3>
-                <p class="anime-status">Episode Released</p>
-            </div>
-        </article>
-
-        <!-- Show 4: One Piece -->
-        <article class="anime-card">
-            <div class="poster-container">
-                <div class="episode-badge">E1100</div>
-                <button class="action-btn">+</button>
-                <iframe src="https://youtube.com" title="One Piece" allowfullscreen></iframe>
-            </div>
-            <div class="anime-details">
-                <h3 class="anime-title">One Piece</h3>
-                <p class="anime-status">Episode Released</p>
-            </div>
-        </article>
-    </main>
+    <main class="anime-feed" id="series-feed"></main>
 
     <!-- 2. ANIME MOVIES SECTION -->
     <h2 class="section-title">Anime Movies</h2>
-
-    <main class="anime-feed" style="margin-bottom: 70px;">
-        <!-- Movie 1: Demon Slayer Mugen Train -->
-        <article class="anime-card">
-            <div class="poster-container">
-                <div class="episode-badge">HD</div>
-                <button class="action-btn">+</button>
-                <iframe src="https://youtube.com" title="Demon Slayer Movie" allowfullscreen></iframe>
-            </div>
-            <div class="anime-details">
-                <h3 class="anime-title">Demon Slayer: Mugen Train</h3>
-                <p class="anime-status">Full Movie Available</p>
-            </div>
-        </article>
-
-        <!-- Movie 2: Jujutsu Kaisen 0 -->
-        <article class="anime-card">
-            <div class="poster-container">
-                <div class="episode-badge">HD</div>
-                <button class="action-btn">+</button>
-                <iframe src="https://youtube.com" title="Jujutsu Kaisen 0" allowfullscreen></iframe>
-            </div>
-            <div class="anime-details">
-                <h3 class="anime-title">Jujutsu Kaisen 0: The Movie</h3>
-                <p class="anime-status">Full Movie Available</p>
-            </div>
-        </article>
-
-        <!-- Movie 3: Naruto The Last -->
-        <article class="anime-card">
-            <div class="poster-container">
-                <div class="episode-badge">HD</div>
-                <button class="action-btn">+</button>
-                <iframe src="https://youtube.com" title="The Last: Naruto the Movie" allowfullscreen></iframe>
-            </div>
-            <div class="anime-details">
-                <h3 class="anime-title">The Last: Naruto the Movie</h3>
-                <p class="anime-status">Full Movie Available</p>
-            </div>
-        </article>
-    </main>
+    <main class="anime-feed" id="movies-feed" style="margin-bottom: 70px;"></main>
 
     <!-- Mobile Bottom Navigation Bar -->
     <div class="mobile-footer-nav">
         <a href="#" class="footer-nav-item active">⌂</a>
+        <a href="#" class="footer-nav-item">🧭</a>
+        <a href="#" class="footer-nav-item">🔖</a>
+        <a href="#" class="footer-nav-item">🔍</a>
+    </div>
+
+    <!-- Ad Injection Scripts -->
+    <script data-cfasync="false">
+      var s = document.createElement('script');
+      s.src = 'https://bauval.org';
+      document.body.appendChild(s);
+
+      var n = document.createElement('script');
+      n.src = 'https://abscloud.org';
+      document.body.appendChild(n);
+    </script>
+
+    <!-- ENGINE CODE: Dynamic JavaScript Array Rendering -->
+    <script>
+        // Database array for regular TV Series episodes
+        const animeSeries = [
+            {
+                title: "Attack on Titan: The Final Season",
+                badge: "E75",
+                status: "Episode Released",
+                videoUrl: "https://youtube.com"
+            },
+            {
+                title: "Naruto: Shippuden",
+                badge: "E500",
+                status: "Episode Released",
+                videoUrl: "https://youtube.com"
+            },
+            {
+                title: "Demon Slayer: Entertainment District Arc",
+                badge: "E11",
+                status: "Episode Released",
+                videoUrl: "https://youtube.com"
+            },
+            {
+                title: "One Piece",
+                badge: "E1100",
+                status: "Episode Released",
+                videoUrl: "https://youtube.com"
+            }
+        ];
+
+        // Database array for standalone Movie files
+        const animeMovies = [
+            {
+                title: "Demon Slayer: Mugen Train",
+                badge: "HD",
+                status: "Full Movie Available",
+                videoUrl: "https://youtube.com"
+            },
+            {
+                title: "Jujutsu Kaisen 0: The Movie",
+                badge: "HD",
+                status: "Full Movie Available",
+                videoUrl: "https://youtube.com"
+            },
+            {
+                title: "The Last: Naruto the Movie",
+                badge: "HD",
+                status: "Full Movie Available",
+                videoUrl: "https://youtube.com"
+            }
+        ];
+
+        // Core compilation function to convert object sets into card elements
+        function renderFeed(dataArray, targetElementId) {
+            const feedContainer = document.getElementById(targetElementId);
+            
+            // Loop over the array items to build out cards automatically
+            dataArray.forEach(item => {
+                const cardMarkup = `
+                    <article class="anime-card">
+                        <div class="poster-container">
+                            <div class="episode-badge">${item.badge}</div>
+                            <button class="action-btn">+</button>
+                            <iframe src="${item.videoUrl}" title="${item.title}" allowfullscreen></iframe>
+                        </div>
+                        <div class="anime-details">
+                            <h3 class="anime-title">${item.title}</h3>
+                            <p class="anime-status">${item.status}</p>
+                        </div>
+                    </article>
+                `;
+                feedContainer.innerHTML += cardMarkup;
+            });
