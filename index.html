@@ -63,7 +63,7 @@
         }
         .video-container {
             position: relative;
-            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            padding-bottom: 56.25%;
             height: 0;
             overflow: hidden;
             background-color: #000;
@@ -121,7 +121,7 @@
             text-transform: uppercase;
         }
 
-        /* FIXED: Beautiful Side-by-Side Two Column Mobile Grid Layout */
+        /* Two Column Mobile Grid Layout */
         .anime-feed {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -147,11 +147,10 @@
             flex-direction: column;
         }
 
-        /* 16:9 Image Container Box */
         .poster-container {
             position: relative;
             width: 100%;
-            padding-top: 135%; /* Portrait format standard for professional anime grids */
+            padding-top: 135%;
             background-color: #151515;
             overflow: hidden;
         }
@@ -164,7 +163,6 @@
             object-fit: cover;
         }
 
-        /* Badge Layering */
         .episode-badge {
             position: absolute;
             top: 0;
@@ -204,7 +202,6 @@
             z-index: 2;
         }
 
-        /* Metadata Details Layout */
         .anime-details {
             padding: 8px 10px;
             text-align: left;
@@ -247,7 +244,6 @@
             display: none;
         }
 
-        /* Fixed Mobile Tab Navigation Footer */
         .mobile-footer-nav {
             position: fixed;
             bottom: 0;
@@ -272,7 +268,6 @@
 </head>
 <body>
 
-    <!-- Header Navbar Container Interface -->
     <nav class="navbar">
         <div class="nav-logo">💀</div>
         <div class="search-container">
@@ -281,7 +276,6 @@
         <div class="menu-icon">&#9776;</div>
     </nav>
 
-    <!-- LIVE DYNAMIC EMBEDDABLE PLAYER CONTROLLER PANEL -->
     <section class="player-wrapper">
         <div class="video-container">
             <iframe id="main-stream-player" src="https://youtube.com" allowfullscreen></iframe>
@@ -292,23 +286,18 @@
         </div>
     </section>
 
-    <!-- Adsterra Header Banner Box Area Placement Node -->
     <div class="top-banner-space">
         <img src="https://placeholder.com" alt="Featured Promo Banner">
     </div>
 
-    <!-- Live Search Fallback Text Notification Container -->
     <div id="no-results-msg">No titles match your search entry.</div>
 
-    <!-- CATEGORY BLOCK 1: TV SERIES SCHEDULE -->
     <h2 class="section-title">Subbed Anime Schedule</h2>
     <main class="anime-feed" id="series-feed-grid"></main>
 
-    <!-- CATEGORY BLOCK 2: MOVIES FEED -->
     <h2 class="section-title">Featured Anime Movies</h2>
     <main class="anime-feed" id="movies-feed-grid" style="margin-bottom: 85px;"></main>
 
-    <!-- Mobile Menu Footer -->
     <div class="mobile-footer-nav">
         <a href="#" class="footer-nav-item active">&#8962;</a>
         <a href="#" class="footer-nav-item">&#129517;</a>
@@ -316,18 +305,31 @@
         <a href="#" class="footer-nav-item">&#128269;</a>
     </div>
 
-    <!-- FIXED: Staggered Loading Rate Engine to Bypass API Limit Blocks -->
     <script>
+        // Use a rock-solid, direct secure mirror endpoint
         const apiSeriesUrl = 'https://jikan.moe';
         const apiMoviesUrl = 'https://jikan.moe';
 
-        // Load Series immediately
         fetch(apiSeriesUrl)
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) throw new Error('Network lock');
+                return res.json();
+            })
             .then(seriesData => {
                 renderList(seriesData.data, 'series-feed-grid', 'series');
                 
-                // STAGGER DELAY: Wait 1.5 seconds before calling the movies to prevent API blocking
                 setTimeout(() => {
                     fetch(apiMoviesUrl)
                         .then(res => res.json())
+                        .then(moviesData => {
+                            renderList(moviesData.data, 'movies-feed-grid', 'movie');
+                        })
+                        .catch(err => handleFallback());
+                }, 1000);
+            })
+            .catch(err => handleFallback());
+
+        function handleFallback() {
+            // Secure fallback local structural records to ensure database never breaks completely
+            const backupData = [
+                { title: "Naruto Shippuden", type: "tv", eps: "500", score: "8.2", pic: "https://placeholder.com" },
