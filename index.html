@@ -62,13 +62,15 @@
         /* Schedule Title Header */
         .section-title {
             background-color: #181818;
-            text-align: center;
-            padding: 12px;
-            font-size: 18px;
+            text-align: left;
+            padding: 12px 15px;
+            font-size: 16px;
             font-weight: bold;
             letter-spacing: 0.5px;
-            border-bottom: 1px solid #222;
-            margin: 0;
+            border-bottom: 2px solid #b00;
+            margin: 20px 0 0 0;
+            color: #fff;
+            text-transform: uppercase;
         }
 
         /* Anime List Card Layout Feed */
@@ -85,21 +87,24 @@
             position: relative;
         }
 
-        /* Poster Wrapper with Badge Layering */
+        /* Responsive 16:9 Aspect Ratio Video & Poster Box Wrapper */
         .poster-container {
             position: relative;
             width: 100%;
             padding-top: 56.25%; /* Forces clean 16:9 widescreen ratio box */
-            background-color: #222;
+            background-color: #000;
             overflow: hidden;
         }
-        .poster-container img {
+        
+        /* Direct Video Embed Iframe Setup */
+        .poster-container iframe {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            border: 0;
+            z-index: 1;
         }
 
         /* Red Left-Corner Counter Badge */
@@ -132,6 +137,8 @@
             font-weight: bold;
             z-index: 2;
             box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            border: none;
+            cursor: pointer;
         }
 
         /* Text Sub-Containers */
@@ -177,13 +184,13 @@
 </head>
 <body>
 
-    <!-- Anime Heaven Styled Header Navbar -->
+    <!-- Header Navbar -->
     <nav class="navbar">
         <div class="nav-logo">AI</div>
         <div class="search-container">
             <input type="text" placeholder="Search...">
         </div>
-        <div style="color: #b00; font-size: 24px; padding-right: 5px;">&#9776;</div>
+        <div style="color: #b00; font-size: 24px; padding-right: 5px; cursor: pointer;">☰</div>
     </nav>
 
     <!-- Top Promo Banner Area -->
@@ -191,56 +198,66 @@
         <img src="https://placeholder.com" alt="Promo Banner">
     </div>
 
-    <!-- Layout Section Title -->
-    <h2 class="section-title">Subbed Anime Schedule</h2>
-
-    <!-- Grid Feed Container for Shows -->
-    <main class="anime-feed" style="margin-bottom: 60px;">
-
-        <!-- Show Card 1 -->
+    <!-- 1. ANIME TV SERIES SECTION -->
+    <h2 class="section-title">Subbed Anime Episodes</h2>
+    
+    <main class="anime-feed">
+        <!-- Episode Card -->
         <article class="anime-card">
             <div class="poster-container">
                 <div class="episode-badge">5</div>
-                <div class="action-btn">+</div>
-                <img src="https://placeholder.com" alt="Ghost Meets Gal!">
+                <button class="action-btn">+</button>
+                <iframe 
+                    src="https://youtube.com" 
+                    title="Ghost Meets Gal! Episode Stream" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+                </iframe>
             </div>
             <div class="anime-details">
                 <h3 class="anime-title">Ghost Meets Gal!</h3>
-                <p class="anime-status">— <br><br> Episode Released</p>
+                <p class="anime-status">Episode Released</p>
             </div>
         </article>
+    </main>
 
-        <!-- Show Card 2 -->
+    <!-- 2. ANIME MOVIES SECTION -->
+    <h2 class="section-title">Anime Movies</h2>
+
+    <main class="anime-feed" style="margin-bottom: 70px;">
+        <!-- Movie Card -->
         <article class="anime-card">
             <div class="poster-container">
-                <div class="episode-badge">1</div>
-                <div class="action-btn">+</div>
-                <img src="https://placeholder.com" alt="Action Series">
+                <div class="episode-badge">HD</div>
+                <button class="action-btn">+</button>
+                <iframe 
+                    src="https://youtube.com" 
+                    title="Ghost Rider: Legacy Movie Stream" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+                </iframe>
             </div>
             <div class="anime-details">
                 <h3 class="anime-title">Ghost Rider: Legacy</h3>
-                <p class="anime-status">— <br><br> Episode Released</p>
+                <p class="anime-status">Full Movie Available</p>
             </div>
         </article>
-
     </main>
 
-    <!-- Mobile Screen Bottom Icon Navigation Bar -->
+    <!-- Mobile Bottom Navigation Bar -->
     <div class="mobile-footer-nav">
-        <a href="#" class="footer-nav-item active">&#8962;</a> <!-- Home -->
-        <a href="#" class="footer-nav-item">&#129517;</a> <!-- Compass/Explore -->
-        <a href="#" class="footer-nav-item">&#128278;</a> <!-- Bookmark -->
-        <a href="#" class="footer-nav-item">&#128269;</a> <!-- Search -->
+        <a href="#" class="footer-nav-item active">⌂</a>
+        <a href="#" class="footer-nav-item">🧭</a>
+        <a href="#" class="footer-nav-item">🔖</a>
+        <a href="#" class="footer-nav-item">🔍</a>
     </div>
 
-    <!-- Combined Monetization Ad Scripts -->
+    <!-- Background Monetization Ad Scripts -->
     <script data-cfasync="false">
-      // First Ad Network Script (Adsterra)
       var s = document.createElement('script');
       s.src = 'https://bauval.org';
       document.body.appendChild(s);
 
-      // Second Ad Network Script (Abscloud)
       var n = document.createElement('script');
       n.src = 'https://abscloud.org';
       document.body.appendChild(n);
