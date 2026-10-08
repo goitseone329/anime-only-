@@ -1,52 +1,84 @@
-const renderList = (category, filter = "") => {
-    const container = document.getElementById('anime-render-list');
-    if (!container) return;
-    container.innerHTML = "";
+<script>
+    // Crash Prevention Logging Handler
+    window.onerror = function(msg, url, line) {
+        const panel = document.getElementById('debug-panel');
+        const txt = document.getElementById('debug-text');
+        if(panel && txt) {
+            panel.style.display = 'block';
+            txt.innerText = msg + " on line " + line;
+        }
+        return false;
+    };
 
-    const items = (animeDatabase[category] || []).filter(item => 
-        item.title.toLowerCase().includes(filter.toLowerCase())
-    );
+    const animeDatabase = {
+        schedule: [
+            { title: "Kaiju No. 8", alternative: "Kaijuu 8-gou", id: "kaiju-no-8", embedId: "dQw4w9WgXcQ" },
+            { title: "The Iceblade Sorcerer", alternative: "Hyouken no Majutsushi", id: "the-iceblade", embedId: "dQw4w9WgXcQ" },
+            { title: "Demon Slayer: Hashira", alternative: "Kimetsu no Yaiba", id: "demon-slayer", embedId: "dQw4w9WgXcQ" }
+        ],
+        trending: [
+            { title: "One Piece", alternative: "Wan Piisu", id: "one-piece", embedId: "dQw4w9WgXcQ" },
+            { title: "Jujutsu Kaisen", alternative: "Jujutsu Kaisen", id: "jujutsu-kaisen", embedId: "dQw4w9WgXcQ" }
+        ],
+        movies: [
+            { title: "Your Name", alternative: "Kimi no Na wa", id: "your-name", embedId: "dQw4w9WgXcQ" }
+        ],
+        watchlist: []
+    };
 
-    if (items.length === 0) {
-        container.innerHTML = '<div style="padding:40px; text-align:center; color:#666;">No items found.</div>';
-        return;
-    }
+    let currentCategory = 'schedule';
 
-    items.forEach((anime, index) => {
-        const card = document.createElement('div');
-        card.className = 'anime-row-card';
-        
-        // FIXED: Changed standard single quotes to backticks (``) so multi-line text and \${} work
-        card.innerHTML = `
-            <div class="image-banner-wrapper">
-                <span class="rank-badge">#${index + 1}</span>
-                <div style="width:100%; height:100%; background:#161616; display:flex; align-items:center; justify-content:center;">
-                    ${anime.title}
-                </div>
-            </div>
-            <div class="card-details">
-                <div class="primary-title">${anime.title}</div>
-                <div class="secondary-title">${anime.alternative || ""}</div>
-                <div class="status-released">AVAILABLE</div>
-            </div>
-        `;
+    const renderList = (category, filter = "") => {
+        const container = document.getElementById('anime-render-list');
+        if (!container) return;
+        container.innerHTML = "";
 
-        card.addEventListener('click', () => {
-            const player = document.getElementById('player-section');
-            const title = document.getElementById('now-playing-title');
-            const target = document.getElementById('video-frame-target');
+        const items = (animeDatabase[category] || []).filter(item => 
+            item.title.toLowerCase().includes(filter.toLowerCase())
+        );
+
+        if (items.length === 0) {
+            container.innerHTML = '<div style="padding:40px; text-align:center; color:#666;">No items found.</div>';
+            return;
+        }
+
+        items.forEach((anime, index) => {
+            const card = document.createElement('div');
+            card.className = 'anime-row-card';
             
-            if (player && title && target) {
-                player.style.display = 'block';
-                title.innerText = anime.title;
-                // FIXED: Closed out the template string with a backtick at the end of the line
-                target.innerHTML = `<iframe src="https://youtube.com{anime.embedId}" allowfullscreen></iframe>`;
-            }
+            card.innerHTML = `
+                <div class="image-banner-wrapper">
+                    <span class="rank-badge">#${index + 1}</span>
+                    <div style="width:100%; height:100%; background:#161616; display:flex; align-items:center; justify-content:center;">
+                        ${anime.title}
+                    </div>
+                </div>
+                <div class="card-details">
+                    <div class="primary-title">${anime.title}</div>
+                    <div class="secondary-title">${anime.alternative || ""}</div>
+                    <div class="status-released">AVAILABLE</div>
+                </div>
+            `;
+
+            card.addEventListener('click', () => {
+                const player = document.getElementById('player-section');
+                const title = document.getElementById('now-playing-title');
+                const target = document.getElementById('video-frame-target');
+                
+                if (player && title && target) {
+                    player.style.display = 'block';
+                    title.innerText = anime.title;
+                    target.innerHTML = `<iframe src="https://youtube.com{anime.embedId}" allowfullscreen></iframe>`;
+                }
+            });
+
+            container.appendChild(card);
         });
+    };
 
-        container.appendChild(card);
-    });
-};
+    // Initialize the site layout on load
+    renderList('schedule');
+</script>
 
-// Initialize the site by rendering the default schedule category
-renderList('schedule');
+</body>
+</html>
