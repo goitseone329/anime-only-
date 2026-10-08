@@ -52,7 +52,7 @@
 
     <!-- BRAND HEADER -->
     <header>
-        <a href="#" class="logo-box" onclick="changeCollection('schedule', 'Subbed Anime Schedule')">AH</a>
+        <div class="logo-box" onclick="changeCollection('schedule', 'Subbed Anime Schedule')">AH</div>
         <div class="search-wrapper">
             <input type="text" id="search-box" class="search-input" placeholder="Search">
             <button id="search-btn" class="search-icon-btn">
@@ -61,13 +61,13 @@
         </div>
     </header>
 
-    <!-- LIVE VIDEO STREAM HUB PLAYER -->
+    <!-- LIVE VIDEO STREAM HUD PLAYER -->
     <div id="player-section">
         <div id="now-playing-title">Loading Stream Player Source...</div>
         <div id="video-frame-target"></div>
     </div>
 
-    <!-- 🌟 COLLECTION SELECTION TABS -->
+    <!-- COLLECTION SELECTION TABS -->
     <div class="collection-tabs">
         <button class="tab-btn active" id="tab-schedule" onclick="changeCollection('schedule', 'Subbed Anime Schedule')">Schedule</button>
         <button class="tab-btn" id="tab-trending" onclick="changeCollection('trending', 'Trending Anime')">Trending</button>
@@ -87,44 +87,47 @@
     </div>
 
     <script>
-        const STREAM_PROVIDER_URL = "https://consumet.org";
         let activeTabType = 'schedule';
 
-        // 🌟 ROUTING HUB ROUTINES FOR SYSTEM COLLECTIONS
         async function loadCollectionData() {
             const listContainer = document.getElementById('anime-render-list');
             listContainer.innerHTML = "<p style='text-align:center; padding:30px; color:#aaa;'>Loading collection database...</p>";
             
-            let fetchUrl = 'https://jikan.moe'; // Default trending backup fallback
+            let fetchUrl = 'https://jikan.moe';
             
             if (activeTabType === 'schedule') {
-                // Queries standard ongoing/airing catalog items
                 fetchUrl = 'https://jikan.moe';
             } else if (activeTabType === 'trending') {
-                // Queries overall popularity matrix records
                 fetchUrl = 'https://jikan.moe';
             } else if (activeTabType === 'movies') {
-                // Filters dataset configurations specifically down to type: movie records
                 fetchUrl = 'https://jikan.moe';
             }
 
             try {
                 const response = await fetch(fetchUrl);
+                if (!response.ok) throw new Error("Primary API block detected");
                 const data = await response.json();
                 buildCatalogRows(data.data);
             } catch (err) {
-                console.error("Error loading collection:", err);
-                listContainer.innerHTML = "<p style='text-align:center; padding:30px; color:#d61c1c;'>Failed to connect to collection servers.</p>";
+                console.warn("Primary path restricted, attempting fallback server proxy...", err);
+                // 🚀 CORS PROXY FALLBACK ROUTE
+                try {
+                    const proxyUrl = "https://allorigins.win" + encodeURIComponent(fetchUrl);
+                    const proxyRes = await fetch(proxyUrl);
+                    const proxyData = await proxyRes.json();
+                    const cleanData = JSON.parse(proxyData.contents);
+                    buildCatalogRows(cleanData.data);
+                } catch(proxyErr) {
+                    listContainer.innerHTML = "<p style='text-align:center; padding:30px; color:#d61c1c;'>Network configuration error. Refresh page.</p>";
+                }
             }
         }
 
-        // Toggles active tab styles and fires database requests
         function changeCollection(tabType, titleLabelText) {
             activeTabType = tabType;
             document.getElementById('hub-title-label').innerText = titleLabelText;
             document.getElementById('search-box').value = '';
             
-            // Clean up and sync tab headers
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             if(document.getElementById(`tab-${tabType}`)) {
                 document.getElementById(`tab-${tabType}`).classList.add('active');
@@ -133,7 +136,6 @@
             loadCollectionData();
         }
 
-        // Global Search Configuration Logic
         async function executeSearchQuery() {
             const query = document.getElementById('search-box').value.trim();
             if(!query) return;
