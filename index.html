@@ -1,3 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anime Heaven - Stream Free Anime</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background-color: #050505; color: #fff; font-family: -apple-system, BlinkMacSystemFont, sans-serif; padding-bottom: 60px; }
+        header { background-color: #0f0f0f; border-bottom: 2px solid #ff1a1a; display: flex; align-items: center; padding: 8px 12px; height: 56px; position: sticky; top: 0; z-index: 1000; }
+        .logo-box { background-color: #d61c1c; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; border-radius: 4px; margin-right: 12px; cursor: pointer; }
+        .logo-box svg { width: 28px; height: 28px; fill: #fff; }
+        .search-wrapper { flex: 1; position: relative; max-width: 600px; display: flex; align-items: center; }
+        .search-input { width: 100%; height: 36px; background-color: #1a1a1a; border: 1px solid #d61c1c; border-radius: 4px; color: #fff; padding: 0 40px 0 12px; font-size: 15px; }
+        .collection-tabs { display: flex; background-color: #0f0f0f; border-bottom: 1px solid #222; margin-top: 2px; }
+        .tab-btn { flex: 1; padding: 14px 5px; background: none; border: none; color: #aaa; font-weight: bold; font-size: 13px; text-transform: uppercase; cursor: pointer; text-align: center; border-bottom: 2px solid transparent; }
+        .tab-btn.active { color: #fff; border-bottom-color: #ff1a1a; background-color: #151515; }
+        #player-section { display: none; max-width: 800px; margin: 15px auto; background: #0f0f0f; padding: 8px; border-bottom: 3px solid #ff1a1a; }
+        #player-section iframe { width: 100%; height: 250px; border: none; background: #000; }
+        #now-playing-title { padding: 10px 5px; font-size: 16px; font-weight: bold; color: #fff; border-bottom: 1px solid #222; }
+        .section-heading { background-color: #0f0f0f; padding: 12px; font-size: 18px; font-weight: 500; border-bottom: 1px solid #222; margin-top: 5px; text-transform: uppercase; border-left: 4px solid #ff1a1a; }
+        .catalog-container { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; min-height: 200px; }
+        .anime-row-card { background-color: #0f0f0f; padding: 12px; border-bottom: 1px solid #1a1a1a; display: flex; flex-direction: column; cursor: pointer; margin-bottom: 10px; }
+        .image-banner-wrapper { position: relative; width: 100%; height: 120px; overflow: hidden; border-radius: 4px; background: #222; border: 1px solid #222; }
+        .rank-badge { position: absolute; top: 0; left: 0; background-color: #ff1a1a; color: #fff; font-weight: bold; font-size: 14px; padding: 4px 10px; z-index: 5; }
+        .card-details { padding: 12px 2px 4px 2px; }
+        .primary-title { font-size: 17px; font-weight: bold; color: #fff; }
+        .secondary-title { font-size: 14px; color: #888; margin-bottom: 8px; }
+        .status-released { color: #ff1a1a; font-size: 14px; font-weight: bold; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background-color: #0f0f0f; border-top: 1px solid #222; display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
+        .nav-item { color: #666; display: flex; align-items: center; justify-content: center; width: 25%; height: 100%; cursor: pointer; }
+        .nav-item.active { color: #ff1a1a; }
+        .nav-item svg { width: 22px; height: 22px; fill: currentColor; }
+        #debug-panel { background: #1a0000; color: #ff4d4d; padding: 10px; font-family: monospace; font-size: 12px; border-bottom: 1px solid #ff1a1a; display: none; }
+    </style>
+</head>
+<body>
+
+    <div id="debug-panel"><strong>Debug Monitor:</strong> <span id="debug-text">No errors.</span></div>
+
+    <header>
+        <div class="logo-box">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+        <div class="search-wrapper">
+            <input type="text" id="search-box" class="search-input" placeholder="Search anime...">
+        </div>
+    </header>
+
+    <section id="player-section">
+        <div id="now-playing-title">Loading Player...</div>
+        <div id="video-frame-target"></div>
+    </section>
+
+    <div class="collection-tabs">
+        <button class="tab-btn active" data-category="schedule">Schedule</button>
+        <button class="tab-btn" data-category="trending">Trending</button>
+        <button class="tab-btn" data-category="movies">Movies</button>
+        <button class="tab-btn" data-category="watchlist">Watchlist</button>
+    </div>
+
+    <h2 class="section-heading" id="hub-title-label">Subbed Anime Schedule</h2>
+    <main class="catalog-container" id="anime-render-list"></main>
+
+    <nav class="bottom-nav">
+        <div class="nav-item active" id="foot-nav-schedule"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg></div>
+        <div class="nav-item" id="foot-nav-trending"><svg viewBox="0 0 24 24"><path d="M13.5 2c-5.62 0-10.19 4.39-10.48 9.93C3.01 12.28 3 12.64 3 13c0 4.97 4.03 9 9 9s9-4.03 9-9c0-5.43-4.14-9.92-9.5-10zm-1.5 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg></div>
+        <div class="nav-item" id="foot-nav-movies"><svg viewBox="0 0 24 24"><path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z"/></svg></div>
+    </nav>
+
 <script>
     // Crash Prevention Logging Handler
     window.onerror = function(msg, url, line) {
@@ -12,16 +82,16 @@
 
     const animeDatabase = {
         schedule: [
-            { title: "Kaiju No. 8", alternative: "Kaijuu 8-gou", id: "kaiju-no-8", embedId: "dQw4w9WgXcQ" },
-            { title: "The Iceblade Sorcerer", alternative: "Hyouken no Majutsushi", id: "the-iceblade", embedId: "dQw4w9WgXcQ" },
-            { title: "Demon Slayer: Hashira", alternative: "Kimetsu no Yaiba", id: "demon-slayer", embedId: "dQw4w9WgXcQ" }
+            { title: "Kaiju No. 8", alternative: "Kaijuu 8-gou", embedId: "dQw4w9WgXcQ" },
+            { title: "The Iceblade Sorcerer", alternative: "Hyouken no Majutsushi", embedId: "dQw4w9WgXcQ" },
+            { title: "Demon Slayer: Hashira", alternative: "Kimetsu no Yaiba", embedId: "dQw4w9WgXcQ" }
         ],
         trending: [
-            { title: "One Piece", alternative: "Wan Piisu", id: "one-piece", embedId: "dQw4w9WgXcQ" },
-            { title: "Jujutsu Kaisen", alternative: "Jujutsu Kaisen", id: "jujutsu-kaisen", embedId: "dQw4w9WgXcQ" }
+            { title: "One Piece", alternative: "Wan Piisu", embedId: "dQw4w9WgXcQ" },
+            { title: "Jujutsu Kaisen", alternative: "Jujutsu Kaisen", embedId: "dQw4w9WgXcQ" }
         ],
         movies: [
-            { title: "Your Name", alternative: "Kimi no Na wa", id: "your-name", embedId: "dQw4w9WgXcQ" }
+            { title: "Your Name", alternative: "Kimi no Na wa", embedId: "dQw4w9WgXcQ" }
         ],
         watchlist: []
     };
@@ -49,7 +119,7 @@
             card.innerHTML = `
                 <div class="image-banner-wrapper">
                     <span class="rank-badge">#${index + 1}</span>
-                    <div style="width:100%; height:100%; background:#161616; display:flex; align-items:center; justify-content:center;">
+                    <div style="width:100%; height:100%; background:#161616; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:14px; padding:10px; text-align:center;">
                         ${anime.title}
                     </div>
                 </div>
@@ -69,6 +139,7 @@
                     player.style.display = 'block';
                     title.innerText = anime.title;
                     target.innerHTML = `<iframe src="https://youtube.com{anime.embedId}" allowfullscreen></iframe>`;
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
             });
 
@@ -76,7 +147,31 @@
         });
     };
 
-    // Initialize the site layout on load
+    // Tab Navigation Logic
+    const tabs = document.querySelectorAll('.tab-btn');
+    tabs.forEach(tab => {
+        tab.addEventListener('click', (e) => {
+            tabs.forEach(t => t.classList.remove('active'));
+            e.target.classList.add('active');
+            
+            currentCategory = e.target.getAttribute('data-category');
+            document.getElementById('hub-title-label').innerText = e.target.innerText + " Catalog";
+            
+            // Clear search box when switching tabs
+            document.getElementById('search-box').value = "";
+            renderList(currentCategory);
+        });
+    });
+
+    // Real-time Search Input Logic
+    const searchBox = document.getElementById('search-box');
+    if (searchBox) {
+        searchBox.addEventListener('input', (e) => {
+            renderList(currentCategory, e.target.value);
+        });
+    }
+
+    // Initialize layout on load
     renderList('schedule');
 </script>
 
