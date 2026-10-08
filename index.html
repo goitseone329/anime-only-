@@ -55,7 +55,7 @@
         <div class="logo-box" onclick="changeCollection('schedule', 'Subbed Anime Schedule')">AH</div>
         <div class="search-wrapper">
             <input type="text" id="search-box" class="search-input" placeholder="Search">
-            <button id="search-btn" class="search-icon-btn">
+            <button id="search-btn" class="search-icon-btn" onclick="executeSearchQuery()">
                 <svg width="16" height="16" fill="#d61c1c" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>
             </button>
         </div>
@@ -87,56 +87,25 @@
     </div>
 
     <script>
-        let activeTabType = 'schedule';
-
-        async function loadCollectionData() {
-            const listContainer = document.getElementById('anime-render-list');
-            listContainer.innerHTML = "<p style='text-align:center; padding:30px; color:#aaa;'>Loading collection database...</p>";
-            
-            let fetchUrl = 'https://jikan.moe';
-            
-            if (activeTabType === 'schedule') {
-                fetchUrl = 'https://jikan.moe';
-            } else if (activeTabType === 'trending') {
-                fetchUrl = 'https://jikan.moe';
-            } else if (activeTabType === 'movies') {
-                fetchUrl = 'https://jikan.moe';
-            }
-
-            try {
-                const response = await fetch(fetchUrl);
-                if (!response.ok) throw new Error("Primary API block detected");
-                const data = await response.json();
-                buildCatalogRows(data.data);
-            } catch (err) {
-                console.warn("Primary path restricted, attempting fallback server proxy...", err);
-                // 🚀 CORS PROXY FALLBACK ROUTE
-                try {
-                    const proxyUrl = "https://allorigins.win" + encodeURIComponent(fetchUrl);
-                    const proxyRes = await fetch(proxyUrl);
-                    const proxyData = await proxyRes.json();
-                    const cleanData = JSON.parse(proxyData.contents);
-                    buildCatalogRows(cleanData.data);
-                } catch(proxyErr) {
-                    listContainer.innerHTML = "<p style='text-align:center; padding:30px; color:#d61c1c;'>Network configuration error. Refresh page.</p>";
-                }
-            }
-        }
-
-        function changeCollection(tabType, titleLabelText) {
-            activeTabType = tabType;
-            document.getElementById('hub-title-label').innerText = titleLabelText;
-            document.getElementById('search-box').value = '';
-            
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            if(document.getElementById(`tab-${tabType}`)) {
-                document.getElementById(`tab-${tabType}`).classList.add('active');
-            }
-            
-            loadCollectionData();
-        }
-
-        async function executeSearchQuery() {
-            const query = document.getElementById('search-box').value.trim();
-            if(!query) return;
+        // 🌟 INTERNAL MASTER DATABASE COLLECTIONS
+        const animeDatabase = {
+            schedule: [
+                { title: "Kaiju No. 8", alternative: "Kaijuu 8-gou", image: "https://justwatch.com", id: "kaiju-no-8" },
+                { title: "The Iceblade Sorcerer Shall Rule the World", alternative: "Hyouken no Majutsushi ga Sekai o Suberu", image: "https://mgeneric.com", id: "the-iceblade-sorcerer-shall-rule-the-world" },
+                { title: "Demon Slayer: Hashira Training Arc", alternative: "Kimetsu no Yaiba: Hashira Geiko-hen", image: "https://justwatch.com", id: "demon-slayer-kimetsu-no-yaiba" },
+                { title: "My Hero Academia Season 7", alternative: "Boku no Hero Academia 7th Season", image: "https://justwatch.com", id: "my-hero-academia" }
+            ],
+            trending: [
+                { title: "One Piece", alternative: "Wan Piisu", image: "https://justwatch.com", id: "one-piece" },
+                { title: "Naruto Shippuden", alternative: "Naruto: Shippuuden", image: "https://justwatch.com", id: "naruto-shippuden" },
+                { title: "Jujutsu Kaisen", alternative: "Jujutsu Kaisen", image: "https://justwatch.com", id: "jujutsu-kaisen" },
+                { title: "Attack on Titan", alternative: "Shingeki no Kyojin", image: "https://justwatch.com", id: "attack-on-titan" }
+            ],
+            movies: [
+                { title: "Spirited Away", alternative: "Sen to Chihiro no Kamikakushi", image: "https://justwatch.com", id: "spirited-away" },
+                { title: "Your Name.", alternative: "Kimi no Na wa.", image: "https://justwatch.com", id: "your-name" },
+                { title: "Demon Slayer: Mugen Train", alternative: "Kimetsu no Yaiba Movie: Mugen Ressha-hen", image: "https://justwatch.com", id: "demon-slayer-movie-mugen-train" },
+                { title: "Suzume", alternative: "Suzume no Tojimari", image: "https://justwatch.com", id: "suzume" }
+            ]
+        };
 
