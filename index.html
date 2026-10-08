@@ -20,13 +20,14 @@
         #now-playing-title { padding: 10px 5px; font-size: 16px; font-weight: bold; color: #fff; border-bottom: 1px solid #222; }
         .section-heading { background-color: #0f0f0f; padding: 12px; font-size: 18px; font-weight: 500; border-bottom: 1px solid #222; margin-top: 5px; text-transform: uppercase; border-left: 4px solid #ff1a1a; }
         .catalog-container { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; min-height: 200px; }
-        .anime-row-card { background-color: #0f0f0f; padding: 12px; border-bottom: 1px solid #1a1a1a; display: flex; flex-direction: column; cursor: pointer; margin-bottom: 10px; }
-        .image-banner-wrapper { position: relative; width: 100%; height: 120px; overflow: hidden; border-radius: 4px; background: #222; border: 1px solid #222; }
-        .rank-badge { position: absolute; top: 0; left: 0; background-color: #ff1a1a; color: #fff; font-weight: bold; font-size: 14px; padding: 4px 10px; z-index: 5; }
-        .card-details { padding: 12px 2px 4px 2px; }
-        .primary-title { font-size: 17px; font-weight: bold; color: #fff; }
-        .secondary-title { font-size: 14px; color: #888; margin-bottom: 8px; }
-        .status-released { color: #ff1a1a; font-size: 14px; font-weight: bold; }
+        .anime-row-card { background-color: #0f0f0f; padding: 12px; border-bottom: 1px solid #1a1a1a; display: flex; flex-direction: row; align-items: center; cursor: pointer; }
+        .image-banner-wrapper { position: relative; width: 90px; height: 120px; overflow: hidden; border-radius: 4px; background: #222; border: 1px solid #222; flex-shrink: 0; }
+        .image-banner-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+        .rank-badge { position: absolute; top: 0; left: 0; background-color: #ff1a1a; color: #fff; font-weight: bold; font-size: 11px; padding: 2px 6px; z-index: 5; }
+        .card-details { padding: 0 15px; flex: 1; }
+        .primary-title { font-size: 16px; font-weight: bold; color: #fff; margin-bottom: 4px; }
+        .secondary-title { font-size: 13px; color: #888; margin-bottom: 6px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .status-released { color: #ff1a1a; font-size: 12px; font-weight: bold; text-transform: uppercase; }
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background-color: #0f0f0f; border-top: 1px solid #222; display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
         .nav-item { color: #666; display: flex; align-items: center; justify-content: center; width: 25%; height: 100%; cursor: pointer; }
         .nav-item.active { color: #ff1a1a; }
@@ -43,7 +44,7 @@
             <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
         </div>
         <div class="search-wrapper">
-            <input type="text" id="search-box" class="search-input" placeholder="Search anime...">
+            <input type="text" id="search-box" class="search-input" placeholder="Search anime dynamic API...">
         </div>
     </header>
 
@@ -53,23 +54,22 @@
     </section>
 
     <div class="collection-tabs">
-        <button class="tab-btn active" data-category="schedule">Schedule</button>
-        <button class="tab-btn" data-category="trending">Trending</button>
-        <button class="tab-btn" data-category="movies">Movies</button>
-        <button class="tab-btn" data-category="watchlist">Watchlist</button>
+        <!-- These endpoint values match Jikan's collection system -->
+        <button class="tab-btn active" data-endpoint="https://api.jikan.moe/v4/top/anime">Top Anime</button>
+        <button class="tab-btn" data-endpoint="https://jikan.moe">This Season</button>
+        <button class="tab-btn" data-endpoint="https://api.jikan.moe/v4/top/anime?type=movie">Movies</button>
     </div>
 
-    <h2 class="section-heading" id="hub-title-label">Subbed Anime Schedule</h2>
+    <h2 class="section-heading" id="hub-title-label">Top Anime Catalog</h2>
     <main class="catalog-container" id="anime-render-list"></main>
 
     <nav class="bottom-nav">
-        <div class="nav-item active" id="foot-nav-schedule"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg></div>
-        <div class="nav-item" id="foot-nav-trending"><svg viewBox="0 0 24 24"><path d="M13.5 2c-5.62 0-10.19 4.39-10.48 9.93C3.01 12.28 3 12.64 3 13c0 4.97 4.03 9 9 9s9-4.03 9-9c0-5.43-4.14-9.92-9.5-10zm-1.5 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg></div>
-        <div class="nav-item" id="foot-nav-movies"><svg viewBox="0 0 24 24"><path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z"/></svg></div>
+        <div class="nav-item active"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg></div>
+        <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.53c-.26-.81-1-1.4-1.9-1.4h-1v-3c0-.55-.45-1-1-1h-6v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg></div>
     </nav>
 
 <script>
-    // Crash Prevention Logging Handler
+    // Live Error Monitor Panel
     window.onerror = function(msg, url, line) {
         const panel = document.getElementById('debug-panel');
         const txt = document.getElementById('debug-text');
@@ -80,100 +80,85 @@
         return false;
     };
 
-    const animeDatabase = {
-        schedule: [
-            { title: "Kaiju No. 8", alternative: "Kaijuu 8-gou", embedId: "dQw4w9WgXcQ" },
-            { title: "The Iceblade Sorcerer", alternative: "Hyouken no Majutsushi", embedId: "dQw4w9WgXcQ" },
-            { title: "Demon Slayer: Hashira", alternative: "Kimetsu no Yaiba", embedId: "dQw4w9WgXcQ" }
-        ],
-        trending: [
-            { title: "One Piece", alternative: "Wan Piisu", embedId: "dQw4w9WgXcQ" },
-            { title: "Jujutsu Kaisen", alternative: "Jujutsu Kaisen", embedId: "dQw4w9WgXcQ" }
-        ],
-        movies: [
-            { title: "Your Name", alternative: "Kimi no Na wa", embedId: "dQw4w9WgXcQ" }
-        ],
-        watchlist: []
-    };
+    let activeUrl = "https://api.jikan.moe/v4/top/anime";
 
-    let currentCategory = 'schedule';
-
-    const renderList = (category, filter = "") => {
+    // Core async block to pull data from Jikan
+    const fetchAnimeFromJikan = async (url) => {
         const container = document.getElementById('anime-render-list');
         if (!container) return;
-        container.innerHTML = "";
+        
+        container.innerHTML = '<div style="padding:40px; text-align:center; color:#aaa;">Loading live collection from Jikan...</div>';
 
-        const items = (animeDatabase[category] || []).filter(item => 
-            item.title.toLowerCase().includes(filter.toLowerCase())
-        );
+        try {
+            const response = await fetch(url);
+            const jsonResult = await response.json();
+            const animeItems = jsonResult.data || [];
 
-        if (items.length === 0) {
-            container.innerHTML = '<div style="padding:40px; text-align:center; color:#666;">No items found.</div>';
-            return;
-        }
+            container.innerHTML = "";
 
-        items.forEach((anime, index) => {
-            const card = document.createElement('div');
-            card.className = 'anime-row-card';
-            
-            card.innerHTML = `
-                <div class="image-banner-wrapper">
-                    <span class="rank-badge">#${index + 1}</span>
-                    <div style="width:100%; height:100%; background:#161616; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:14px; padding:10px; text-align:center;">
-                        ${anime.title}
-                    </div>
-                </div>
-                <div class="card-details">
-                    <div class="primary-title">${anime.title}</div>
-                    <div class="secondary-title">${anime.alternative || ""}</div>
-                    <div class="status-released">AVAILABLE</div>
-                </div>
-            `;
+            if (animeItems.length === 0) {
+                container.innerHTML = '<div style="padding:40px; text-align:center; color:#666;">No anime entries found.</div>';
+                return;
+            }
 
-            card.addEventListener('click', () => {
-                const player = document.getElementById('player-section');
-                const title = document.getElementById('now-playing-title');
-                const target = document.getElementById('video-frame-target');
+            animeItems.forEach((anime, index) => {
+                const card = document.createElement('div');
+                card.className = 'anime-row-card';
                 
-                if (player && title && target) {
-                    player.style.display = 'block';
-                    title.innerText = anime.title;
-                    target.innerHTML = `<iframe src="https://youtube.com{anime.embedId}" allowfullscreen></iframe>`;
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                }
+                // Pull content safely out of the standard Jikan object structure
+                const title = anime.title;
+                const altTitle = anime.title_japanese || "";
+                const imageUrl = anime.images?.jpg?.image_url || "";
+                const type = anime.type || "TV";
+                const trailerId = anime.trailer?.youtube_id;
+
+                card.innerHTML = `
+                    <div class="image-banner-wrapper">
+                        <span class="rank-badge">#${index + 1}</span>
+                        <img src="${imageUrl}" alt="${title}" loading="lazy">
+                    </div>
+                    <div class="card-details">
+                        <div class="primary-title">${title}</div>
+                        <div class="secondary-title">${altTitle}</div>
+                        <div class="status-released">${type} • Score: ${anime.score || "N/A"}</div>
+                    </div>
+                `;
+
+                // If a Youtube trailer link exists, hook up your player!
+                card.addEventListener('click', () => {
+                    const player = document.getElementById('player-section');
+                    const playerTitle = document.getElementById('now-playing-title');
+                    const target = document.getElementById('video-frame-target');
+                    
+                    if (player && playerTitle && target) {
+                        if (trailerId) {
+                            player.style.display = 'block';
+                            playerTitle.innerText = `Now Watching Trailer: ${title}`;
+                            target.innerHTML = `<iframe src="https://youtube.com{trailerId}" allowfullscreen></iframe>`;
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                        } else {
+                            alert(`No official preview video available for ${title}.`);
+                        }
+                    }
+                });
+
+                container.appendChild(card);
             });
 
-            container.appendChild(card);
-        });
+        } catch (error) {
+            container.innerHTML = `<div style="padding:40px; text-align:center; color:#ff4d4d;">Failed to load Jikan stream: ${error.message}</div>`;
+        }
     };
 
-    // Tab Navigation Logic
+    // Tab Event Setup
     const tabs = document.querySelectorAll('.tab-btn');
     tabs.forEach(tab => {
         tab.addEventListener('click', (e) => {
             tabs.forEach(t => t.classList.remove('active'));
             e.target.classList.add('active');
             
-            currentCategory = e.target.getAttribute('data-category');
+            activeUrl = e.target.getAttribute('data-endpoint');
             document.getElementById('hub-title-label').innerText = e.target.innerText + " Catalog";
-            
-            // Clear search box when switching tabs
             document.getElementById('search-box').value = "";
-            renderList(currentCategory);
-        });
-    });
-
-    // Real-time Search Input Logic
-    const searchBox = document.getElementById('search-box');
-    if (searchBox) {
-        searchBox.addEventListener('input', (e) => {
-            renderList(currentCategory, e.target.value);
-        });
-    }
-
-    // Initialize layout on load
-    renderList('schedule');
-</script>
-
-</body>
-</html>
+            
+            fetchAnimeFromJikan(activeUrl);
