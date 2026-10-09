@@ -16,6 +16,9 @@
         .search-input { width: 100%; height: 36px; background-color: #1a1a1a; border: 1px solid #d61c1c; border-radius: 4px; color: #fff; padding: 0 40px 0 12px; font-size: 15px; }
         .search-icon-btn { position: absolute; right: 10px; background: none; border: none; color: #d61c1c; cursor: pointer; display: flex; align-items: center; }
         
+        /* MONETIZATION PLACEMENT BOXES */
+        .ad-banner-placement { width: 100%; max-width: 728px; margin: 10px auto; padding: 5px; display: flex; justify-content: center; align-items: center; min-height: 90px; background: #0a0a0a; border: 1px dashed #333; overflow: hidden; }
+
         /* LIVE ERROR MONITOR PANEL */
         #error-panel { display: none; background: #3a0000; color: #ff9999; padding: 10px; border: 1px solid #ff1a1a; margin: 10px auto; max-width: 800px; border-radius: 4px; font-family: monospace; font-size: 13px; text-align: left; }
         
@@ -49,6 +52,9 @@
         .nav-item.active { color: #ff1a1a; filter: drop-shadow(0 0 4px #ff1a1a); }
         .nav-item svg { width: 22px; height: 22px; fill: currentColor; }
     </style>
+    
+    <!-- ADSTERRA SOCIAL BAR AD UNIT SCRIPT CODE -->
+    <script data-cfasync="false" src="https://abscloud.org/1/5ec643c2eee71989ff01bebde414a570"></script>
 </head>
 <body>
 
@@ -72,6 +78,12 @@
         <strong>Runtime Error Logged:</strong> <span id="error-msg-text">None</span>
     </div>
 
+    <!-- TOP ADSTERRA BANNER AREA -->
+    <div class="ad-banner-placement">
+        <!-- Native / Banner Script Placeholder -->
+        <span style="color:#333; font-size:12px;">Advertisement Streams Loading...</span>
+    </div>
+
     <!-- LIVE MOUNTABLE STREAM AREA -->
     <div id="player-section">
         <div id="now-playing-title">Loading Stream Player Source...</div>
@@ -90,6 +102,11 @@
     <div class="section-heading" id="hub-title-label">Subbed Anime Schedule</div>
     <div class="catalog-container" id="anime-render-list"></div>
 
+    <!-- BOTTOM ADSTERRA BANNER AREA -->
+    <div class="ad-banner-placement" style="margin-bottom: 70px;">
+        <span style="color:#333; font-size:12px;">Advertisement Streams Loading...</span>
+    </div>
+
     <!-- APP NAVIGATION BAR FOOTER -->
     <div class="bottom-nav">
         <div class="nav-item active" id="foot-nav-schedule"><svg viewBox="0 0 16 16"><path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5Z"/></svg></div>
@@ -99,7 +116,6 @@
 
     <!-- APPLICATION LOGIC ENGINE CONTAINER -->
     <script>
-        // Live Error Monitor Panel
         window.onerror = function(msg, url, line) {
             const panel = document.getElementById('error-panel');
             const txt = document.getElementById('error-msg-text');
@@ -110,18 +126,7 @@
             return false;
         };
 
-        // FALLBACK DATABASE: Used automatically if external json loading fails
         const fallbackDatabase = {
             schedule: [
-                { title: "Kaiju No. 8", alternative: "Kaijuu 8-gou", image: "kaiju-no-8.jpg", id: "kaiju-no-8" },
-                { title: "The Iceblade Sorcerer", alternative: "Hyouken no Majutsushi", image: "iceblade.jpg", id: "iceblade" },
-                { title: "Demon Slayer: Hashira Training Arc", alternative: "Kimetsu no Yaiba", image: "naruto.jpg", id: "demon-slayer" },
-                { title: "My Hero Academia Season 7", alternative: "Boku no Hero Academia", image: "hero-academia.jpg", id: "my-hero-academia" }
-            ],
-            trending: [
-                { title: "One Piece", alternative: "Wan Piisu", image: "onepiece.jpg", id: "one-piece" },
-                { title: "Naruto Shippuden", alternative: "Naruto: Shippuuden", image: "naruto.jpg", id: "naruto-shippuden" },
-                { title: "Jujutsu Kaisen", alternative: "Jujutsu Kaisen", image: "jujutsu.jpg", id: "jujutsu-kaisen" },
-                { title: "Attack on Titan", alternative: "Shingeki no Kyojin", image: "aot.jpg", id: "attack-on-titan" }
-            ],
-            movies: [
+                { title: "Kaiju No. 8", alternative: "Kaijuu 8-gou", image: "https://unsplash.com", id: "kaiju-no-8" },
+                { title: "The Iceblade Sorcerer", alternative: "Hyouken no Majutsushi", image: "https://unsplash.com", id: "iceblade" },
