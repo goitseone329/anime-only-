@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anime Heaven - Stream Free Anime</title>
+    
+    <!-- FORCES ALL INCOMING IMAGES TO SECURE HTTPS LINKS TO FIX BLANK BOXES -->
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background-color: #000000; color: #fff; font-family: -apple-system, BlinkMacSystemFont, sans-serif; padding-bottom: 70px; }
@@ -32,8 +36,8 @@
 
         /* GRID CATALOG LAYOUT DESIGN */
         .catalog-container { display: flex; flex-direction: column; gap: 16px; padding: 4px; }
-        .anime-grid-card { background-color: #0b0b0b; border: 1px solid #151515; border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; cursor: pointer; position: relative; }
-        .image-thumb-wrapper { position: relative; width: 100%; height: 240px; background: #111; }
+        .anime-grid-card { background-color: #0b0b0b; border: 1px solid #151515; border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; cursor: pointer; position: relative; margin-bottom: 12px; }
+        .image-thumb-wrapper { position: relative; width: 100%; height: 240px; background: #111; overflow: hidden; }
         .image-thumb-wrapper img { width: 100%; height: 100%; object-fit: cover; }
         .rank-badge-pill { position: absolute; top: 0; left: 0; background-color: #d61c1c; color: #fff; font-weight: bold; font-size: 16px; padding: 6px 16px; border-bottom-right-radius: 6px; z-index: 10; }
         .action-plus-btn { position: absolute; top: 8px; right: 8px; background-color: #ff1a1a; color: #fff; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; z-index: 10; border: none; font-weight: bold; }
@@ -119,6 +123,3 @@
     </div>
 
     <!-- STREAM VIEW LAYER -->
-    <div id="stream-view-layer" class="view-layer">
-        <div class="stream-meta-header">
-            <h2 id="stream-anime-title">Anime Title</h2>
