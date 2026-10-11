@@ -6,83 +6,79 @@
     <title>Anime Heaven - Stream Free Anime</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background-color: #000000; color: #fff; font-family: -apple-system, BlinkMacSystemFont, sans-serif; padding-bottom: 70px; }
-        
+        body { background-color: #000000; color: #fff; font-family: -apple-system, BlinkMacSystemFont, sans-serif; padding-bottom: 60px; }
+
         /* HEADER BAR SETTINGS */
-        header { background-color: #050505; border-bottom: 2px solid #ff1a1a; display: flex; align-items: center; padding: 8px 12px; height: 56px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(255, 26, 26, 0.2); }
-        .logo-box { background-color: #d61c1c; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; border-radius: 4px; text-decoration: none; margin-right: 12px; cursor: pointer; box-shadow: 0 0 8px #ff1a1a; }
+        header { background-color: #050505; border-bottom: 2px solid #ff1a1a; display: flex; align-items: center; padding: 8px 12px; height: 56px; position: sticky; top: 0; z-index: 1000; }
+        .logo-box { background-color: #d61c1c; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; border-radius: 4px; text-decoration: none; margin-right: 12px; cursor: pointer; }
         .logo-box svg { width: 28px; height: 28px; fill: #fff; }
         .search-wrapper { flex: 1; position: relative; max-width: 600px; display: flex; align-items: center; }
-        .search-input { width: 100%; height: 36px; background-color: #111; border: 1px solid #d61c1c; border-radius: 4px; color: #fff; padding: 0 40px 0 12px; font-size: 15px; }
+        .search-input { width: 100%; height: 36px; background-color: #1a1a1a; border: 1px solid #d61c1c; border-radius: 4px; color: #fff; padding: 0 40px 0 12px; font-size: 15px; }
         .search-icon-btn { position: absolute; right: 10px; background: none; border: none; color: #d61c1c; cursor: pointer; display: flex; align-items: center; }
-        
+
         /* MONETIZATION PLACEMENT BOXES */
-        .ad-banner-placement { width: 100%; max-width: 728px; margin: 10px auto; padding: 5px; display: flex; justify-content: center; align-items: center; min-height: 90px; background: #050505; border: 1px dashed #222; overflow: hidden; }
+        .ad-banner-placement { width: 100%; max-width: 728px; margin: 10px auto; text-align: center; }
 
         /* TAB NAVIGATION */
-        .collection-tabs { display: flex; background-color: #050505; border-bottom: 1px solid #111; margin-top: 2px; }
-        .tab-btn { flex: 1; padding: 14px 5px; background: none; border: none; color: #aaa; font-weight: bold; font-size: 13px; text-transform: uppercase; cursor: pointer; text-align: center; border-bottom: 2px solid transparent; }
-        .tab-btn.active { color: #fff; border-bottom-color: #ff1a1a; background-color: #111; }
-        
-        .section-heading { background-color: #000; padding: 16px 12px; font-size: 20px; font-weight: bold; text-align: center; color: #fff; letter-spacing: 0.5px; }
-        
+        .collection-tabs { display: flex; background-color: #050505; border-bottom: 1px solid #222; }
+        .tab-btn { flex: 1; padding: 14px 5px; background: none; border: none; color: #777; font-weight: bold; font-size: 13px; text-transform: uppercase; cursor: pointer; text-align: center; }
+        .tab-btn.active { color: #fff; border-bottom: 2px solid #ff1a1a; }
+
+        .section-heading { background-color: #000; padding: 12px; font-size: 16px; font-weight: bold; text-transform: uppercase; color: #fff; border-left: 4px solid #ff1a1a; margin-top: 10px; }
+
         /* VIEW LAYER MANAGEMENT */
-        .view-layer { display: none; max-width: 800px; margin: 0 auto; padding: 0 8px; }
+        .view-layer { display: none; max-width: 800px; margin: 0 auto; padding: 10px; }
         .view-layer.active-view { display: block; }
 
         /* GRID CATALOG LAYOUT DESIGN */
-        .catalog-container { display: flex; flex-direction: column; gap: 16px; padding: 4px; }
-        .anime-grid-card { background-color: #0b0b0b; border: 1px solid #151515; border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; cursor: pointer; position: relative; margin-bottom: 12px; }
-        .image-thumb-wrapper { position: relative; width: 100%; height: 240px; background: #111; overflow: hidden; }
+        .catalog-container { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+        .anime-grid-card { background-color: #0b0b0b; border: 1px solid #1c1c1c; width: calc(50% - 6px); max-width: 180px; border-radius: 6px; overflow: hidden; position: relative; display: flex; flex-direction: column; cursor: pointer; }
+        .image-thumb-wrapper { position: relative; width: 100%; height: 210px; background-color: #222; }
         .image-thumb-wrapper img { width: 100%; height: 100%; object-fit: cover; }
-        .rank-badge-pill { position: absolute; top: 0; left: 0; background-color: #d61c1c; color: #fff; font-weight: bold; font-size: 16px; padding: 6px 16px; border-bottom-right-radius: 6px; z-index: 10; }
-        .action-plus-btn { position: absolute; top: 8px; right: 8px; background-color: #ff1a1a; color: #fff; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; z-index: 10; border: none; font-weight: bold; }
-        .card-meta-details { padding: 12px 8px; text-align: center; }
-        .card-main-title { font-size: 16px; font-weight: bold; color: #fff; margin-bottom: 4px; }
-        .card-sub-title { font-size: 13px; color: #777; margin-bottom: 6px; }
-        .status-badge-lbl { color: #ff1a1a; font-size: 13px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
+        .rank-badge-pill { position: absolute; top: 0; left: 0; background-color: #ff1a1a; color: #fff; padding: 4px 8px; font-size: 12px; font-weight: bold; border-bottom-right-radius: 4px; }
+        .action-plus-btn { position: absolute; top: 8px; right: 8px; background-color: rgba(0,0,0,0.6); color: #fff; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+        .card-meta-details { padding: 12px 8px; text-align: left; display: flex; flex-direction: column; flex-grow: 1; }
+        .card-main-title { font-size: 14px; font-weight: bold; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px; }
+        .card-sub-title { font-size: 12px; color: #777; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 8px; }
+        .status-badge-lbl { color: #ff1a1a; font-size: 12px; font-weight: bold; margin-top: auto; }
 
         /* STREAM LAYER UI */
-        .stream-meta-header { text-align: center; padding: 15px 5px; }
-        .stream-meta-header h2 { font-size: 22px; color: #ff1a1a; font-weight: bold; margin-bottom: 12px; }
-        
-        .video-player-container { width: 100%; background: #000; border: 1px solid #1c1c1c; border-radius: 4px; position: relative; overflow: hidden; margin-bottom: 15px; }
-        .responsive-iframe-wrap { position: relative; padding-bottom: 56.25%; height: 0; }
+        .stream-meta-header { text-align: center; padding: 10px; }
+        .stream-meta-header h2 { font-size: 22px; color: #fff; }
+        .video-player-container { width: 100%; background: #000; margin: 10px 0; }
+        .responsive-iframe-wrap { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; }
         .responsive-iframe-wrap iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-        
+
         /* CONTROLS HUB */
-        .controls-button-row { display: flex; justify-content: center; gap: 10px; margin-bottom: 12px; }
-        .ctrl-btn { background-color: #d61c1c; color: #fff; border: none; border-radius: 4px; padding: 10px 16px; font-weight: bold; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
-        .ctrl-btn-action { width: 44px; height: 44px; border-radius: 50%; padding: 0; font-size: 18px; }
-        .download-action-bar { max-width: 400px; margin: 0 auto 20px auto; }
-        .download-btn { width: 100%; background-color: #d61c1c; color: #fff; border: none; padding: 12px; font-weight: bold; font-size: 15px; border-radius: 4px; cursor: pointer; text-align: center; }
-        
-        .social-link-strip { display: flex; justify-content: center; gap: 15px; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #111; }
-        .social-icon-box { background-color: #111; padding: 10px; border-radius: 6px; display: flex; align-items: center; justify-content: center; width: 46px; height: 46px; cursor: pointer; border: 1px solid #222; }
-        .social-icon-box svg { width: 24px; height: 24px; fill: #fff; }
-        
+        .controls-button-row { display: flex; justify-content: center; gap: 10px; margin: 10px 0; }
+        .ctrl-btn { background-color: #d61c1c; color: #fff; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .download-action-bar { max-width: 400px; margin: 10px auto; width: 100%; }
+        .download-btn { width: 100%; background-color: #d61c1c; color: #fff; border: none; padding: 12px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        .social-link-strip { display: flex; justify-content: content; }
+        .social-icon-box { background-color: #111; padding: 10px; }
+        .social-icon-box svg { width: 24px; height: 24px; }
+
         /* SUMMARY CARD INFO COMPONENT */
-        .anime-profile-summary { background: #080808; border: 1px solid #111; padding: 12px; border-radius: 6px; text-align: center; margin-bottom: 20px; font-size: 15px; }
-        .profile-stat-line { color: #888; margin-bottom: 6px; }
+        .anime-profile-summary { background: #080808; border: 1px solid #1a1a1a; padding: 15px; border-radius: 6px; margin: 10px 0; }
+        .profile-stat-line { color: #888; margin-bottom: 6px; font-size: 14px; }
         .profile-stat-line strong { color: #ff1a1a; }
-        .info-pill-container { display: flex; justify-content: center; gap: 12px; margin-top: 10px; }
-        .pill-badge { background: #111; border: 1px solid #ff1a1a; padding: 6px 14px; border-radius: 20px; font-weight: bold; font-size: 13px; color: white; }
-        
-        .grid-header-lbl { text-align: center; font-size: 16px; font-weight: bold; color: #888; margin: 20px 0 12px 0; text-transform: uppercase; }
-        
+        .info-pill-container { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+        .pill-badge { background: #111; border: 1px solid #222; padding: 4px 10px; border-radius: 20px; font-size: 12px; }
+
         /* GRID INTERACTIVE BLOCK TILE LAYOUT */
-        .episodes-selection-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background-color: #ff1a1a; border: 1px solid #ff1a1a; margin-bottom: 25px; }
-        .episode-selection-tile { background-color: #000; padding: 14px 6px; text-align: center; cursor: pointer; }
-        .episode-selection-tile .ep-num { font-size: 20px; font-weight: bold; color: #fff; margin-bottom: 2px; }
+        .grid-header-lbl { text-align: center; font-size: 16px; margin: 15px 0 5px 0; color: #aaa; }
+        .episodes-selection-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 8px; margin: 10px 0; }
+        .episode-selection-tile { background-color: #000; border: 1px solid #222; padding: 10px; text-align: center; border-radius: 4px; cursor: pointer; }
+        .episode-selection-tile .ep-num { font-size: 20px; font-weight: bold; color: #fff; }
         .episode-selection-tile .ep-time { font-size: 11px; color: #555; }
-        
+
         /* FOOTER NAV COMPONENT BAR */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 52px; background-color: #050505; border-top: 1px solid #111; display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
-        .nav-item { color: #555; display: flex; align-items: center; justify-content: center; width: 25%; height: 100%; cursor: pointer; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background-color: #050505; border-top: 1px solid #222; display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
+        .nav-item { color: #555; display: flex; align-items: center; justify-content: center; width: 33%; height: 100%; cursor: pointer; }
         .nav-item.active { color: #ff1a1a; filter: drop-shadow(0 0 4px #ff1a1a); }
         .nav-item svg { width: 24px; height: 24px; fill: currentColor; }
     </style>
-    
+
     <!-- ADSTERRA SOCIAL BAR AD UNIT SCRIPT CODE -->
     <script data-cfasync="false" src="https://abscloud.org"></script>
 </head>
@@ -93,31 +89,55 @@
             <svg viewBox="0 0 24 24"><path d="M12,2A9,9 0 0,0 3,11C3,14.03 4.53,16.7 6.87,18.26L6,21a1,1 0 0,0 1,1H17a1,1 0 0,0 1-1l-0.87-2.74C19.47,16.7 21,14.03 21,11A9,9 0 0,0 12,2M8,11A2,2 0 0,1 10,9A2,2 0 0,1 12,11A2,2 0 0,1 10,13A2,2 0 0,1 8,11M16,11A2,2 0 0,1 18,13A2,2 0 0,1 16,15A2,2 0 0,1 14,11A2,2 0 0,1 16,11M12,16C14.33,16 16.31,17.27 17,19H7C7.69,17.27 9.67,16 12,16Z"/></svg>
         </div>
         <div class="search-wrapper">
-            <input type="text" id="search-box" class="search-input" placeholder="Search anime...">
+            <input type="text" id="search-box" class="search-input" placeholder="Search Anime...">
             <button id="search-btn" class="search-icon-btn">
-                <svg width="16" height="16" fill="#ff1a1a" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>
+                <svg width="16" height="16" fill="#ff1a1a" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></button>
             </button>
         </div>
     </header>
 
-    <!-- TOP ADSTERRA BANNER UNIT -->
-    <div class="ad-banner-placement">
-        <script data-cfasync="false" src="https://bauval.org"></script>
+    <div class="collection-tabs">
+        <button class="tab-btn active" id="btn-show-catalog">Catalog Grid</button>
+        <button class="tab-btn" id="btn-show-player">Stream Player</button>
     </div>
 
-    <!-- CATALOG VIEW LAYER -->
-    <div id="catalog-view-layer" class="view-layer active-view">
-        <div class="collection-tabs">
-            <button class="tab-btn active" id="tab-schedule">Schedule</button>
-            <button class="tab-btn" id="tab-trending">Trending</button>
-            <button class="tab-btn" id="tab-movies">Movies</button>
-            <button class="tab-btn" id="tab-watchlist">Watchlist</button>
+    <!-- LAYER 1: CATALOG VIEWS -->
+    <div class="view-layer active-view" id="layer-catalog">
+        <div class="section-heading">Trending Anime</div>
+        <div class="catalog-container" id="anime-grid-target">
+            <p style="padding: 20px; color: #777; width:100%; text-align:center;">Syncing Anime Collection API...</p>
         </div>
-        <div class="section-heading" id="hub-title-label">Subbed Anime Schedule</div>
-        <div class="catalog-container" id="anime-grid-target"></div>
     </div>
 
-    <!-- STREAM VIEW LAYER -->
-    <div id="stream-view-layer" class="view-layer">
+    <!-- LAYER 2: STREAMING PLAYER ENGINE -->
+    <div class="view-layer" id="layer-player">
         <div class="stream-meta-header">
-            <h2 id="stream-anime-title">Anime Title</h2>
+            <h2 id="player-title">Select an Anime Card</h2>
+        </div>
+        
+        <div class="video-player-container">
+            <div class="responsive-iframe-wrap">
+                <iframe id="video-frame" src="about:blank" allowfullscreen></iframe>
+            </div>
+        </div>
+
+        <div class="controls-button-row">
+            <button class="ctrl-btn" id="btn-prev-ep">Prev Ep</button>
+            <button class="ctrl-btn" id="btn-next-ep">Next Ep</button>
+        </div>
+
+        <div class="download-action-bar">
+            <button class="download-btn">Generate High-Speed Mirror Link</button>
+        </div>
+
+        <div class="anime-profile-summary">
+            <div class="profile-stat-line">Format Type: <strong id="info-type">-</strong></div>
+            <div class="profile-stat-line">Airing Status: <strong id="info-status">-</strong></div>
+            <div class="info-pill-container" id="info-genres">
+                <span class="pill-badge">Shounen</span>
+                <span class="pill-badge">Action</span>
+            </div>
+        </div>
+
+        <div class="grid-header-lbl">Available Episode Vault</div>
+        <div class="episodes-selection-grid">
