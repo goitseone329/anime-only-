@@ -94,7 +94,7 @@
             width: 90%;
             max-width: 800px;
             position: relative;
-            padding-top: 56.25%; /* Fixed HD 16:9 box aspect scale layout */
+            padding-top: 56.25%; /* Fixed 16:9 ratio layout box */
             background-color: #0c0c0c;
             border: 2px solid #222;
             border-radius: 6px;
@@ -207,7 +207,7 @@
 
     <!-- NAVIGATION BAR HEADER -->
     <header>
-        <div class="logo-box" onclick="loadTrendingAnime()">
+        <div class="logo-box" onclick="window.location.reload()">
             <svg viewBox="0 0 24 24">
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
             </svg>
@@ -215,7 +215,7 @@
         
         <div class="search-wrapper">
             <input type="text" id="search-bar" class="search-input" placeholder="Search Anime...">
-            <button class="search-icon-btn" onclick="searchAnime()">
+            <button class="search-icon-btn">
                 <svg viewBox="0 0 24 24">
                     <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
                 </svg>
@@ -226,11 +226,12 @@
     <!-- LIVE VIDEO STREAM THEATER LAYER -->
     <section class="player-section">
         <div class="player-wrapper">
-            <iframe id="video-screen" src="about:blank" allowfullscreen scrolling="no"></iframe>
+            <!-- Automatically initialized with Naruto streaming source on payload boot -->
+            <iframe id="video-screen" src="https://vidsrc.me" allowfullscreen scrolling="no"></iframe>
         </div>
         <div class="player-details">
-            <h2 id="player-title">Select an Anime Below to Play</h2>
-            <p id="player-status">Streaming Client: Ready</p>
+            <h2 id="player-title">Playing: Naruto Shippuden</h2>
+            <p id="player-status">Streaming Client: Active</p>
         </div>
     </section>
 
@@ -239,10 +240,56 @@
 
     <!-- MAIN INTERFACE BODY CONTAINER -->
     <main class="container">
-        <h2 class="section-title" id="grid-title">Trending Anime</h2>
+        <h2 class="section-title">Trending Anime</h2>
         
-        <!-- Target core container layout where internal Javascript writes cards directly -->
-        <div class="anime-grid" id="anime-container"></div>
+        <!-- Cards are written directly into the HTML structure now to completely prevent stuck scripts -->
+        <div class="anime-grid">
+            
+            <!-- Card 1: Naruto -->
+            <div class="anime-card" onclick="startStream('Naruto')">
+                <div class="anime-poster-wrapper">
+                    <img src="https://weserv.nl" alt="Naruto">
+                </div>
+                <div class="anime-card-info">
+                    <h3>Naruto Shippuden</h3>
+                    <p>▶ Click to Play</p>
+                </div>
+            </div>
+
+            <!-- Card 2: One Piece -->
+            <div class="anime-card" onclick="startStream('One Piece')">
+                <div class="anime-poster-wrapper">
+                    <img src="https://weserv.nl" alt="One Piece">
+                </div>
+                <div class="anime-card-info">
+                    <h3>One Piece</h3>
+                    <p>▶ Click to Play</p>
+                </div>
+            </div>
+
+            <!-- Card 3: Demon Slayer -->
+            <div class="anime-card" onclick="startStream('Demon Slayer')">
+                <div class="anime-poster-wrapper">
+                    <img src="https://weserv.nl" alt="Demon Slayer">
+                </div>
+                <div class="anime-card-info">
+                    <h3>Demon Slayer</h3>
+                    <p>▶ Click to Play</p>
+                </div>
+            </div>
+
+            <!-- Card 4: Jujutsu Kaisen -->
+            <div class="anime-card" onclick="startStream('Jujutsu Kaisen')">
+                <div class="anime-poster-wrapper">
+                    <img src="https://weserv.nl" alt="Jujutsu Kaisen">
+                </div>
+                <div class="anime-card-info">
+                    <h3>Jujutsu Kaisen</h3>
+                    <p>▶ Click to Play</p>
+                </div>
+            </div>
+
+        </div>
     </main>
 
     <!-- ADSTERRA SLOT 3: BANNER AD BELOW CONTENT -->
@@ -250,53 +297,11 @@
 
     <!-- MAIN RENDERING ENGINE SCRIPTS -->
     <script>
-        const container = document.getElementById('anime-container');
-        const gridTitle = document.getElementById('grid-title');
-        const searchBar = document.getElementById('search-bar');
-        
         const videoScreen = document.getElementById('video-screen');
         const playerTitle = document.getElementById('player-title');
         const playerStatus = document.getElementById('player-status');
 
-        // Central routing script parameters
+        // Linear router parameters execute cleanly matching tap coordinates instantly
         function startStream(titleKeyword) {
             playerTitle.innerText = `Playing: ${titleKeyword}`;
             playerStatus.innerText = "Connecting to streaming server nodes...";
-            const cleanKeyword = encodeURIComponent(titleKeyword.trim());
-            videoScreen.src = `https://vidsrc.me{cleanKeyword}`;
-        }
-
-        // Clean mapping script uses stable data strings
-        function renderCards(animeDataList) {
-            container.innerHTML = '';
-            animeDataList.forEach(item => {
-                const title = item.title;
-                const rawImg = item.imageUrl;
-                
-                // Unblockable Weserv CDN proxy integration pipeline handles broken image hooks automatically
-                const proxyImgUrl = `https://weserv.nl{encodeURIComponent(rawImg)}`;
-                const escapedTitle = title.replace(/'/g, "\\'");
-
-                container.innerHTML += `
-                    <div class="anime-card" onclick="startStream('${escapedTitle}')">
-                        <div class="anime-poster-wrapper">
-                            <img src="${proxyImgUrl}" alt="${title}">
-                        </div>
-                        <div class="anime-card-info">
-                            <h3>${title}</h3>
-                            <p>▶ Click to Play</p>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        // Direct local profile array database pipeline channels content instantly
-        function loadTrendingAnime() {
-            gridTitle.innerText = "Trending Anime";
-            searchBar.value = '';
-            
-            const backupList = [
-                { title: "Naruto Shippuden", imageUrl: "https://myanimelist.net" },
-                { title: "One Piece", imageUrl: "https://myanimelist.net" },
-                { font: "bold", title: "Demon Slayer", imageUrl: "https://myanimelist.net" },
