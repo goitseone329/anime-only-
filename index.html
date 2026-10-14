@@ -166,7 +166,6 @@
 <body>
 
     <!-- ADSTERRA SLOT 1: POPUNDER CODE PLACEHOLDER -->
-    <!-- [Paste your main Popunder ad script unit here if you use one] -->
 
     <!-- NAVIGATION BAR HEADER -->
     <header>
@@ -187,23 +186,27 @@
     </header>
 
     <!-- ADSTERRA SLOT 2: BANNER AD ABOVE CONTENT -->
-    <div class="ad-container">
-        <!-- [Paste your Adsterra top header banner tag snippet directly here] -->
-    </div>
+    <div class="ad-container"></div>
 
     <!-- MAIN INTERFACE BODY CONTAINER -->
     <main class="container">
         <h2 class="section-title" id="grid-title">Trending Anime</h2>
         
         <div class="anime-grid" id="anime-container">
-            <div class="status-msg">Initializing platform library...</div>
+            <!-- Starting content defaults to cards immediately to stop frozen messaging states -->
+            <div class="anime-card">
+                <div class="anime-poster-wrapper"><img src="https://unsplash.com"></div>
+                <div class="anime-card-info"><h3>Demon Slayer</h3><p>⭐ Score: 8.6</p></div>
+            </div>
+            <div class="anime-card">
+                <div class="anime-poster-wrapper"><img src="https://unsplash.com"></div>
+                <div class="anime-card-info"><h3>Jujutsu Kaisen</h3><p>⭐ Score: 8.7</p></div>
+            </div>
         </div>
     </main>
 
     <!-- ADSTERRA SLOT 3: BANNER AD BELOW CONTENT -->
-    <div class="ad-container">
-        <!-- [Paste your Adsterra footer banner tag snippet directly here] -->
-    </div>
+    <div class="ad-container"></div>
 
     <!-- MAIN RENDERING ENGINE SCRIPTS -->
     <script>
@@ -211,7 +214,6 @@
         const gridTitle = document.getElementById('grid-title');
         const searchBar = document.getElementById('search-bar');
 
-        // Render function used for both API data and offline data channels
         function renderCards(animeList) {
             container.innerHTML = '';
             animeList.forEach(anime => {
@@ -219,7 +221,6 @@
                 const score = anime.score || 'N/A';
                 const linkUrl = anime.url || 'https://myanimelist.net';
                 
-                // Safe checks matching nested structure variants for image files
                 let imgUrl = '';
                 if (anime.images && anime.images.jpg) {
                     imgUrl = anime.images.jpg.large_image_url || anime.images.jpg.image_url;
@@ -241,20 +242,15 @@
             });
         }
 
-        // Action A: Load Main Homepage feed items with custom offline fallback parameters
         async function loadTrendingAnime() {
             gridTitle.innerText = "Trending Anime";
-            container.innerHTML = '<div class="status-msg">Loading trending titles...</div>';
-            searchBar.value = '';
             try {
                 const response = await fetch('https://jikan.moe');
-                if (!response.ok) throw new Error('Database response error status received');
+                if (!response.ok) throw new Error('Throttled');
                 const result = await response.json();
                 renderCards(result.data);
             } catch (error) {
-                console.log("Jikan connection throttled. Initializing safe storage fallback profiles...", error);
-                
-                // Instantly presents high-quality backup grid layers if server stalls
+                console.log("Using core offline interface parameters.");
                 const safeLocalBackup = [
                     { title: "Demon Slayer", score: "8.6", backup_img: "https://unsplash.com" },
                     { title: "Jujutsu Kaisen", score: "8.7", backup_img: "https://unsplash.com" },
@@ -265,16 +261,24 @@
             }
         }
 
-        // Action B: Process custom string requests sent to API database engine
         async function searchAnime() {
             const query = searchBar.value.trim();
             if (!query) return;
 
             gridTitle.innerText = `Search Results: "${query}"`;
-            container.innerHTML = '<div class="status-msg">Searching collection profiles...</div>';
+            container.innerHTML = '<div class="status-msg">Searching profiles...</div>';
             try {
                 const response = await fetch(`https://jikan.moe{encodeURIComponent(query)}&limit=12`);
                 const result = await response.json();
                 if (!result.data || result.data.length === 0) {
-                    container.innerHTML = '<div class="status-msg">No titles found for that keyword.</div>';
+                    container.innerHTML = '<div class="status-msg">No titles found.</div>';
                 } else {
+                    renderCards(result.data);
+                }
+            } catch (error) {
+                container.innerHTML = '<div class="status-msg">Search server busy. Try again.</div>';
+            }
+        }
+
+        searchBar.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
