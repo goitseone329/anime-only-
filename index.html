@@ -94,7 +94,7 @@
             width: 90%;
             max-width: 800px;
             position: relative;
-            padding-top: 56.25%; /* Fixed 16:9 ratio box */
+            padding-top: 56.25%; /* Fixed 16:9 widescreen ratio box */
             background-color: #0c0c0c;
             border: 2px solid #222;
             border-radius: 6px;
@@ -213,7 +213,7 @@
 
     <!-- NAVIGATION BAR HEADER -->
     <header>
-        <div class="logo-box" onclick="window.location.reload()">
+        <div class="logo-box" onclick="loadTrendingAnime()">
             <svg viewBox="0 0 24 24">
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
             </svg>
@@ -248,51 +248,7 @@
         <h2 class="section-title" id="grid-title">Trending Anime</h2>
         
         <div class="anime-grid" id="anime-container">
-            
-            <!-- Card 1: Naruto (With Official Secure Poster) -->
-            <div class="anime-card" onclick="startStream('Naruto')">
-                <div class="anime-poster-wrapper">
-                    <img src="https://myanimelist.net" alt="Naruto">
-                </div>
-                <div class="anime-card-info">
-                    <h3>Naruto Shippuden</h3>
-                    <p>▶ Click to Play</p>
-                </div>
-            </div>
-
-            <!-- Card 2: One Piece (With Official Secure Poster) -->
-            <div class="anime-card" onclick="startStream('One Piece')">
-                <div class="anime-poster-wrapper">
-                    <img src="https://myanimelist.net" alt="One Piece">
-                </div>
-                <div class="anime-card-info">
-                    <h3>One Piece</h3>
-                    <p>▶ Click to Play</p>
-                </div>
-            </div>
-
-            <!-- Card 3: Demon Slayer (With Official Secure Poster) -->
-            <div class="anime-card" onclick="startStream('Demon Slayer')">
-                <div class="anime-poster-wrapper">
-                    <img src="https://myanimelist.net" alt="Demon Slayer">
-                </div>
-                <div class="anime-card-info">
-                    <h3>Demon Slayer</h3>
-                    <p>▶ Click to Play</p>
-                </div>
-            </div>
-
-            <!-- Card 4: Jujutsu Kaisen (With Official Secure Poster) -->
-            <div class="anime-card" onclick="startStream('Jujutsu Kaisen')">
-                <div class="anime-poster-wrapper">
-                    <img src="https://myanimelist.net" alt="Jujutsu Kaisen">
-                </div>
-                <div class="anime-card-info">
-                    <h3>Jujutsu Kaisen</h3>
-                    <p>▶ Click to Play</p>
-                </div>
-            </div>
-
+            <div class="status-msg">Loading anime database...</div>
         </div>
     </main>
 
@@ -309,5 +265,44 @@
         const playerTitle = document.getElementById('player-title');
         const playerStatus = document.getElementById('player-status');
 
-        // Central video player feed router hook
+        // Central video player channel router hook
         function startStream(titleKeyword) {
+            playerTitle.innerText = `Playing: ${titleKeyword}`;
+            playerStatus.innerText = "Connecting to secure video stream container...";
+            
+            const cleanKeyword = encodeURIComponent(titleKeyword.trim());
+            // Embed engine pointing directly to an open anime embed player server channel
+            videoScreen.src = `https://vidsrc.me{cleanKeyword}`;
+        }
+
+        // Global card injection template (Equipped with unblockable Image Proxies)
+        function renderCards(animeDataList) {
+            container.innerHTML = '';
+            animeDataList.forEach(item => {
+                const title = item.title;
+                const rawImg = item.imageUrl;
+                
+                // Routes image links through a secure public image proxy cache to bypass cellular blockers
+                const proxyImgUrl = `https://weserv.nl{encodeURIComponent(rawImg)}`;
+                const escapedTitle = title.replace(/'/g, "\\'");
+
+                container.innerHTML += `
+                    <div class="anime-card" onclick="startStream('${escapedTitle}')">
+                        <div class="anime-poster-wrapper">
+                            <img src="${proxyImgUrl}" alt="${title}">
+                        </div>
+                        <div class="anime-card-info">
+                            <h3>${title}</h3>
+                            <p>▶ Click to Play</p>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Action A: Load Homepage using highly stable Kitsu Trending API endpoints
+        async function loadTrendingAnime() {
+            gridTitle.innerText = "Trending Anime";
+            container.innerHTML = '<div class="status-msg">Loading trending titles...</div>';
+            searchBar.value = '';
+            try {
