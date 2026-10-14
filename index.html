@@ -94,7 +94,7 @@
             width: 90%;
             max-width: 800px;
             position: relative;
-            padding-top: 56.25%; /* Responsive 16:9 ratio layout box */
+            padding-top: 56.25%; /* Fixed HD 16:9 box aspect scale layout */
             background-color: #0c0c0c;
             border: 2px solid #222;
             border-radius: 6px;
@@ -189,12 +189,6 @@
             font-size: 0.75rem;
             color: #ff0000;
         }
-        .status-msg {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 40px;
-            color: #888;
-        }
 
         /* ADSTERRA PLACEHOLDER BLOCKS */
         .ad-container {
@@ -247,9 +241,8 @@
     <main class="container">
         <h2 class="section-title" id="grid-title">Trending Anime</h2>
         
-        <div class="anime-grid" id="anime-container">
-            <div class="status-msg">Loading anime database...</div>
-        </div>
+        <!-- Target core container layout where internal Javascript writes cards directly -->
+        <div class="anime-grid" id="anime-container"></div>
     </main>
 
     <!-- ADSTERRA SLOT 3: BANNER AD BELOW CONTENT -->
@@ -265,18 +258,22 @@
         const playerTitle = document.getElementById('player-title');
         const playerStatus = document.getElementById('player-status');
 
+        // Central routing script parameters
         function startStream(titleKeyword) {
             playerTitle.innerText = `Playing: ${titleKeyword}`;
-            playerStatus.innerText = "Connecting to secure video stream container...";
+            playerStatus.innerText = "Connecting to streaming server nodes...";
             const cleanKeyword = encodeURIComponent(titleKeyword.trim());
             videoScreen.src = `https://vidsrc.me{cleanKeyword}`;
         }
 
+        // Clean mapping script uses stable data strings
         function renderCards(animeDataList) {
             container.innerHTML = '';
             animeDataList.forEach(item => {
                 const title = item.title;
                 const rawImg = item.imageUrl;
+                
+                // Unblockable Weserv CDN proxy integration pipeline handles broken image hooks automatically
                 const proxyImgUrl = `https://weserv.nl{encodeURIComponent(rawImg)}`;
                 const escapedTitle = title.replace(/'/g, "\\'");
 
@@ -294,17 +291,12 @@
             });
         }
 
-        async function loadTrendingAnime() {
+        // Direct local profile array database pipeline channels content instantly
+        function loadTrendingAnime() {
             gridTitle.innerText = "Trending Anime";
-            container.innerHTML = '<div class="status-msg">Loading trending titles...</div>';
             searchBar.value = '';
-            try {
-                const response = await fetch('https://kitsu.io');
-                const result = await response.json();
-                
-                const formattedList = result.data.map(anime => ({
-                    title: anime.attributes.canonicalTitle,
-                    imageUrl: anime.attributes.posterImage.medium
-                }));
-                
-                renderCards(formattedList);
+            
+            const backupList = [
+                { title: "Naruto Shippuden", imageUrl: "https://myanimelist.net" },
+                { title: "One Piece", imageUrl: "https://myanimelist.net" },
+                { font: "bold", title: "Demon Slayer", imageUrl: "https://myanimelist.net" },
