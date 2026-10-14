@@ -94,7 +94,7 @@
             width: 90%;
             max-width: 800px;
             position: relative;
-            padding-top: 50.25%; /* Responsive player layout box */
+            padding-top: 56.25%; /* Fixed 16:9 ratio box */
             background-color: #0c0c0c;
             border: 2px solid #222;
             border-radius: 6px;
@@ -213,7 +213,7 @@
 
     <!-- NAVIGATION BAR HEADER -->
     <header>
-        <div class="logo-box" onclick="loadTrendingAnime()">
+        <div class="logo-box" onclick="window.location.reload()">
             <svg viewBox="0 0 24 24">
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
             </svg>
@@ -247,12 +247,12 @@
     <main class="container">
         <h2 class="section-title" id="grid-title">Trending Anime</h2>
         
-        <!-- Cards are written directly into the HTML structure now to guarantee they display -->
         <div class="anime-grid" id="anime-container">
             
+            <!-- Card 1: Naruto (With Official Secure Poster) -->
             <div class="anime-card" onclick="startStream('Naruto')">
                 <div class="anime-poster-wrapper">
-                    <img src="https://pixabay.com" alt="Naruto">
+                    <img src="https://myanimelist.net" alt="Naruto">
                 </div>
                 <div class="anime-card-info">
                     <h3>Naruto Shippuden</h3>
@@ -260,9 +260,10 @@
                 </div>
             </div>
 
+            <!-- Card 2: One Piece (With Official Secure Poster) -->
             <div class="anime-card" onclick="startStream('One Piece')">
                 <div class="anime-poster-wrapper">
-                    <img src="https://pixabay.com" alt="One Piece">
+                    <img src="https://myanimelist.net" alt="One Piece">
                 </div>
                 <div class="anime-card-info">
                     <h3>One Piece</h3>
@@ -270,9 +271,10 @@
                 </div>
             </div>
 
+            <!-- Card 3: Demon Slayer (With Official Secure Poster) -->
             <div class="anime-card" onclick="startStream('Demon Slayer')">
                 <div class="anime-poster-wrapper">
-                    <img src="https://pixabay.com" alt="Demon Slayer">
+                    <img src="https://myanimelist.net" alt="Demon Slayer">
                 </div>
                 <div class="anime-card-info">
                     <h3>Demon Slayer</h3>
@@ -280,9 +282,10 @@
                 </div>
             </div>
 
+            <!-- Card 4: Jujutsu Kaisen (With Official Secure Poster) -->
             <div class="anime-card" onclick="startStream('Jujutsu Kaisen')">
                 <div class="anime-poster-wrapper">
-                    <img src="https://pixabay.com" alt="Jujutsu Kaisen">
+                    <img src="https://myanimelist.net" alt="Jujutsu Kaisen">
                 </div>
                 <div class="anime-card-info">
                     <h3>Jujutsu Kaisen</h3>
@@ -308,4 +311,3 @@
 
         // Central video player feed router hook
         function startStream(titleKeyword) {
-            playerTitle.innerText = `Playing: ${titleKeyword}`;
