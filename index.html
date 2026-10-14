@@ -94,7 +94,7 @@
             width: 90%;
             max-width: 800px;
             position: relative;
-            padding-top: 56.25%; /* Fixed 16:9 widescreen ratio box */
+            padding-top: 56.25%; /* Responsive 16:9 ratio layout box */
             background-color: #0c0c0c;
             border: 2px solid #222;
             border-radius: 6px;
@@ -265,24 +265,18 @@
         const playerTitle = document.getElementById('player-title');
         const playerStatus = document.getElementById('player-status');
 
-        // Central video player channel router hook
         function startStream(titleKeyword) {
             playerTitle.innerText = `Playing: ${titleKeyword}`;
             playerStatus.innerText = "Connecting to secure video stream container...";
-            
             const cleanKeyword = encodeURIComponent(titleKeyword.trim());
-            // Embed engine pointing directly to an open anime embed player server channel
             videoScreen.src = `https://vidsrc.me{cleanKeyword}`;
         }
 
-        // Global card injection template (Equipped with unblockable Image Proxies)
         function renderCards(animeDataList) {
             container.innerHTML = '';
             animeDataList.forEach(item => {
                 const title = item.title;
                 const rawImg = item.imageUrl;
-                
-                // Routes image links through a secure public image proxy cache to bypass cellular blockers
                 const proxyImgUrl = `https://weserv.nl{encodeURIComponent(rawImg)}`;
                 const escapedTitle = title.replace(/'/g, "\\'");
 
@@ -300,9 +294,17 @@
             });
         }
 
-        // Action A: Load Homepage using highly stable Kitsu Trending API endpoints
         async function loadTrendingAnime() {
             gridTitle.innerText = "Trending Anime";
             container.innerHTML = '<div class="status-msg">Loading trending titles...</div>';
             searchBar.value = '';
             try {
+                const response = await fetch('https://kitsu.io');
+                const result = await response.json();
+                
+                const formattedList = result.data.map(anime => ({
+                    title: anime.attributes.canonicalTitle,
+                    imageUrl: anime.attributes.posterImage.medium
+                }));
+                
+                renderCards(formattedList);
