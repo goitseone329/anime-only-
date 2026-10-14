@@ -91,10 +91,10 @@
             align-items: center;
         }
         .player-wrapper {
-            width: 100%;
+            width: 90%;
             max-width: 800px;
             position: relative;
-            padding-top: 56.25%; /* Fixed 16:9 HD Screen Ratio box */
+            padding-top: 50.25%; /* Responsive player layout box */
             background-color: #0c0c0c;
             border: 2px solid #222;
             border-radius: 6px;
@@ -109,13 +109,13 @@
             border: none;
         }
         .player-details {
-            width: 100%;
+            width: 90%;
             max-width: 800px;
-            padding: 10px 15px 0 15px;
+            padding: 10px 0 0 0;
             text-align: left;
         }
         .player-details h2 {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: #ff0000;
             margin-bottom: 4px;
         }
@@ -141,8 +141,8 @@
         /* CARDS GRID SYSTEM */
         .anime-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
         }
 
         /* INDIVIDUAL ANIME CARD */
@@ -175,19 +175,19 @@
             object-fit: cover;
         }
         .anime-card-info {
-            padding: 12px;
+            padding: 10px;
         }
         .anime-card-info h3 {
-            font-size: 0.95rem;
-            margin-bottom: 6px;
+            font-size: 0.85rem;
+            margin-bottom: 4px;
             color: #fff;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
         .anime-card-info p {
-            font-size: 0.8rem;
-            color: #b3b3b3;
+            font-size: 0.75rem;
+            color: #ff0000;
         }
         .status-msg {
             grid-column: 1 / -1;
@@ -232,7 +232,6 @@
     <!-- LIVE VIDEO STREAM THEATER LAYER -->
     <section class="player-section">
         <div class="player-wrapper">
-            <!-- Utilizing public proxy player frame architectures to link video sources -->
             <iframe id="video-screen" src="about:blank" allowfullscreen scrolling="no"></iframe>
         </div>
         <div class="player-details">
@@ -248,7 +247,50 @@
     <main class="container">
         <h2 class="section-title" id="grid-title">Trending Anime</h2>
         
-        <div class="anime-grid" id="anime-container"></div>
+        <!-- Cards are written directly into the HTML structure now to guarantee they display -->
+        <div class="anime-grid" id="anime-container">
+            
+            <div class="anime-card" onclick="startStream('Naruto')">
+                <div class="anime-poster-wrapper">
+                    <img src="https://pixabay.com" alt="Naruto">
+                </div>
+                <div class="anime-card-info">
+                    <h3>Naruto Shippuden</h3>
+                    <p>▶ Click to Play</p>
+                </div>
+            </div>
+
+            <div class="anime-card" onclick="startStream('One Piece')">
+                <div class="anime-poster-wrapper">
+                    <img src="https://pixabay.com" alt="One Piece">
+                </div>
+                <div class="anime-card-info">
+                    <h3>One Piece</h3>
+                    <p>▶ Click to Play</p>
+                </div>
+            </div>
+
+            <div class="anime-card" onclick="startStream('Demon Slayer')">
+                <div class="anime-poster-wrapper">
+                    <img src="https://pixabay.com" alt="Demon Slayer">
+                </div>
+                <div class="anime-card-info">
+                    <h3>Demon Slayer</h3>
+                    <p>▶ Click to Play</p>
+                </div>
+            </div>
+
+            <div class="anime-card" onclick="startStream('Jujutsu Kaisen')">
+                <div class="anime-poster-wrapper">
+                    <img src="https://pixabay.com" alt="Jujutsu Kaisen">
+                </div>
+                <div class="anime-card-info">
+                    <h3>Jujutsu Kaisen</h3>
+                    <p>▶ Click to Play</p>
+                </div>
+            </div>
+
+        </div>
     </main>
 
     <!-- ADSTERRA SLOT 3: BANNER AD BELOW CONTENT -->
@@ -264,45 +306,6 @@
         const playerTitle = document.getElementById('player-title');
         const playerStatus = document.getElementById('player-status');
 
-        // Central stream execution router hook
+        // Central video player feed router hook
         function startStream(titleKeyword) {
             playerTitle.innerText = `Playing: ${titleKeyword}`;
-            playerStatus.innerText = "Connecting to remote stream player nodes...";
-            
-            // Format keyword safely for programmatic web parameter structures
-            const cleanKeyword = encodeURIComponent(titleKeyword.trim());
-            
-            // Standard cross-origin embed media framework url routing
-            // Points to a robust video deployment instance tracking stream assets automatically
-            videoScreen.src = `https://vidsrc.me{cleanKeyword}`;
-        }
-
-        // Grid asset generation loop maps card tap events straight to player triggers
-        function renderCards(animeList) {
-            container.innerHTML = '';
-            animeList.forEach(anime => {
-                const title = anime.title || 'Untitled Anime';
-                const score = anime.score || 'N/A';
-                
-                let imgUrl = '';
-                if (anime.images && anime.images.jpg) {
-                    imgUrl = anime.images.jpg.large_image_url || anime.images.jpg.image_url;
-                } else if (anime.backup_img) {
-                    imgUrl = anime.backup_img;
-                }
-
-                // Escaping title parameters ensures symbols won't cause execution faults
-                const escapedTitle = title.replace(/'/g, "\\'");
-
-                container.innerHTML += `
-                    <div class="anime-card" onclick="startStream('${escapedTitle}')">
-                        <div class="anime-poster-wrapper">
-                            <img src="${imgUrl}" alt="${title}">
-                        </div>
-                        <div class="anime-card-info">
-                            <h3>${title}</h3>
-                            <p>⭐ Score: ${score}</p>
-                        </div>
-                    </div>
-                `;
-            });
