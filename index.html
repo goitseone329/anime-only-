@@ -94,7 +94,7 @@
             width: 90%;
             max-width: 800px;
             position: relative;
-            padding-top: 56.25%; /* Fixed 16:9 ratio layout box */
+            padding-top: 56.25%; /* Fixed 16:9 ratio layout */
             background-color: #0c0c0c;
             border: 2px solid #222;
             border-radius: 6px;
@@ -141,7 +141,7 @@
         /* CARDS GRID SYSTEM */
         .anime-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
             gap: 15px;
         }
 
@@ -155,14 +155,14 @@
             cursor: pointer;
         }
         .anime-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-50px);
             border-color: #ff0000;
             box-shadow: 0 5px 15px rgba(250, 0, 0, 0.2);
         }
         .anime-poster-wrapper {
             position: relative;
             width: 100%;
-            padding-top: 140%; 
+            padding-top: 140%;
             overflow: hidden;
             background-color: #1a1a1a;
         }
@@ -207,15 +207,14 @@
 
     <!-- NAVIGATION BAR HEADER -->
     <header>
-        <div class="logo-box" onclick="window.location.reload()">
+        <div class="logo-box" onclick="window.location.reload();">
             <svg viewBox="0 0 24 24">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9v-2h2v2zm0-4H9V7h2v5zm4 4h-2v-5h2v5zm0-6h-2V7h2v3z"/>
             </svg>
         </div>
-        
         <div class="search-wrapper">
-            <input type="text" id="search-bar" class="search-input" placeholder="Search Anime...">
-            <button class="search-icon-btn">
+            <input type="text" class="search-input" id="anime-search" placeholder="Search Anime...">
+            <button class="search-icon-btn" id="search-button">
                 <svg viewBox="0 0 24 24">
                     <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
                 </svg>
@@ -223,85 +222,76 @@
         </div>
     </header>
 
-    <!-- LIVE VIDEO STREAM THEATER LAYER -->
+    <!-- INTEGRATED CONSOLE PLAYER SECTION -->
     <section class="player-section">
         <div class="player-wrapper">
-            <!-- Automatically initialized with Naruto streaming source on payload boot -->
-            <iframe id="video-screen" src="https://vidsrc.me" allowfullscreen scrolling="no"></iframe>
+            <!-- Programmed to load a default initial stream matching the new working domain requirement -->
+            <iframe id="video-stream" src="https://vidsrc.sh" allowfullscreen></iframe>
         </div>
         <div class="player-details">
-            <h2 id="player-title">Playing: Naruto Shippuden</h2>
-            <p id="player-status">Streaming Client: Active</p>
+            <h2>Playing: Naruto Shippuden</h2>
+            <p>Streaming Client: Active</p>
         </div>
     </section>
 
-    <!-- ADSTERRA SLOT 2: BANNER AD ABOVE CONTENT -->
-    <div class="ad-container"></div>
-
-    <!-- MAIN INTERFACE BODY CONTAINER -->
+    <!-- MAIN DISPLAY AREA -->
     <main class="container">
-        <h2 class="section-title">Trending Anime</h2>
-        
-        <!-- Cards are written directly into the HTML structure now to completely prevent stuck scripts -->
-        <div class="anime-grid">
-            
-            <!-- Card 1: Naruto -->
-            <div class="anime-card" onclick="startStream('Naruto')">
-                <div class="anime-poster-wrapper">
-                    <img src="https://weserv.nl" alt="Naruto">
-                </div>
-                <div class="anime-card-info">
-                    <h3>Naruto Shippuden</h3>
-                    <p>▶ Click to Play</p>
-                </div>
-            </div>
-
-            <!-- Card 2: One Piece -->
-            <div class="anime-card" onclick="startStream('One Piece')">
-                <div class="anime-poster-wrapper">
-                    <img src="https://weserv.nl" alt="One Piece">
-                </div>
-                <div class="anime-card-info">
-                    <h3>One Piece</h3>
-                    <p>▶ Click to Play</p>
-                </div>
-            </div>
-
-            <!-- Card 3: Demon Slayer -->
-            <div class="anime-card" onclick="startStream('Demon Slayer')">
-                <div class="anime-poster-wrapper">
-                    <img src="https://weserv.nl" alt="Demon Slayer">
-                </div>
-                <div class="anime-card-info">
-                    <h3>Demon Slayer</h3>
-                    <p>▶ Click to Play</p>
-                </div>
-            </div>
-
-            <!-- Card 4: Jujutsu Kaisen -->
-            <div class="anime-card" onclick="startStream('Jujutsu Kaisen')">
-                <div class="anime-poster-wrapper">
-                    <img src="https://weserv.nl" alt="Jujutsu Kaisen">
-                </div>
-                <div class="anime-card-info">
-                    <h3>Jujutsu Kaisen</h3>
-                    <p>▶ Click to Play</p>
-                </div>
-            </div>
-
+        <div class="section-title">Trending Anime</div>
+        <!-- Target identifier added right here for programmatic data population -->
+        <div class="anime-grid" id="trending-grid">
+            <!-- Jikan engine renders cards here dynamically on startup -->
         </div>
     </main>
 
-    <!-- ADSTERRA SLOT 3: BANNER AD BELOW CONTENT -->
-    <div class="ad-container"></div>
-
-    <!-- MAIN RENDERING ENGINE SCRIPTS -->
+    <!-- JIKAN DATA GENERATOR CONTEXT SCRIPT -->
     <script>
-        const videoScreen = document.getElementById('video-screen');
-        const playerTitle = document.getElementById('player-title');
-        const playerStatus = document.getElementById('player-status');
+        const JIKAN_BASE_URL = 'https://jikan.moe';
+        const STREAM_BASE_URL = 'https://vidsrc.sh'; 
+        const FALLBACK_IMAGE = 'data:image/svg+xml;utf8,<svg xmlns="http://w3.org" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%231a1a1a"/><text x="50" y="55" font-family="Arial" font-size="10" fill="%23888" text-anchor="middle">No Poster</text></svg>';
 
-        // Linear router parameters execute cleanly matching tap coordinates instantly
-        function startStream(titleKeyword) {
-            playerTitle.innerText = `Playing: ${titleKeyword}`;
-            playerStatus.innerText = "Connecting to streaming server nodes...";
+        // 1. POPULATE LANDING GRID DYNAMICALLY
+        async function fetchTrendingCatalog() {
+            const container = document.getElementById('trending-grid');
+            if (!container) return;
+
+            try {
+                const res = await fetch(`${JIKAN_BASE_URL}/top/anime?filter=bypopularity&limit=12`);
+                const parsed = await res.json();
+                const animeData = parsed.data;
+
+                container.innerHTML = ''; // Wipe design placeholders
+
+                animeData.forEach(anime => {
+                    const thumbnail = anime.images?.jpg?.large_image_url || anime.images?.jpg?.image_url || FALLBACK_IMAGE;
+                    const card = document.createElement('div');
+                    card.className = 'anime-card';
+                    card.onclick = () => launchVideoPlayer(anime.mal_id, anime.title);
+
+                    card.innerHTML = `
+                        <div class="anime-poster-wrapper">
+                            <img src="${thumbnail}" alt="${anime.title}" loading="lazy">
+                        </div>
+                        <div class="anime-card-info">
+                            <h3>${anime.title}</h3>
+                            <p>⭐ Score: ${anime.score || 'N/A'}</p>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (err) {
+                console.error("Failed to acquire trending resources:", err);
+                container.innerHTML = `<p style="padding: 20px; color: #ff0000; width: 100%; text-align: center;">Unable to pull down catalog.</p>`;
+            }
+        }
+
+        // 2. SEARCH HANDLER COMPONENT
+        async function executeSearchAction() {
+            const input = document.getElementById('anime-search');
+            const container = document.getElementById('trending-grid');
+            const heading = document.querySelector('.section-title');
+
+            if (!input || !container) return;
+            const phrase = input.value.trim();
+            if (!phrase) return;
+
+            if (heading) heading.textContent = `Search Results for: "${phrase}"`;
