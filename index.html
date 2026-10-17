@@ -42,7 +42,7 @@
             max-width: 400px;
         }
 
-        /* --- VIDEO PLAYER COMPONENT (YOUR CSS) --- */
+        /* --- VIDEO PLAYER COMPONENT --- */
         .player-container {
             padding: 15px 0;
             display: flex;
@@ -70,7 +70,7 @@
             border: none;
         }
 
-        /* --- PLAYER PLACEHOLDER GRAPHICS (YOUR CSS) --- */
+        /* --- PLAYER PLACEHOLDER GRAPHICS --- */
         .player-placeholder {
             position: absolute;
             top: 0;
@@ -124,7 +124,7 @@
             margin: 0;
         }
 
-        /* --- MAIN CONTENT LAYOUT (YOUR CSS) --- */
+        /* --- MAIN CONTENT LAYOUT --- */
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -141,7 +141,7 @@
             letter-spacing: 0.5px;
         }
 
-        /* --- CARDS GRID SYSTEM (YOUR CSS) --- */
+        /* --- CARDS GRID SYSTEM --- */
         .anime-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -229,72 +229,95 @@
     <div class="container">
         <div class="section-title">Trending Anime</div>
         <div class="anime-grid" id="anime-display-grid">
-            <!-- Dynamic Jikan Core cards load directly here -->
             <div style="color: #666; grid-column: 1/-1; text-align: center; padding: 40px 0;">Loading Engine Components...</div>
         </div>
     </div>
 
     <!-- --- CORE ENGINE JAVASCRIPT --- -->
     <script>
-        // Endpoint Configurations
         const JIKAN_TOP_ENDPOINT = 'https://jikan.moe';
         const VIDSRC_EMBED_BASE = 'https://vidsrc.to';
-        const BROWSER_CACHE_KEY = 'ah_trending_cache';
-        const CACHE_EXPIRY_LIMIT = 15 * 60 * 1000; // 15-Minute Safety Threshold
+
+        // HARDCODED FALLBACK DATA: This ensures cards display instantly even if Jikan rate-limits you
+        const fallbackAnimeData = [
+            {
+                mal_id: "21",
+                title: "One Piece",
+                score: 8.72,
+                type: "TV",
+                image: "https://myanimelist.net"
+            },
+            {
+                mal_id: "1735",
+                title: "Naruto Shippuden",
+                score: 8.21,
+                type: "TV",
+                image: "https://myanimelist.net"
+            },
+            {
+                mal_id: "5114",
+                title: "Fullmetal Alchemist: Brotherhood",
+                score: 9.10,
+                type: "TV",
+                image: "https://myanimelist.net"
+            },
+            {
+                mal_id: "38000",
+                title: "Demon Slayer: Kimetsu no Yaiba",
+                score: 8.47,
+                type: "TV",
+                image: "https://myanimelist.net"
+            }
+        ];
 
         /**
-         * Fetches top-tier anime from Jikan and safely maps images to layout elements
+         * Renders the cards into the grid container layout
          */
-        async function runAnimeEngine() {
+        function renderCards(animeArray, isFallback = false) {
             const grid = document.getElementById('anime-display-grid');
             if (!grid) return;
+            
+            grid.innerHTML = ''; 
 
-            try {
-                // Rate limit defensive handling (Vercel safe setup)
-                const cacheData = localStorage.getItem(BROWSER_CACHE_KEY);
-                const cacheStamp = localStorage.getItem(`${BROWSER_CACHE_KEY}_stamp`);
-                const timestampNow = Date.now();
-
-                let collection = [];
-
-                if (cacheData && cacheStamp && (timestampNow - cacheStamp < CACHE_EXPIRY_LIMIT)) {
-                    collection = JSON.parse(cacheData);
+            animeArray.forEach(item => {
+                let mediaCover = '';
+                let primaryTitle = '';
+                
+                if (isFallback) {
+                    mediaCover = item.image;
+                    primaryTitle = item.title;
                 } else {
-                    const networkResponse = await fetch(JIKAN_TOP_ENDPOINT);
-                    if (!networkResponse.ok) throw new Error(`Server Response Status: ${networkResponse.status}`);
-                    
-                    const packingData = await networkResponse.json();
-                    collection = packingData.data || [];
-
-                    // Commit to storage cache layer
-                    localStorage.setItem(BROWSER_CACHE_KEY, JSON.stringify(collection));
-                    localStorage.setItem(`${BROWSER_CACHE_KEY}_stamp`, timestampNow.toString());
+                    mediaCover = item.images?.jpg?.large_image_url || item.images?.jpg?.image_url;
+                    primaryTitle = item.title_english || item.title;
                 }
 
-                // Render dynamic item cards
-                grid.innerHTML = ''; 
+                const displayTitle = primaryTitle.replace(/"/g, '&quot;').replace(/'/g, "\\'");
 
-                collection.slice(0, 12).forEach(item => {
-                    // RESOLVED PATH: Accessing deep nested properties safely
-                    const mediaCover = item.images?.jpg?.large_image_url || 
-                                       item.images?.jpg?.image_url || 
-                                       'https://placehold.co';
-
-                    const primaryTitle = item.title_english || item.title;
-                    const displayTitle = primaryTitle.replace(/"/g, '&quot;').replace(/'/g, "\\'");
-
-                    const elementCode = `
-                        <div class="anime-card" style="cursor: pointer;" onclick="initializeStream('${item.mal_id}', '${displayTitle}')">
-                            <div class="card-image-wrapper" style="background-image: url('${mediaCover}');"></div>
-                            <div class="card-details">
-                                <span class="banner-title">${item.type || 'ANIME'}</span>
-                                <h3>${primaryTitle}</h3>
-                                <span class="rating">★ ${item.score || 'N/A'}</span>
-                            </div>
+                const elementCode = `
+                    <div class="anime-card" style="cursor: pointer;" onclick="initializeStream('${item.mal_id}', '${displayTitle}')">
+                        <div class="card-image-wrapper" style="background-image: url('${mediaCover}');"></div>
+                        <div class="card-details">
+                            <span class="banner-title">${item.type || 'ANIME'}</span>
+                            <h3>${primaryTitle}</h3>
+                            <span class="rating">★ ${item.score || 'N/A'}</span>
                         </div>
-                    `;
-                    grid.insertAdjacentHTML('beforeend', elementCode);
-                });
+                    </div>
+                `;
+                grid.insertAdjacentHTML('beforeend', elementCode);
+            });
+        }
 
-            } catch (err) {
-                console.error("Engine failure exception caught:", err);
+        /**
+         * Core network handler with automatic hardcoded fallback execution
+         */
+        async function runAnimeEngine() {
+            try {
+                const networkResponse = await fetch(JIKAN_TOP_ENDPOINT);
+                
+                if (!networkResponse.ok) {
+                    throw new Error(`API Error: ${networkResponse.status}`);
+                }
+                
+                const packingData = await networkResponse.json();
+                
+                if (packingData.data && packingData.data.length > 0) {
