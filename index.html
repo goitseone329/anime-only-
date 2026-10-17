@@ -69,7 +69,7 @@
             border-radius: 6px;
             overflow: hidden;
         }
-        .player-wrapper iframe {
+        .player-wrapper iframe, .player-wrapper video {
             position: absolute;
             top: 0;
             left: 0;
@@ -132,6 +132,7 @@
             position: relative;
             width: 100%;
             padding-top: 140%; /* Strict aspect ratio for posters */
+            background-color: #111;
         }
         .anime-poster-wrapper img {
             position: absolute;
@@ -163,15 +164,15 @@
     <header>
         <div class="logo-box">AH</div>
         <div class="search-container">
-            <input type="text" placeholder="Search Anime...">
+            <input type="text" id="search-bar" placeholder="Search Anime...">
         </div>
     </header>
 
     <!-- CORE INTEGRATED PLAYER CONSOLE -->
     <section class="player-section">
-        <div class="player-wrapper">
-            <!-- Safe default YouTube embed link that does not block cross-origin loading layouts -->
-            <iframe id="video-frame" src="https://youtube.com" allowfullscreen></iframe>
+        <div class="player-wrapper" id="video-container">
+            <!-- Functional raw test trailer clip used by default to bypass platform iframe blockers -->
+            <video id="main-video-player" src="https://googleapis.com" controls poster="https://unsplash.com"></video>
         </div>
         <div class="player-details">
             <h2 id="current-title">Playing: Welcome to Anime Heaven</h2>
@@ -183,21 +184,21 @@
     <main class="container">
         <h2 class="section-title">Trending Anime</h2>
         <div class="anime-grid" id="trending-grid">
-            <!-- JavaScript populates catalog objects dynamically inside this system -->
+            <!-- JavaScript populates catalog objects dynamically here -->
         </div>
     </main>
 
     <!-- METADATA GENERATOR & CORE CONTROLLER LAYER -->
     <script>
-        // Stable alternate endpoint configuration rule
         const JIKAN_API_URL = 'https://jikan.moe';
+        let currentAnimeList = [];
         
-        // BACKUP DATA ENGINE: Keeps your grid loaded clean if the server gets rate-limited by Vercel traffic
+        // BACKUP DATA ENGINE: Replaced MAL links with hotlink-safe Unsplash thumbnail design assets
         const fallbackAnimeData = [
-            { mal_id: 21, title: "One Piece", score: 8.72, images: { jpg: { large_image_url: "https://myanimelist.net" } } },
-            { mal_id: 1735, title: "Naruto Shippuden", score: 8.21, images: { jpg: { large_image_url: "https://myanimelist.net" } } },
-            { mal_id: 31964, title: "My Hero Academia", score: 7.89, images: { jpg: { large_image_url: "https://myanimelist.net" } } },
-            { mal_id: 40028, title: "Attack on Titan", score: 8.81, images: { jpg: { large_image_url: "https://myanimelist.net" } } }
+            { mal_id: 21, title: "One Piece", score: 8.72, images: { jpg: { large_image_url: "https://unsplash.com" } } },
+            { mal_id: 1735, title: "Naruto Shippuden", score: 8.21, images: { jpg: { large_image_url: "https://unsplash.com" } } },
+            { mal_id: 31964, title: "My Hero Academia", score: 7.89, images: { jpg: { large_image_url: "https://unsplash.com" } } },
+            { mal_id: 40028, title: "Attack on Titan", score: 8.81, images: { jpg: { large_image_url: "https://unsplash.com" } } }
         ];
 
         // Maps MAL profile unique identifiers to free responsive streaming containers
@@ -205,27 +206,26 @@
             return `https://vidsrc.to{malId}/1/1`;
         }
 
-        // Execution engine handles live api handshakes with safety exception layers
         async function fetchTrendingAnime() {
             try {
                 const response = await fetch(JIKAN_API_URL);
-                if (!response.ok) throw new Error(`API returned response status error: ${response.status}`);
+                if (!response.ok) throw new Error(`API status error: ${response.status}`);
                 
                 const result = await response.json();
                 if (result && result.data && result.data.length > 0) {
-                    renderAnimeGrid(result.data);
+                    currentAnimeList = result.data;
+                    renderAnimeGrid(currentAnimeList);
                 } else {
                     throw new Error("Empty array parsing check failed.");
                 }
             } catch (error) {
-                console.warn("Jikan network layer blocked or timed out. Falling back to core storage array:", error);
-                // Safe degrade engine activation
-                renderAnimeGrid(fallbackAnimeData);
+                console.warn("Jikan network layer blocked or timed out. Falling back to local array assets:", error);
+                currentAnimeList = fallbackAnimeData;
+                renderAnimeGrid(currentAnimeList);
                 document.getElementById('current-status').innerText = "Streaming Client: Active (Running on Backup Data Node)";
             }
         }
 
-        // Generates interactive list templates
         function renderAnimeGrid(animeList) {
             const gridContainer = document.getElementById('trending-grid');
             gridContainer.innerHTML = ''; 
@@ -236,7 +236,7 @@
                 
                 card.innerHTML = `
                     <div class="anime-poster-wrapper">
-                        <img src="${anime.images.jpg.large_image_url}" alt="${anime.title}" loading="lazy">
+                        <img src="${anime.images.jpg.large_image_url}" alt="${anime.title}" loading="lazy" onerror="this.src='https://unsplash.com'">
                     </div>
                     <div class="anime-card-info">
                         <h3>${anime.title}</h3>
@@ -252,9 +252,9 @@
             });
         }
 
-        // Performs video swap actions smoothly 
+        // Programmatically hot-swaps player layouts seamlessly when choosing a stream target
         function loadAnimeStream(malId, title) {
-            const videoFrame = document.getElementById('video-frame');
+            const container = document.getElementById('video-container');
             const currentTitle = document.getElementById('current-title');
             const currentStatus = document.getElementById('current-status');
 
@@ -263,11 +263,10 @@
             currentTitle.innerText = `Playing: ${title}`;
             currentStatus.innerText = `Streaming Client: Active (ID: ${malId} - Episode 1)`;
             
-            videoFrame.src = sourceUrl;
+            // Replaces inner HTML with an explicit streaming iframe node to clear out previous player memory blocks
+            container.innerHTML = `<iframe src="${sourceUrl}" allowfullscreen></iframe>`;
+            
             document.querySelector('.player-section').scrollIntoView({ behavior: 'smooth' });
         }
 
-        window.addEventListener('DOMContentLoaded', fetchTrendingAnime);
-    </script>
-</body>
-</html>
+        // Local search filter input bar handler
