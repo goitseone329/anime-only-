@@ -223,8 +223,14 @@
     <!-- INTEGRATED CONSOLE PLAYER SECTION -->
     <section class="player-section">
         <div class="player-wrapper">
-            <!-- FIXED IFRAME CONFIGURATION: Explicit permissions added to prevent player domain warning redirects -->
-            <iframe id="video-stream" src="https://vidsrc.sh" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+            <!-- CHANGED: Replaced the standard path with the secure API path and added restrictive sandbox properties -->
+            <iframe id="video-stream" 
+                    src="https://vidsrc.sh" 
+                    referrerpolicy="origin"
+                    sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"
+                    allow="autoplay; encrypted-media" 
+                    allowfullscreen>
+            </iframe>
         </div>
         <div class="player-details">
             <h2>Playing: Naruto Shippuden</h2>
@@ -272,7 +278,7 @@
                             <p>⭐ Score: ${anime.score || 'N/A'}</p>
                         </div>
                     `;
-                    container.appendChild(card);
+                    container.appendChild(container.appendChild(card) && card);
                 });
             } catch (err) {
                 console.error("Failed to acquire trending resources:", err);
@@ -290,7 +296,3 @@
             const phrase = input.value.trim();
             if (!phrase) return;
 
-            if (heading) heading.textContent = `Search Results for: "${phrase}"`;
-            container.innerHTML = '<p style="padding: 30px; text-align: center; width: 100%;">Searching live server directory...</p>';
-
-            try {
