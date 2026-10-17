@@ -78,7 +78,7 @@
             border: none;
         }
         
-        /* BUILT-IN STYLED PLAYER BACKGROUND PLACEMENT */
+        /* PLAYER PLACEHOLDER GRAPHICS */
         .player-placeholder {
             display: flex;
             flex-direction: column;
@@ -190,7 +190,6 @@
     <header>
         <div class="logo-box">AH</div>
         <div class="search-container">
-            <!-- FIXED: Added explicit id matching parameter attribute here -->
             <input type="text" id="search-bar" placeholder="Search Anime...">
         </div>
     </header>
@@ -198,7 +197,6 @@
     <!-- CORE INTEGRATED PLAYER CONSOLE -->
     <section class="player-section">
         <div class="player-wrapper" id="video-container">
-            <!-- SAFE SYSTEM PLACEHOLDER: Bypasses faulty sample assets entirely using pure CSS graphics -->
             <div class="player-placeholder">
                 <div class="spinner"></div>
                 <p style="font-size: 0.9rem; font-weight: bold; color: #aaa;">Ready to Stream</p>
@@ -215,16 +213,15 @@
     <main class="container">
         <h2 class="section-title">Trending Anime</h2>
         <div class="anime-grid" id="trending-grid">
-            <!-- JavaScript targets this destination tag securely -->
+            <!-- Populated immediately by local fallback engine -->
         </div>
     </main>
 
     <!-- METADATA GENERATOR & CORE CONTROLLER LAYER -->
     <script>
         const JIKAN_API_URL = 'https://jikan.moe';
-        let currentAnimeList = [];
         
-        // CORNERSTONE RECOVERY RECORD DATA: Standard fallback backup configurations
+        // SAFE FALLBACK ASSETS: Loaded instantly so your screen never shows an empty grid layout
         const fallbackAnimeData = [
             { mal_id: 21, title: "One Piece", score: 8.72, images: { jpg: { large_image_url: "https://unsplash.com" } } },
             { mal_id: 1735, title: "Naruto Shippuden", score: 8.21, images: { jpg: { large_image_url: "https://unsplash.com" } } },
@@ -232,32 +229,18 @@
             { mal_id: 40028, title: "Attack on Titan", score: 8.81, images: { jpg: { large_image_url: "https://unsplash.com" } } }
         ];
 
+        // Set running application scope dataset to our default local backup records first
+        let currentAnimeList = [...fallbackAnimeData];
+
         function getStreamingSourceUrl(malId) {
             return `https://vidsrc.to{malId}/1/1`;
         }
 
-        async function fetchTrendingAnime() {
-            try {
-                const response = await fetch(JIKAN_API_URL);
-                if (!response.ok) throw new Error(`Network status code error: ${response.status}`);
-                
-                const result = await response.json();
-                if (result && result.data && result.data.length > 0) {
-                    currentAnimeList = result.data;
-                    renderAnimeGrid(currentAnimeList);
-                } else {
-                    throw new Error("Empty endpoint data arrays.");
-                }
-            } catch (error) {
-                console.warn("API query limit fallback protocol initialized:", error);
-                currentAnimeList = fallbackAnimeData;
-                renderAnimeGrid(currentAnimeList);
-                document.getElementById('current-status').innerText = "Streaming Client: Active (Running on Backup Data Node)";
-            }
-        }
-
+        // Programmatically generate cards into your template markup
         function renderAnimeGrid(animeList) {
             const gridContainer = document.getElementById('trending-grid');
+            if (!gridContainer) return;
+            
             gridContainer.innerHTML = ''; 
 
             if (!animeList || animeList.length === 0) {
@@ -283,3 +266,21 @@
                     loadAnimeStream(anime.mal_id, anime.title);
                 });
 
+                gridContainer.appendChild(card);
+            });
+        }
+
+        // Background query function tries to pull extra records silently
+        async function fetchLiveTrendingAnime() {
+            try {
+                const response = await fetch(JIKAN_API_URL);
+                if (!response.ok) throw new Error(`API error code: ${response.status}`);
+                
+                const result = await response.json();
+                if (result && result.data && result.data.length > 0) {
+                    console.log("Live Jikan API synced successfully.");
+                    currentAnimeList = result.data;
+                    renderAnimeGrid(currentAnimeList);
+                    document.getElementById('current-status').innerText = "Streaming Client: Active (Live Cloud Node Online)";
+                }
+            } catch (error) {
