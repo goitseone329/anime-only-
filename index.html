@@ -272,7 +272,8 @@
 
     <!-- --- DYNAMIC STREAM ROUTINE --- -->
     <script>
-        const VIDSRC_EMBED_BASE = 'https://vidsrc.to';
+        // UPDATED: Changed configuration base URL to target VidLink directly
+        const VIDLINK_EMBED_BASE = 'https://vidlink.pro';
 
         function initializeStream(id, streamTitle) {
             const embedTarget = document.getElementById('video-stream-frame');
@@ -285,10 +286,10 @@
             // Activate loading configuration display
             loaderOverlay.style.display = 'flex';
             if (interfaceHeading) interfaceHeading.textContent = `Playing: ${streamTitle}`;
-            if (auxiliaryStatus) auxiliaryStatus.textContent = 'Streaming Client: Locating Node...';
+            if (auxiliaryStatus) auxiliaryStatus.textContent = 'Streaming Client: Connecting VidLink...';
 
-            // FIXED ROUTING: Added forward slashes to target the stream correctly
-            embedTarget.src = `${VIDSRC_EMBED_BASE}/${id}/1`;
+            // FIXED ROUTING: Configured to use VidLink's expected query parameter format
+            embedTarget.src = `${VIDLINK_EMBED_BASE}/${id}?episode=1`;
 
             // Dismantle loader asset panel instantly upon iframe load
             embedTarget.onload = function() {
