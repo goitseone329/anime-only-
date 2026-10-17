@@ -307,7 +307,6 @@
       const pathSegments = window.location.pathname.split('/').filter(segment => segment !== "");
       
       if (pathSegments.length >= 2) {
-        // Safe check whether route contains the word 'anime' or directly jumps to ID parameters
         const isNamedRoute = pathSegments[0] === 'anime';
         const targetId = isNamedRoute ? pathSegments[1] : pathSegments[0];
         const targetEp = isNamedRoute ? pathSegments[2] : pathSegments[1];
@@ -376,3 +375,4 @@
      * Renders array data blocks down to individual UI card nodes
      */
     function renderCardMatrix(animeArray) {
+      const gridContainer = document.getElementById('trending-anime-grid');
