@@ -75,9 +75,7 @@
             align-items: center;
         }
         .search-icon-btn svg {
-            width: 16px;
-            height: 16px;
-            fill: #ff0000;
+            width: 16px; height: 16px; fill: #ff0000;
         }
 
         /* INTEGRATED VIDEO PLAYER CONSOLE CONTAINER */
@@ -102,11 +100,7 @@
         }
         .player-wrapper iframe {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
+            top: 0; left: 0; width: 100%; height: 100%; border: none;
         }
         .player-details {
             width: 90%;
@@ -115,20 +109,15 @@
             text-align: left;
         }
         .player-details h2 {
-            font-size: 1.1rem;
-            color: #ff0000;
-            margin-bottom: 4px;
+            font-size: 1.1rem; color: #ff0000; margin-bottom: 4px;
         }
         .player-details p {
-            font-size: 0.85rem;
-            color: #888;
+            font-size: 0.85rem; color: #888;
         }
 
         /* MAIN CONTENT LAYOUT */
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 25px 15px;
+            max-width: 1200px; margin: 0 auto; padding: 25px 15px;
         }
         .section-title {
             font-size: 1.4rem;
@@ -160,44 +149,19 @@
             box-shadow: 0 5px 15px rgba(250, 0, 0, 0.2);
         }
         .anime-poster-wrapper {
-            position: relative;
-            width: 100%;
-            padding-top: 140%;
-            overflow: hidden;
-            background-color: #1a1a1a;
+            position: relative; width: 100%; padding-top: 140%; overflow: hidden; background-color: #1a1a1a;
         }
         .anime-poster-wrapper img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;
         }
         .anime-card-info {
             padding: 10px;
         }
         .anime-card-info h3 {
-            font-size: 0.85rem;
-            margin-bottom: 4px;
-            color: #fff;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            font-size: 0.85rem; margin-bottom: 4px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
         .anime-card-info p {
-            font-size: 0.75rem;
-            color: #ff0000;
-        }
-
-        /* ADSTERRA PLACEHOLDER BLOCKS */
-        .ad-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 15px auto;
-            width: 100%;
-            min-height: 90px;
+            font-size: 0.75rem; color: #ff0000;
         }
     </style>
 </head>
@@ -223,7 +187,7 @@
     <!-- INTEGRATED CONSOLE PLAYER SECTION -->
     <section class="player-section">
         <div class="player-wrapper">
-            <!-- UPGRADED PLAYER: Initial startup video utilizes the clean VidLink layout framework -->
+            <!-- FIXED STARTUP PATHWAY: Set directly to Naruto's verified global series catalog key -->
             <iframe id="video-stream" src="https://vidlink.pro" allowfullscreen></iframe>
         </div>
         <div class="player-details">
@@ -236,11 +200,11 @@
     <main class="container">
         <div class="section-title">Trending Anime</div>
         <div class="anime-grid" id="trending-grid">
-            <!-- Dynamic catalog entries populate here -->
+            <!-- Dynamic catalog items are loaded here interactively -->
         </div>
     </main>
 
-    <!-- JIKAN & VIDLINK INTEGRATION SYSTEM SCRIPT -->
+    <!-- JIKAN & VIDLINK AUTO-RESOLUTION CONTEXT ENGINE SCRIPT -->
     <script>
         const JIKAN_BASE_URL = 'https://jikan.moe';
         const FALLBACK_IMAGE = 'data:image/svg+xml;utf8,<svg xmlns="http://w3.org" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%231a1a1a"/><text x="50" y="55" font-family="Arial" font-size="10" fill="%23888" text-anchor="middle">No Poster</text></svg>';
@@ -294,3 +258,15 @@
             container.innerHTML = '<p style="padding: 30px; text-align: center; width: 100%;">Searching live server directory...</p>';
 
             try {
+                const res = await fetch(`${JIKAN_BASE_URL}/anime?q=${encodeURIComponent(phrase)}&limit=12`);
+                const parsed = await res.json();
+                const matched = parsed.data;
+
+                container.innerHTML = '';
+
+                if (!matched || matched.length === 0) {
+                    container.innerHTML = '<p style="padding: 30px; text-align: center; width: 100%; color: #888;">No matches located.</p>';
+                    return;
+                }
+
+                matched.forEach(anime => {
