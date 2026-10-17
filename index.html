@@ -296,7 +296,7 @@
     </div>
   </div>
 
-  <!-- --- DYNAMIC DISPATCH ENGINE --- -->
+  <!-- --- DYNAMIC DISPATCH ENGINE WITH ROUTING --- -->
   <script>
     // System Configuration Coordinates
     const JIKAN_API_BASE = 'https://jikan.moe';
@@ -308,7 +308,36 @@
     let activeAnimeTitle = "";
 
     /**
-     * Dispatches runtime request targets to populate UI card matrices (Default Trending View)
+     * Initializes the app and checks if the URL contains a direct link to an anime
+     */
+    async function initApp() {
+      // Parse current URL path segments (e.g., /anime/12345/1)
+      const pathSegments = window.location.pathname.split('/').filter(segment => segment !== "");
+      
+      // If URL path matches pattern /anime/{id}/{episode}
+      if (pathSegments[0] === 'anime' && pathSegments[1]) {
+        const targetId = pathSegments[1];
+        const targetEp = pathSegments[2] || 1;
+        
+        // Fetch show details first from Jikan to construct controls
+        try {
+          const response = await fetch(`${JIKAN_API_BASE}/anime/${targetId}`);
+          const result = await response.json();
+          if (result.data) {
+            prepareStreamNode(result.data.mal_id, result.data.title, result.data.episodes || 1);
+            switchEpisode(parseInt(targetEp));
+          }
+        } catch (e) {
+          console.error("Failed handling direct route parameters", e);
+        }
+      }
+      
+      // Load selection grid matching current state configuration
+      loadTrendingAnime();
+    }
+
+    /**
+     * Dispatches runtime request targets to populate UI card matrices
      */
     async function loadTrendingAnime() {
       document.getElementById('gridTitleDisplay').textContent = "Trending Anime";
@@ -323,7 +352,7 @@
         renderCardMatrix(result.data);
       } catch (error) {
         console.error('API Pipeline Break:', error);
-        gridContainer.innerHTML = `<div class="loading-text" style="color: #ff0000;">Engine initialization failed. Pipeline error context logs.</div>`;
+        gridContainer.innerHTML = `<div class="loading-text" style="color: #ff0000;">Engine initialization failed.</div>`;
       }
     }
 
@@ -344,31 +373,3 @@
         const response = await fetch(`${JIKAN_API_BASE}/anime?q=${encodeURIComponent(query)}&limit=12`);
         const result = await response.json();
         renderCardMatrix(result.data);
-      } catch (error) {
-        console.error('Search Pipeline Break:', error);
-        gridContainer.innerHTML = `<div class="loading-text" style="color: #ff0000;">Search pipeline failed. Query parsing logs aborted.</div>`;
-      }
-    }
-
-    /**
-     * Renders array data blocks down to individual UI card nodes
-     */
-    function renderCardMatrix(animeArray) {
-      const gridContainer = document.getElementById('trending-anime-grid');
-      gridContainer.innerHTML = '';
-
-      if (!animeArray || animeArray.length === 0) {
-        gridContainer.innerHTML = `<div class="loading-text">No target data streams found matching current query profile.</div>`;
-        return;
-      }
-
-      animeArray.forEach(anime => {
-        const card = document.createElement('div');
-        card.className = 'anime-card';
-        
-        card.addEventListener('click', () => {
-          // Pass absolute total episode count to bootstrap the episode matrix control panel
-          prepareStreamNode(anime.mal_id, anime.title, anime.episodes || 1);
-        });
-
-        card.innerHTML = `
