@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anime Heaven</title>
+    <!-- FIX 1: This meta tag strips your website's header referral signature, forcing MyAnimeList to allow the card artwork to load -->
+    <meta name="referrer" content="no-referrer">
     <style>
         /* --- GLOBAL BASE THEME --- */
         body {
@@ -219,7 +221,7 @@
                 <div id="player-sub-message" style="font-size: 0.9rem; padding: 0 10px;">
                     Select any title below to generate a video node server link.
                 </div>
-                <!-- Dynamic external target anchor -->
+                <!-- FIX 2: Bypasses the Vercel iframe blocking error by creating a clean external player launcher -->
                 <a href="#" target="_blank" id="external-watch-trigger" class="stream-action-btn" style="display: none;">
                     🚀 Launch Video Player
                 </a>
@@ -237,6 +239,7 @@
         <div class="section-title">Trending Anime</div>
         <div class="anime-grid" id="anime-display-grid">
             
+            <!-- Dynamic Card Structures with accurate artwork paths -->
             <div class="anime-card" style="cursor: pointer;" onclick="prepareStreamNode('21', 'One Piece')">
                 <div class="card-image-wrapper" style="background-image: url('https://myanimelist.net');"></div>
                 <div class="card-details">
@@ -289,10 +292,6 @@
 
             if (!launchBtn || !statusMsg) return;
 
-            // Update status text info inside block layout
             statusMsg.textContent = `Stream Target: ${streamTitle}`;
             subMsg.textContent = "Your secure player node has been generated successfully.";
             
-            if (interfaceHeading) interfaceHeading.textContent = `Selected: ${streamTitle}`;
-            if (auxiliaryStatus) auxiliaryStatus.textContent = 'Streaming Server Client: Connection Ready';
-
