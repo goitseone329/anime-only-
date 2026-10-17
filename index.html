@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Anime Heaven</title>
-  <!-- FIX 1: This hides your Vercel URL info from referrers -->
   <meta name="referrer" content="no-referrer">
   <style>
     /* --- GLOBAL BASE THEME --- */
@@ -121,7 +120,7 @@
 
     /* --- DYNAMIC EPISODE SELECTOR LAYOUT --- */
     .episode-control-panel {
-      display: none; /* Injected on active selection */
+      display: none;
       background-color: #0e0e0e;
       border: 1px solid #1a1a1a;
       border-radius: 4px;
@@ -147,7 +146,6 @@
       padding-right: 5px;
     }
 
-    /* Custom scrollbar for episode box */
     .episode-grid::-webkit-scrollbar {
       width: 6px;
     }
@@ -268,7 +266,6 @@
 
   <div class="player-container">
     <div class="player-wrapper">
-      <!-- Media Embed Area -->
       <div id="placeholder-screen" class="player-placeholder">
         <p>No media stream targeting currently loaded.</p>
         <p style="font-size: 0.8rem; color: #666;">Select a dynamic node card lower on the grid interface architecture to bind connection layout endpoints.</p>
@@ -280,7 +277,6 @@
       <h2 id="statusMsg">Playing: Select an Anime</h2>
       <p id="subMsg">Streaming Client: Idle</p>
       
-      <!-- Live Dynamic Episode Controls -->
       <div class="episode-control-panel" id="episodeControlPanel">
         <div class="episode-panel-title">Select Episode</div>
         <div class="episode-grid" id="episodeButtonGrid"></div>
@@ -290,7 +286,6 @@
 
   <div class="container">
     <div class="section-title" id="gridTitleDisplay">Trending Anime</div>
-    <!-- Clean grid node targets for runtime engine injection logic -->
     <div id="trending-anime-grid" class="anime-grid">
       <div class="loading-text">Connecting to Jikan API pipeline node structure...</div>
     </div>
@@ -298,11 +293,9 @@
 
   <!-- --- DYNAMIC DISPATCH ENGINE WITH ROUTING --- -->
   <script>
-    // System Configuration Coordinates
     const JIKAN_API_BASE = 'https://jikan.moe';
     const VIDLINK_EMBED_BASE = 'https://vidlink.pro';
 
-    // State Processing Registries
     let searchDebounceTimeout = null;
     let activeAnimeId = null;
     let activeAnimeTitle = "";
@@ -311,28 +304,28 @@
      * Initializes the app and checks if the URL contains a direct link to an anime
      */
     async function initApp() {
-      // Parse current URL path segments (e.g., /anime/12345/1)
       const pathSegments = window.location.pathname.split('/').filter(segment => segment !== "");
       
-      // If URL path matches pattern /anime/{id}/{episode}
-      if (pathSegments[0] === 'anime' && pathSegments[1]) {
-        const targetId = pathSegments[1];
-        const targetEp = pathSegments[2] || 1;
+      if (pathSegments.length >= 2) {
+        // Safe check whether route contains the word 'anime' or directly jumps to ID parameters
+        const isNamedRoute = pathSegments[0] === 'anime';
+        const targetId = isNamedRoute ? pathSegments[1] : pathSegments[0];
+        const targetEp = isNamedRoute ? pathSegments[2] : pathSegments[1];
         
-        // Fetch show details first from Jikan to construct controls
-        try {
-          const response = await fetch(`${JIKAN_API_BASE}/anime/${targetId}`);
-          const result = await response.json();
-          if (result.data) {
-            prepareStreamNode(result.data.mal_id, result.data.title, result.data.episodes || 1);
-            switchEpisode(parseInt(targetEp));
+        if (targetId && !isNaN(targetId)) {
+          try {
+            const response = await fetch(`${JIKAN_API_BASE}/anime/${targetId}`);
+            const result = await response.json();
+            if (result && result.data) {
+              prepareStreamNode(result.data.mal_id, result.data.title, result.data.episodes || 1);
+              switchEpisode(parseInt(targetEp) || 1);
+            }
+          } catch (e) {
+            console.error("Failed handling direct route parameters", e);
           }
-        } catch (e) {
-          console.error("Failed handling direct route parameters", e);
         }
       }
       
-      // Load selection grid matching current state configuration
       loadTrendingAnime();
     }
 
@@ -373,3 +366,13 @@
         const response = await fetch(`${JIKAN_API_BASE}/anime?q=${encodeURIComponent(query)}&limit=12`);
         const result = await response.json();
         renderCardMatrix(result.data);
+      } catch (error) {
+        console.error('Search Pipeline Break:', error);
+        gridContainer.innerHTML = `<div class="loading-text" style="color: #ff0000;">Search pipeline failed.</div>`;
+      }
+    }
+
+    /**
+     * Renders array data blocks down to individual UI card nodes
+     */
+    function renderCardMatrix(animeArray) {
