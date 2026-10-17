@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anime Heaven</title>
-    <!-- Removes your Vercel header referrers so MyAnimeList images display correctly -->
+    <!-- FIX 1: This hides your Vercel URL info from MyAnimeList so your card images can unblock instantly -->
     <meta name="referrer" content="no-referrer">
     <style>
         /* --- GLOBAL BASE THEME --- */
@@ -56,14 +56,14 @@
             width: 90%;
             max-width: 800px;
             position: relative;
-            padding-top: 56.25%; /* Fixed 16:9 Aspect Ratio Layout */
+            padding-top: 56.25%; /* Fixed 16:9 Aspect Ratio */
             background: linear-gradient(135deg, #111111, #020202);
             border: 2px solid #222222;
             border-radius: 6px;
             overflow: hidden;
         }
 
-        /* --- CENTRALIZED STREAMING GENERATOR INTERFACE --- */
+        /* --- CENTRALIZED PLAYER ACTIONS WINDOW --- */
         .player-placeholder {
             position: absolute;
             top: 0;
@@ -81,7 +81,7 @@
             z-index: 5;
         }
 
-        /* High-Visibility Interactive Watch Trigger Button */
+        /* Sleek Red Watch Button Layout */
         .stream-action-btn {
             background-color: #ff0000;
             color: #ffffff;
@@ -145,7 +145,7 @@
             letter-spacing: 0.5px;
         }
 
-        /* --- CARDS CATALOG GRID SYSTEM --- */
+        /* --- CARDS GRID SYSTEM --- */
         .anime-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -204,13 +204,13 @@
 </head>
 <body>
 
-    <!-- Header Navigation Bar -->
+    <!-- Header Navigation -->
     <header>
         <div class="logo-box">AH</div>
         <input type="text" class="search-bar" placeholder="Search Anime...">
     </header>
 
-    <!-- Video Action Container Section -->
+    <!-- Video Action Container Block -->
     <div class="player-container">
         <div class="player-wrapper">
             <!-- Dynamic Central Action Console -->
@@ -221,7 +221,7 @@
                 <div id="player-sub-message" style="font-size: 0.9rem; padding: 0 10px; color: #888;">
                     Select an item card below to open the secure player client node.
                 </div>
-                <!-- Dynamic external target launcher link button -->
+                <!-- FIX 2: Bypasses iframe restrictions by opening the unblocked VidLink player safely in a separate tab -->
                 <a href="#" target="_blank" id="external-watch-trigger" class="stream-action-btn" style="display: none;">
                     🚀 Launch Video Player
                 </a>
@@ -280,7 +280,7 @@
 
     <!-- --- DYNAMIC DISPATCH ENGINE --- -->
     <script>
-        // Set standard query path destination coordinates
+        // Set standard endpoint format path coordinates
         const VIDLINK_EMBED_BASE = 'https://vidlink.pro';
 
         function prepareStreamNode(id, streamTitle) {
@@ -292,6 +292,5 @@
 
             if (!launchBtn || !statusMsg) return;
 
-            // Update text tracking parameters instantly in the panel
             statusMsg.textContent = `Stream Target: ${streamTitle}`;
             subMsg.textContent = "Your connection node link has been configured safely.";
