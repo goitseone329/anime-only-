@@ -229,95 +229,73 @@
     <div class="container">
         <div class="section-title">Trending Anime</div>
         <div class="anime-grid" id="anime-display-grid">
-            <div style="color: #666; grid-column: 1/-1; text-align: center; padding: 40px 0;">Loading Engine Components...</div>
+            
+            <!-- FIXED: Hardcoded baseline elements build instantly inside the markup -->
+            <div class="anime-card" style="cursor: pointer;" onclick="initializeStream('21', 'One Piece')">
+                <div class="card-image-wrapper" style="background-image: url('https://myanimelist.net');"></div>
+                <div class="card-details">
+                    <span class="banner-title">ONE PIECE</span>
+                    <h3>One Piece</h3>
+                    <span class="rating">★ 8.72</span>
+                </div>
+            </div>
+
+            <div class="anime-card" style="cursor: pointer;" onclick="initializeStream('1735', 'Naruto Shippuden')">
+                <div class="card-image-wrapper" style="background-image: url('https://myanimelist.net');"></div>
+                <div class="card-details">
+                    <span class="banner-title">NARUTO</span>
+                    <h3>Naruto Shippuden</h3>
+                    <span class="rating">★ 8.21</span>
+                </div>
+            </div>
+
+            <div class="anime-card" style="cursor: pointer;" onclick="initializeStream('5114', 'Fullmetal Alchemist: Brotherhood')">
+                <div class="card-image-wrapper" style="background-image: url('https://myanimelist.net');"></div>
+                <div class="card-details">
+                    <span class="banner-title">TV</span>
+                    <h3>Fullmetal Alchemist: B.</h3>
+                    <span class="rating">★ 9.10</span>
+                </div>
+            </div>
+
+            <div class="anime-card" style="cursor: pointer;" onclick="initializeStream('38000', 'Demon Slayer: Kimetsu no Yaiba')">
+                <div class="card-image-wrapper" style="background-image: url('https://myanimelist.net');"></div>
+                <div class="card-details">
+                    <span class="banner-title">TV</span>
+                    <h3>Demon Slayer</h3>
+                    <span class="rating">★ 8.47</span>
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <!-- --- CORE ENGINE JAVASCRIPT --- -->
+    <!-- --- DYNAMIC STREAM ROUTINE --- -->
     <script>
-        const JIKAN_TOP_ENDPOINT = 'https://jikan.moe';
         const VIDSRC_EMBED_BASE = 'https://vidsrc.to';
 
-        // HARDCODED FALLBACK DATA: This ensures cards display instantly even if Jikan rate-limits you
-        const fallbackAnimeData = [
-            {
-                mal_id: "21",
-                title: "One Piece",
-                score: 8.72,
-                type: "TV",
-                image: "https://myanimelist.net"
-            },
-            {
-                mal_id: "1735",
-                title: "Naruto Shippuden",
-                score: 8.21,
-                type: "TV",
-                image: "https://myanimelist.net"
-            },
-            {
-                mal_id: "5114",
-                title: "Fullmetal Alchemist: Brotherhood",
-                score: 9.10,
-                type: "TV",
-                image: "https://myanimelist.net"
-            },
-            {
-                mal_id: "38000",
-                title: "Demon Slayer: Kimetsu no Yaiba",
-                score: 8.47,
-                type: "TV",
-                image: "https://myanimelist.net"
-            }
-        ];
+        function initializeStream(id, streamTitle) {
+            const embedTarget = document.getElementById('video-stream-frame');
+            const loaderOverlay = document.getElementById('video-loader');
+            const interfaceHeading = document.getElementById('now-playing-title');
+            const auxiliaryStatus = document.getElementById('client-status-text');
 
-        /**
-         * Renders the cards into the grid container layout
-         */
-        function renderCards(animeArray, isFallback = false) {
-            const grid = document.getElementById('anime-display-grid');
-            if (!grid) return;
-            
-            grid.innerHTML = ''; 
+            if (!embedTarget || !loaderOverlay) return;
 
-            animeArray.forEach(item => {
-                let mediaCover = '';
-                let primaryTitle = '';
-                
-                if (isFallback) {
-                    mediaCover = item.image;
-                    primaryTitle = item.title;
-                } else {
-                    mediaCover = item.images?.jpg?.large_image_url || item.images?.jpg?.image_url;
-                    primaryTitle = item.title_english || item.title;
-                }
+            // Activate loading configuration display
+            loaderOverlay.style.display = 'flex';
+            if (interfaceHeading) interfaceHeading.textContent = `Playing: ${streamTitle}`;
+            if (auxiliaryStatus) auxiliaryStatus.textContent = 'Streaming Client: Locating Node...';
 
-                const displayTitle = primaryTitle.replace(/"/g, '&quot;').replace(/'/g, "\\'");
+            // Establish destination frame path
+            embedTarget.src = `${VIDSRC_EMBED_BASE}${id}-episode-1`;
 
-                const elementCode = `
-                    <div class="anime-card" style="cursor: pointer;" onclick="initializeStream('${item.mal_id}', '${displayTitle}')">
-                        <div class="card-image-wrapper" style="background-image: url('${mediaCover}');"></div>
-                        <div class="card-details">
-                            <span class="banner-title">${item.type || 'ANIME'}</span>
-                            <h3>${primaryTitle}</h3>
-                            <span class="rating">★ ${item.score || 'N/A'}</span>
-                        </div>
-                    </div>
-                `;
-                grid.insertAdjacentHTML('beforeend', elementCode);
-            });
+            // Dismantle loader asset panel instantly upon canvas validation
+            embedTarget.onload = function() {
+                loaderOverlay.style.display = 'none';
+                if (auxiliaryStatus) auxiliaryStatus.textContent = 'Streaming Client: Active';
+            };
         }
-
-        /**
-         * Core network handler with automatic hardcoded fallback execution
-         */
-        async function runAnimeEngine() {
-            try {
-                const networkResponse = await fetch(JIKAN_TOP_ENDPOINT);
-                
-                if (!networkResponse.ok) {
-                    throw new Error(`API Error: ${networkResponse.status}`);
-                }
-                
-                const packingData = await networkResponse.json();
-                
-                if (packingData.data && packingData.data.length > 0) {
+    </script>
+</body>
+</html>
