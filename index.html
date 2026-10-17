@@ -69,8 +69,7 @@
             border-radius: 6px;
             overflow: hidden;
         }
-        /* UPGRADED: Handles responsive multi-source iframes or videos flawlessly */
-        .player-wrapper iframe, .player-wrapper video {
+        .player-wrapper iframe {
             position: absolute;
             top: 0;
             left: 0;
@@ -170,8 +169,8 @@
 
     <!-- CORE INTEGRATED PLAYER CONSOLE -->
     <section class="player-section">
-        <div class="player-wrapper" id="player-container">
-            <!-- Default fallback message content or default trailer frame -->
+        <div class="player-wrapper">
+            <!-- Safe default YouTube embed link that does not block cross-origin loading layouts -->
             <iframe id="video-frame" src="https://youtube.com" allowfullscreen></iframe>
         </div>
         <div class="player-details">
@@ -184,46 +183,57 @@
     <main class="container">
         <h2 class="section-title">Trending Anime</h2>
         <div class="anime-grid" id="trending-grid">
-            <!-- Dynamic Jikan API content injects cards here automatically -->
+            <!-- JavaScript populates catalog objects dynamically inside this system -->
         </div>
     </main>
 
-    <!-- JIKAN METADATA & STREAM LINK COMBINATION LAYER Script -->
+    <!-- METADATA GENERATOR & CORE CONTROLLER LAYER -->
     <script>
+        // Stable alternate endpoint configuration rule
         const JIKAN_API_URL = 'https://jikan.moe';
         
-        // Dynamic streaming path configuration 
-        // Maps Jikan MAL IDs to free embeddable delivery players
+        // BACKUP DATA ENGINE: Keeps your grid loaded clean if the server gets rate-limited by Vercel traffic
+        const fallbackAnimeData = [
+            { mal_id: 21, title: "One Piece", score: 8.72, images: { jpg: { large_image_url: "https://myanimelist.net" } } },
+            { mal_id: 1735, title: "Naruto Shippuden", score: 8.21, images: { jpg: { large_image_url: "https://myanimelist.net" } } },
+            { mal_id: 31964, title: "My Hero Academia", score: 7.89, images: { jpg: { large_image_url: "https://myanimelist.net" } } },
+            { mal_id: 40028, title: "Attack on Titan", score: 8.81, images: { jpg: { large_image_url: "https://myanimelist.net" } } }
+        ];
+
+        // Maps MAL profile unique identifiers to free responsive streaming containers
         function getStreamingSourceUrl(malId) {
-            // Using a standard embedded aggregator mirror path
             return `https://vidsrc.to{malId}/1/1`;
         }
 
-        // Fetch Top Airing Items directly via live API handshakes
+        // Execution engine handles live api handshakes with safety exception layers
         async function fetchTrendingAnime() {
             try {
                 const response = await fetch(JIKAN_API_URL);
-                const result = await response.json();
+                if (!response.ok) throw new Error(`API returned response status error: ${response.status}`);
                 
-                if (result && result.data) {
+                const result = await response.json();
+                if (result && result.data && result.data.length > 0) {
                     renderAnimeGrid(result.data);
+                } else {
+                    throw new Error("Empty array parsing check failed.");
                 }
             } catch (error) {
-                console.error("Error pulling database profiles from Jikan:", error);
-                document.getElementById('trending-grid').innerHTML = '<p style="color:#ff0000; padding:20px;">Failed to load catalog. Please refresh.</p>';
+                console.warn("Jikan network layer blocked or timed out. Falling back to core storage array:", error);
+                // Safe degrade engine activation
+                renderAnimeGrid(fallbackAnimeData);
+                document.getElementById('current-status').innerText = "Streaming Client: Active (Running on Backup Data Node)";
             }
         }
 
-        // Programmatically generate individual cards inside the responsive layout grid
+        // Generates interactive list templates
         function renderAnimeGrid(animeList) {
             const gridContainer = document.getElementById('trending-grid');
-            gridContainer.innerHTML = ''; // Sanitize initial setup loading string
+            gridContainer.innerHTML = ''; 
 
             animeList.forEach(anime => {
                 const card = document.createElement('div');
                 card.className = 'anime-card';
                 
-                // Build internal template content block
                 card.innerHTML = `
                     <div class="anime-poster-wrapper">
                         <img src="${anime.images.jpg.large_image_url}" alt="${anime.title}" loading="lazy">
@@ -234,7 +244,6 @@
                     </div>
                 `;
 
-                // Add active click-event node properties to update the player console dynamically
                 card.addEventListener('click', () => {
                     loadAnimeStream(anime.mal_id, anime.title);
                 });
@@ -243,27 +252,21 @@
             });
         }
 
-        // Handles hot-swapping stream sources safely when clicking a choice card item
+        // Performs video swap actions smoothly 
         function loadAnimeStream(malId, title) {
             const videoFrame = document.getElementById('video-frame');
             const currentTitle = document.getElementById('current-title');
             const currentStatus = document.getElementById('current-status');
 
-            // Generate the dynamic play link 
             const sourceUrl = getStreamingSourceUrl(malId);
 
-            // Update UI components simultaneously 
             currentTitle.innerText = `Playing: ${title}`;
             currentStatus.innerText = `Streaming Client: Active (ID: ${malId} - Episode 1)`;
             
-            // Swap out the underlying source frame cleanly
             videoFrame.src = sourceUrl;
-            
-            // Scroll user smoothly to the video screen layout container on mobile viewports
             document.querySelector('.player-section').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // Bootstraps runtime loops upon loading context windows successfully
         window.addEventListener('DOMContentLoaded', fetchTrendingAnime);
     </script>
 </body>
