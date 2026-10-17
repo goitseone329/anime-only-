@@ -3,73 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anime Heaven - Stream Free</title>
+    <title>Anime Heaven</title>
     <style>
-        /* GLOBAL RESET & THEME */
-        * {
-            box-sizing: border-box;
+        /* --- GLOBAL BASE THEME --- */
+        body {
+            background-color: #060606;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
         }
-        body {
-            background-color: #000;
-            color: #fff;
-            font-family: Arial, sans-serif;
-        }
 
-        /* HEADER BAR SETTINGS */
         header {
-            background-color: #0d0d0d;
+            background-color: #0e0e0e;
             display: flex;
             align-items: center;
-            padding: 10px 15px;
+            padding: 10px 20px;
             border-bottom: 2px solid #ff0000;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .logo-box {
-            background-color: #ff0000;
-            padding: 8px;
-            border-radius: 5px;
-            margin-right: 15px;
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-        .search-container {
-            flex-grow: 1;
-            position: relative;
-        }
-        .search-container input {
-            width: 100%;
-            padding: 8px 12px;
-            background-color: #1a1a1a;
-            border: 1px solid #333;
-            color: #fff;
-            border-radius: 4px;
         }
 
-        /* INTEGRATED VIDEO PLAYER CONSOLE CONTAINER */
-        .player-section {
+        .logo-box {
+            background-color: #ff0000;
+            color: #ffffff;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 3px;
+            margin-right: 15px;
+            font-size: 1.1rem;
+        }
+
+        .search-bar {
+            background-color: #161616;
+            border: 1px solid #222222;
+            color: #ffffff;
+            padding: 8px 12px;
+            border-radius: 4px;
             width: 100%;
-            background-color: #050505;
-            border-bottom: 1px solid #1a1a1a;
+            max-width: 400px;
+        }
+
+        /* --- VIDEO PLAYER COMPONENT (YOUR CSS) --- */
+        .player-container {
             padding: 15px 0;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
+
         .player-wrapper {
             width: 90%;
             max-width: 800px;
             position: relative;
-            padding-top: 56.25%; /* Fixed 16:9 ratio aspect */
+            padding-top: 56.25%; /* Fixed 16:9 Aspect Ratio */
             background-color: #0c0c0c;
-            border: 2px solid #222;
+            border: 2px solid #222222;
             border-radius: 6px;
             overflow: hidden;
         }
-        .player-wrapper iframe, .player-wrapper .player-placeholder {
+
+        .player-wrapper iframe {
             position: absolute;
             top: 0;
             left: 0;
@@ -77,27 +69,36 @@
             height: 100%;
             border: none;
         }
-        
-        /* PLAYER PLACEHOLDER GRAPHICS */
+
+        /* --- PLAYER PLACEHOLDER GRAPHICS (YOUR CSS) --- */
         .player-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #111 0%, #050505 100%);
+            background: linear-gradient(135deg, #111111, #000000);
             color: #666;
             text-align: center;
             padding: 20px;
+            box-sizing: border-box;
+            z-index: 5;
         }
+
         .spinner {
             width: 40px;
             height: 40px;
-            border: 4px solid #222;
+            border: 4px solid #222222;
             border-top: 4px solid #ff0000;
             border-radius: 50%;
-            margin-bottom: 15px;
             animation: spin 1s linear infinite;
+            margin-bottom: 15px;
         }
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -108,194 +109,192 @@
             max-width: 800px;
             padding: 10px 0 0 0;
             text-align: left;
+            box-sizing: border-box;
         }
+
         .player-details h2 {
             font-size: 1.1rem;
             color: #ff0000;
-            margin-bottom: 4px;
+            margin: 0 0 4px 0;
         }
+
         .player-details p {
             font-size: 0.85rem;
             color: #888;
+            margin: 0;
         }
 
-        /* MAIN CONTENT LAYOUT */
+        /* --- MAIN CONTENT LAYOUT (YOUR CSS) --- */
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
+
         .section-title {
             font-size: 1.4rem;
             font-weight: bold;
             margin-bottom: 20px;
             border-left: 4px solid #ff0000;
             padding-left: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        /* CARDS GRID SYSTEM */
+        /* --- CARDS GRID SYSTEM (YOUR CSS) --- */
         .anime-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 20px;
         }
 
-        /* INDIVIDUAL ANIME CARD */
         .anime-card {
-            background-color: #0d0d0d;
-            border-radius: 8px;
+            background-color: #0e0e0e;
+            border: 1px solid #1a1a1a;
+            border-radius: 6px;
             overflow: hidden;
-            border: 1px solid #222;
-            cursor: pointer;
             transition: transform 0.2s ease, border-color 0.2s ease;
         }
+
         .anime-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-4px);
             border-color: #ff0000;
         }
-        .anime-poster-wrapper {
-            position: relative;
+
+        .card-image-wrapper {
+            background-size: cover;
+            background-position: center;
+            height: 240px;
             width: 100%;
-            padding-top: 140%;
             background-color: #1a1a1a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
-        .poster-fallback-text {
-            position: absolute;
+
+        .card-details {
+            padding: 10px;
+        }
+
+        .banner-title {
+            display: block;
             color: #ff0000;
+            font-size: 0.7rem;
             font-weight: bold;
-            font-size: 1.2rem;
-            text-align: center;
-            padding: 10px;
+            text-transform: uppercase;
+            margin-bottom: 2px;
         }
-        .anime-card-info {
-            padding: 10px;
-        }
-        .anime-card-info h3 {
-            font-size: 0.85rem;
-            margin-bottom: 4px;
+
+        .card-details h3 {
+            font-size: 0.9rem;
+            margin: 0 0 6px 0;
+            color: #ffffff;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        .anime-card-info p {
-            font-size: 0.75rem;
-            color: #ff0000;
+
+        .rating {
+            font-size: 0.8rem;
+            color: #ffcc00;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
-    <!-- NAVIGATION BAR HEADER -->
+    <!-- Header Navigation -->
     <header>
         <div class="logo-box">AH</div>
-        <div class="search-container">
-            <input type="text" id="search-bar" placeholder="Search Anime...">
-        </div>
+        <input type="text" class="search-bar" placeholder="Search Anime...">
     </header>
 
-    <!-- CORE INTEGRATED PLAYER CONSOLE -->
-    <section class="player-section">
-        <div class="player-wrapper" id="video-container">
-            <div class="player-placeholder">
+    <!-- Video Player Container Block -->
+    <div class="player-container">
+        <div class="player-wrapper">
+            <!-- Loading Indicator Placeholder UI -->
+            <div class="player-placeholder" id="video-loader">
                 <div class="spinner"></div>
-                <p style="font-size: 0.9rem; font-weight: bold; color: #aaa;">Ready to Stream</p>
-                <p style="font-size: 0.75rem; margin-top: 4px;">Tap a card below to load the streaming container</p>
+                <div style="font-weight: bold; color: #fff; margin-bottom: 5px;">Ready to Stream</div>
+                <div>Tap a card below to load the streaming container</div>
             </div>
+            <!-- Streaming Embed Frame -->
+            <iframe id="video-stream-frame" src="" allowfullscreen></iframe>
         </div>
+        
         <div class="player-details">
-            <h2 id="current-title">Playing: Welcome to Anime Heaven</h2>
-            <p id="current-status">Streaming Client: Ready</p>
+            <h2 id="now-playing-title">Playing: Welcome to Anime Heaven</h2>
+            <p id="client-status-text">Streaming Client: Ready</p>
         </div>
-    </section>
+    </div>
 
-    <!-- TRENDING GRID LAYOUT SECTION -->
-    <main class="container">
-        <h2 class="section-title">Trending Anime</h2>
-        <div class="anime-grid" id="trending-grid">
-            
-            <!-- SELECTION CARD 1: ONE PIECE -->
-            <div class="anime-card" onclick="playStream('21', 'One Piece')">
-                <div class="anime-poster-wrapper">
-                    <div class="poster-fallback-text">ONE PIECE</div>
-                </div>
-                <div class="anime-card-info">
-                    <h3>One Piece</h3>
-                    <p>★ 8.72</p>
-                </div>
-            </div>
-
-            <!-- SELECTION CARD 2: NARUTO SHIPPUDEN -->
-            <div class="anime-card" onclick="playStream('1735', 'Naruto Shippuden')">
-                <div class="anime-poster-wrapper">
-                    <div class="poster-fallback-text">NARUTO</div>
-                </div>
-                <div class="anime-card-info">
-                    <h3>Naruto Shippuden</h3>
-                    <p>★ 8.21</p>
-                </div>
-            </div>
-
-            <!-- SELECTION CARD 3: MY HERO ACADEMIA -->
-            <div class="anime-card" onclick="playStream('31964', 'My Hero Academia')">
-                <div class="anime-poster-wrapper">
-                    <div class="poster-fallback-text">MHA</div>
-                </div>
-                <div class="anime-card-info">
-                    <h3>My Hero Academia</h3>
-                    <p>★ 7.89</p>
-                </div>
-            </div>
-
-            <!-- SELECTION CARD 4: ATTACK ON TITAN -->
-            <div class="anime-card" onclick="playStream('40028', 'Attack on Titan')">
-                <div class="anime-poster-wrapper">
-                    <div class="poster-fallback-text">AOT</div>
-                </div>
-                <div class="anime-card-info">
-                    <h3>Attack on Titan</h3>
-                    <p>★ 8.81</p>
-                </div>
-            </div>
-
+    <!-- Cards Catalog Grid Section -->
+    <div class="container">
+        <div class="section-title">Trending Anime</div>
+        <div class="anime-grid" id="anime-display-grid">
+            <!-- Dynamic Jikan Core cards load directly here -->
+            <div style="color: #666; grid-column: 1/-1; text-align: center; padding: 40px 0;">Loading Engine Components...</div>
         </div>
-    </main>
+    </div>
 
-    <!-- CONTROLLER LAYOUT SCRIPT -->
+    <!-- --- CORE ENGINE JAVASCRIPT --- -->
     <script>
-        // Programmatically hot-swaps player layouts seamlessly when choosing a stream target
-        function playStream(malId, title) {
-            const container = document.getElementById('video-container');
-            const currentTitle = document.getElementById('current-title');
-            const currentStatus = document.getElementById('current-status');
+        // Endpoint Configurations
+        const JIKAN_TOP_ENDPOINT = 'https://jikan.moe';
+        const VIDSRC_EMBED_BASE = 'https://vidsrc.to';
+        const BROWSER_CACHE_KEY = 'ah_trending_cache';
+        const CACHE_EXPIRY_LIMIT = 15 * 60 * 1000; // 15-Minute Safety Threshold
 
-            currentTitle.innerText = `Playing: ${title}`;
-            currentStatus.innerText = `Streaming Client: Active (MAL ID: ${malId})`;
-            
-            // Open-access proxy endpoint configuration bypasses Vercel cross-domain restrictions
-            const embedUrl = `https://vidsrc.xyz{malId}/1/1`;
-            
-            // Replaces the placeholder graphics with a secured responsive iframe element
-            container.innerHTML = `
-                <iframe 
-                    src="${embedUrl}" 
-                    style="position: absolute; top:0; left:0; width:100%; height:100%; border:none;" 
-                    allowfullscreen 
-                    scrolling="no"
-                    allow="autoplay; encrypted-media; picture-in-picture">
-                </iframe>
-            `;
-            
-            // Scrolls view smoothly to the video screen layout on mobile displays
-            document.querySelector('.player-section').scrollIntoView({ behavior: 'smooth' });
-        }
+        /**
+         * Fetches top-tier anime from Jikan and safely maps images to layout elements
+         */
+        async function runAnimeEngine() {
+            const grid = document.getElementById('anime-display-grid');
+            if (!grid) return;
 
-        // Handles local filter actions for your search bar input element
-        document.getElementById('search-bar').addEventListener('input', function(e) {
-            const value = e.target.value.toLowerCase();
-            const cards = document.querySelectorAll('.anime-card');
-            
-            cards.forEach(card => {
-                const title = card.querySelector('h3').innerText.toLowerCase();
+            try {
+                // Rate limit defensive handling (Vercel safe setup)
+                const cacheData = localStorage.getItem(BROWSER_CACHE_KEY);
+                const cacheStamp = localStorage.getItem(`${BROWSER_CACHE_KEY}_stamp`);
+                const timestampNow = Date.now();
+
+                let collection = [];
+
+                if (cacheData && cacheStamp && (timestampNow - cacheStamp < CACHE_EXPIRY_LIMIT)) {
+                    collection = JSON.parse(cacheData);
+                } else {
+                    const networkResponse = await fetch(JIKAN_TOP_ENDPOINT);
+                    if (!networkResponse.ok) throw new Error(`Server Response Status: ${networkResponse.status}`);
+                    
+                    const packingData = await networkResponse.json();
+                    collection = packingData.data || [];
+
+                    // Commit to storage cache layer
+                    localStorage.setItem(BROWSER_CACHE_KEY, JSON.stringify(collection));
+                    localStorage.setItem(`${BROWSER_CACHE_KEY}_stamp`, timestampNow.toString());
+                }
+
+                // Render dynamic item cards
+                grid.innerHTML = ''; 
+
+                collection.slice(0, 12).forEach(item => {
+                    // RESOLVED PATH: Accessing deep nested properties safely
+                    const mediaCover = item.images?.jpg?.large_image_url || 
+                                       item.images?.jpg?.image_url || 
+                                       'https://placehold.co';
+
+                    const primaryTitle = item.title_english || item.title;
+                    const displayTitle = primaryTitle.replace(/"/g, '&quot;').replace(/'/g, "\\'");
+
+                    const elementCode = `
+                        <div class="anime-card" style="cursor: pointer;" onclick="initializeStream('${item.mal_id}', '${displayTitle}')">
+                            <div class="card-image-wrapper" style="background-image: url('${mediaCover}');"></div>
+                            <div class="card-details">
+                                <span class="banner-title">${item.type || 'ANIME'}</span>
+                                <h3>${primaryTitle}</h3>
+                                <span class="rating">★ ${item.score || 'N/A'}</span>
+                            </div>
+                        </div>
+                    `;
+                    grid.insertAdjacentHTML('beforeend', elementCode);
+                });
+
+            } catch (err) {
+                console.error("Engine failure exception caught:", err);
