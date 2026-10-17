@@ -155,7 +155,7 @@
             cursor: pointer;
         }
         .anime-card:hover {
-            transform: translateY(-50px);
+            transform: translateY(-5px);
             border-color: #ff0000;
             box-shadow: 0 5px 15px rgba(250, 0, 0, 0.2);
         }
@@ -237,16 +237,15 @@
     <!-- MAIN DISPLAY AREA -->
     <main class="container">
         <div class="section-title">Trending Anime</div>
-        <!-- Target identifier added right here for programmatic data population -->
         <div class="anime-grid" id="trending-grid">
             <!-- Jikan engine renders cards here dynamically on startup -->
         </div>
     </main>
 
-    <!-- JIKAN DATA GENERATOR CONTEXT SCRIPT -->
+    <!-- JIKAN & TMDB CONVERSION DATA GENERATOR CONTEXT SCRIPT -->
     <script>
         const JIKAN_BASE_URL = 'https://jikan.moe';
-        const STREAM_BASE_URL = 'https://vidsrc.sh'; 
+        const STREAM_BASE_URL = 'https://vidsrc.sh'; // Routed to 'tv' since anime are series
         const FALLBACK_IMAGE = 'data:image/svg+xml;utf8,<svg xmlns="http://w3.org" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%231a1a1a"/><text x="50" y="55" font-family="Arial" font-size="10" fill="%23888" text-anchor="middle">No Poster</text></svg>';
 
         // 1. POPULATE LANDING GRID DYNAMICALLY
@@ -259,7 +258,7 @@
                 const parsed = await res.json();
                 const animeData = parsed.data;
 
-                container.innerHTML = ''; // Wipe design placeholders
+                container.innerHTML = ''; 
 
                 animeData.forEach(anime => {
                     const thumbnail = anime.images?.jpg?.large_image_url || anime.images?.jpg?.image_url || FALLBACK_IMAGE;
