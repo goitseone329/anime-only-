@@ -42,7 +42,7 @@
             max-width: 400px;
         }
 
-        /* --- VIDEO PLAYER COMPONENT --- */
+        /* --- STABLE CONTROLS DISPLAY COMPONENT --- */
         .player-container {
             padding: 15px 0;
             display: flex;
@@ -55,22 +55,13 @@
             max-width: 800px;
             position: relative;
             padding-top: 56.25%; /* Fixed 16:9 Aspect Ratio */
-            background-color: #0c0c0c;
+            background: linear-gradient(135deg, #111111, #020202);
             border: 2px solid #222222;
             border-radius: 6px;
             overflow: hidden;
         }
 
-        .player-wrapper iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        /* --- PLAYER PLACEHOLDER GRAPHICS --- */
+        /* --- CENTRALIZED PLAYER ACTIONS WINDOW --- */
         .player-placeholder {
             position: absolute;
             top: 0;
@@ -81,39 +72,50 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #111111, #000000);
-            color: #666;
+            color: #ccc;
             text-align: center;
             padding: 20px;
             box-sizing: border-box;
             z-index: 5;
         }
 
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid #222222;
-            border-top: 4px solid #ff0000;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 15px;
+        /* Sleek Red Watch Button */
+        .stream-action-btn {
+            background-color: #ff0000;
+            color: #ffffff;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            margin-top: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: background 0.2s ease, transform 0.1s ease;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .stream-action-btn:hover {
+            background-color: #cc0000;
+        }
+
+        .stream-action-btn:active {
+            transform: scale(0.98);
         }
 
         .player-details {
             width: 90%;
             max-width: 800px;
-            padding: 10px 0 0 0;
+            padding: 15px 0 0 0;
             text-align: left;
             box-sizing: border-box;
         }
 
         .player-details h2 {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             color: #ff0000;
             margin: 0 0 4px 0;
         }
@@ -206,22 +208,27 @@
         <input type="text" class="search-bar" placeholder="Search Anime...">
     </header>
 
-    <!-- Video Player Container Block -->
+    <!-- Video Action Container Block -->
     <div class="player-container">
         <div class="player-wrapper">
-            <!-- Loading Indicator Placeholder UI -->
-            <div class="player-placeholder" id="video-loader">
-                <div class="spinner"></div>
-                <div style="font-weight: bold; color: #fff; margin-bottom: 5px;">Ready to Stream</div>
-                <div>Tap a card below to load the streaming container</div>
+            <!-- Dynamic Button Panel Interface -->
+            <div class="player-placeholder">
+                <div id="player-status-message" style="font-weight: bold; color: #fff; font-size: 1.1rem; margin-bottom: 5px;">
+                    Welcome to Anime Heaven
+                </div>
+                <div id="player-sub-message" style="font-size: 0.9rem; padding: 0 10px;">
+                    Select any title below to generate a video node server link.
+                </div>
+                <!-- Dynamic external target anchor -->
+                <a href="#" target="_blank" id="external-watch-trigger" class="stream-action-btn" style="display: none;">
+                    🚀 Launch Video Player
+                </a>
             </div>
-            <!-- Streaming Embed Frame -->
-            <iframe id="video-stream-frame" src="" allowfullscreen></iframe>
         </div>
         
         <div class="player-details">
-            <h2 id="now-playing-title">Playing: Welcome to Anime Heaven</h2>
-            <p id="client-status-text">Streaming Client: Ready</p>
+            <h2 id="now-playing-title">Playing: Waiting for Selection</h2>
+            <p id="client-status-text">Streaming Server Client: Idle</p>
         </div>
     </div>
 
@@ -230,8 +237,7 @@
         <div class="section-title">Trending Anime</div>
         <div class="anime-grid" id="anime-display-grid">
             
-            <!-- Hardcoded baseline elements build instantly inside the markup -->
-            <div class="anime-card" style="cursor: pointer;" onclick="initializeStream('21', 'One Piece')">
+            <div class="anime-card" style="cursor: pointer;" onclick="prepareStreamNode('21', 'One Piece')">
                 <div class="card-image-wrapper" style="background-image: url('https://myanimelist.net');"></div>
                 <div class="card-details">
                     <span class="banner-title">ONE PIECE</span>
@@ -240,7 +246,7 @@
                 </div>
             </div>
 
-            <div class="anime-card" style="cursor: pointer;" onclick="initializeStream('1735', 'Naruto Shippuden')">
+            <div class="anime-card" style="cursor: pointer;" onclick="prepareStreamNode('1735', 'Naruto Shippuden')">
                 <div class="card-image-wrapper" style="background-image: url('https://myanimelist.net');"></div>
                 <div class="card-details">
                     <span class="banner-title">NARUTO</span>
@@ -249,7 +255,7 @@
                 </div>
             </div>
 
-            <div class="anime-card" style="cursor: pointer;" onclick="initializeStream('5114', 'Fullmetal Alchemist: Brotherhood')">
+            <div class="anime-card" style="cursor: pointer;" onclick="prepareStreamNode('5114', 'Fullmetal Alchemist: Brotherhood')">
                 <div class="card-image-wrapper" style="background-image: url('https://myanimelist.net');"></div>
                 <div class="card-details">
                     <span class="banner-title">TV</span>
@@ -258,7 +264,7 @@
                 </div>
             </div>
 
-            <div class="anime-card" style="cursor: pointer;" onclick="initializeStream('38000', 'Demon Slayer: Kimetsu no Yaiba')">
+            <div class="anime-card" style="cursor: pointer;" onclick="prepareStreamNode('38000', 'Demon Slayer: Kimetsu no Yaiba')">
                 <div class="card-image-wrapper" style="background-image: url('https://myanimelist.net');"></div>
                 <div class="card-details">
                     <span class="banner-title">TV</span>
@@ -270,33 +276,23 @@
         </div>
     </div>
 
-    <!-- --- DYNAMIC STREAM ROUTINE --- -->
+    <!-- --- DYNAMIC LINK DISPATCHER SCRIPT --- -->
     <script>
-        // UPDATED: Changed configuration base URL to target VidLink directly
         const VIDLINK_EMBED_BASE = 'https://vidlink.pro';
 
-        function initializeStream(id, streamTitle) {
-            const embedTarget = document.getElementById('video-stream-frame');
-            const loaderOverlay = document.getElementById('video-loader');
+        function prepareStreamNode(id, streamTitle) {
+            const launchBtn = document.getElementById('external-watch-trigger');
+            const statusMsg = document.getElementById('player-status-message');
+            const subMsg = document.getElementById('player-sub-message');
             const interfaceHeading = document.getElementById('now-playing-title');
             const auxiliaryStatus = document.getElementById('client-status-text');
 
-            if (!embedTarget || !loaderOverlay) return;
+            if (!launchBtn || !statusMsg) return;
 
-            // Activate loading configuration display
-            loaderOverlay.style.display = 'flex';
-            if (interfaceHeading) interfaceHeading.textContent = `Playing: ${streamTitle}`;
-            if (auxiliaryStatus) auxiliaryStatus.textContent = 'Streaming Client: Connecting VidLink...';
+            // Update status text info inside block layout
+            statusMsg.textContent = `Stream Target: ${streamTitle}`;
+            subMsg.textContent = "Your secure player node has been generated successfully.";
+            
+            if (interfaceHeading) interfaceHeading.textContent = `Selected: ${streamTitle}`;
+            if (auxiliaryStatus) auxiliaryStatus.textContent = 'Streaming Server Client: Connection Ready';
 
-            // FIXED ROUTING: Configured to use VidLink's expected query parameter format
-            embedTarget.src = `${VIDLINK_EMBED_BASE}/${id}?episode=1`;
-
-            // Dismantle loader asset panel instantly upon iframe load
-            embedTarget.onload = function() {
-                loaderOverlay.style.display = 'none';
-                if (auxiliaryStatus) auxiliaryStatus.textContent = 'Streaming Client: Active';
-            };
-        }
-    </script>
-</body>
-</html>
