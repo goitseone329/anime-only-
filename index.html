@@ -49,7 +49,7 @@
             border-radius: 4px;
         }
 
-        /* VIDEO PLAYER CONSOLE CONTAINER */
+        /* INTEGRATED VIDEO PLAYER CONSOLE CONTAINER */
         .player-section {
             width: 100%;
             background-color: #050505;
@@ -63,7 +63,7 @@
             width: 90%;
             max-width: 800px;
             position: relative;
-            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            padding-top: 56.25%; /* Fixed 16:9 ratio aspect */
             background-color: #0c0c0c;
             border: 2px solid #222;
             border-radius: 6px;
@@ -78,7 +78,7 @@
             border: none;
         }
         
-        /* PLAYER PLACEHOLDER SPINNER */
+        /* PLAYER PLACEHOLDER GRAPHICS */
         .player-placeholder {
             display: flex;
             flex-direction: column;
@@ -162,7 +162,6 @@
             align-items: center;
             justify-content: center;
         }
-        /* Fallback text styled inside poster block */
         .poster-fallback-text {
             position: absolute;
             color: #ff0000;
@@ -197,7 +196,7 @@
         </div>
     </header>
 
-    <!-- VIDEO PLAYER SECTION -->
+    <!-- CORE INTEGRATED PLAYER CONSOLE -->
     <section class="player-section">
         <div class="player-wrapper" id="video-container">
             <div class="player-placeholder">
@@ -217,7 +216,7 @@
         <h2 class="section-title">Trending Anime</h2>
         <div class="anime-grid" id="trending-grid">
             
-            <!-- FIXED CARD 1: ONE PIECE -->
+            <!-- SELECTION CARD 1: ONE PIECE -->
             <div class="anime-card" onclick="playStream('21', 'One Piece')">
                 <div class="anime-poster-wrapper">
                     <div class="poster-fallback-text">ONE PIECE</div>
@@ -228,7 +227,7 @@
                 </div>
             </div>
 
-            <!-- FIXED CARD 2: NARUTO SHIPPUDEN -->
+            <!-- SELECTION CARD 2: NARUTO SHIPPUDEN -->
             <div class="anime-card" onclick="playStream('1735', 'Naruto Shippuden')">
                 <div class="anime-poster-wrapper">
                     <div class="poster-fallback-text">NARUTO</div>
@@ -239,7 +238,7 @@
                 </div>
             </div>
 
-            <!-- FIXED CARD 3: MY HERO ACADEMIA -->
+            <!-- SELECTION CARD 3: MY HERO ACADEMIA -->
             <div class="anime-card" onclick="playStream('31964', 'My Hero Academia')">
                 <div class="anime-poster-wrapper">
                     <div class="poster-fallback-text">MHA</div>
@@ -250,7 +249,7 @@
                 </div>
             </div>
 
-            <!-- FIXED CARD 4: ATTACK ON TITAN -->
+            <!-- SELECTION CARD 4: ATTACK ON TITAN -->
             <div class="anime-card" onclick="playStream('40028', 'Attack on Titan')">
                 <div class="anime-poster-wrapper">
                     <div class="poster-fallback-text">AOT</div>
@@ -266,19 +265,30 @@
 
     <!-- CONTROLLER LAYOUT SCRIPT -->
     <script>
-        // Directly injects the embed player into the layout on tap events
+        // Programmatically hot-swaps player layouts seamlessly when choosing a stream target
         function playStream(malId, title) {
             const container = document.getElementById('video-container');
             const currentTitle = document.getElementById('current-title');
             const currentStatus = document.getElementById('current-status');
 
             currentTitle.innerText = `Playing: ${title}`;
-            currentStatus.innerText = `Streaming Client: Active (ID: ${malId} - Episode 1)`;
+            currentStatus.innerText = `Streaming Client: Active (MAL ID: ${malId})`;
             
-            // Replaces the player layout with the embed stream player
-            container.innerHTML = `<iframe src="https://vidsrc.to{malId}/1/1" allowfullscreen></iframe>`;
+            // Open-access proxy endpoint configuration bypasses Vercel cross-domain restrictions
+            const embedUrl = `https://vidsrc.xyz{malId}/1/1`;
             
-            // Scrolls view smoothly to the video screen layout
+            // Replaces the placeholder graphics with a secured responsive iframe element
+            container.innerHTML = `
+                <iframe 
+                    src="${embedUrl}" 
+                    style="position: absolute; top:0; left:0; width:100%; height:100%; border:none;" 
+                    allowfullscreen 
+                    scrolling="no"
+                    allow="autoplay; encrypted-media; picture-in-picture">
+                </iframe>
+            `;
+            
+            // Scrolls view smoothly to the video screen layout on mobile displays
             document.querySelector('.player-section').scrollIntoView({ behavior: 'smooth' });
         }
 
@@ -289,13 +299,3 @@
             
             cards.forEach(card => {
                 const title = card.querySelector('h3').innerText.toLowerCase();
-                if (title.includes(value)) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        });
-    </script>
-</body>
-</html>
