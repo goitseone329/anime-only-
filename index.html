@@ -203,8 +203,6 @@
 </head>
 <body>
 
-    <!-- ADSTERRA SLOT 1: POPUNDER CODE PLACEHOLDER -->
-
     <!-- NAVIGATION BAR HEADER -->
     <header>
         <div class="logo-box" onclick="window.location.reload();">
@@ -225,11 +223,11 @@
     <!-- INTEGRATED CONSOLE PLAYER SECTION -->
     <section class="player-section">
         <div class="player-wrapper">
-            <!-- FIXED STARTUP URL: Formatted correctly to completely clear the VidSrc notice block -->
-            <iframe id="video-stream" src="https://vidsrc.sh" allowfullscreen></iframe>
+            <!-- FIXED IFRAME CONFIGURATION: Explicit permissions added to prevent player domain warning redirects -->
+            <iframe id="video-stream" src="https://vidsrc.sh" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
         </div>
         <div class="player-details">
-            <h2>Playing: Naruto</h2>
+            <h2>Playing: Naruto Shippuden</h2>
             <p>Streaming Client: Active</p>
         </div>
     </section>
@@ -238,7 +236,7 @@
     <main class="container">
         <div class="section-title">Trending Anime</div>
         <div class="anime-grid" id="trending-grid">
-            <!-- Cards rendered dynamically on initialization -->
+            <!-- Interactively loaded components populate here -->
         </div>
     </main>
 
@@ -263,8 +261,6 @@
                     const thumbnail = anime.images?.jpg?.large_image_url || anime.images?.jpg?.image_url || FALLBACK_IMAGE;
                     const card = document.createElement('div');
                     card.className = 'anime-card';
-                    
-                    // Pass type to separate movies from series mapping routines
                     card.onclick = () => launchVideoPlayer(anime.mal_id, anime.title, anime.type);
 
                     card.innerHTML = `
@@ -295,3 +291,6 @@
             if (!phrase) return;
 
             if (heading) heading.textContent = `Search Results for: "${phrase}"`;
+            container.innerHTML = '<p style="padding: 30px; text-align: center; width: 100%;">Searching live server directory...</p>';
+
+            try {
