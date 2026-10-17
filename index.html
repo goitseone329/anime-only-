@@ -230,7 +230,7 @@
         <div class="section-title">Trending Anime</div>
         <div class="anime-grid" id="anime-display-grid">
             
-            <!-- FIXED: Hardcoded baseline elements build instantly inside the markup -->
+            <!-- Hardcoded baseline elements build instantly inside the markup -->
             <div class="anime-card" style="cursor: pointer;" onclick="initializeStream('21', 'One Piece')">
                 <div class="card-image-wrapper" style="background-image: url('https://myanimelist.net');"></div>
                 <div class="card-details">
@@ -287,10 +287,10 @@
             if (interfaceHeading) interfaceHeading.textContent = `Playing: ${streamTitle}`;
             if (auxiliaryStatus) auxiliaryStatus.textContent = 'Streaming Client: Locating Node...';
 
-            // Establish destination frame path
-            embedTarget.src = `${VIDSRC_EMBED_BASE}${id}-episode-1`;
+            // FIXED ROUTING: Added forward slashes to target the stream correctly
+            embedTarget.src = `${VIDSRC_EMBED_BASE}/${id}/1`;
 
-            // Dismantle loader asset panel instantly upon canvas validation
+            // Dismantle loader asset panel instantly upon iframe load
             embedTarget.onload = function() {
                 loaderOverlay.style.display = 'none';
                 if (auxiliaryStatus) auxiliaryStatus.textContent = 'Streaming Client: Active';
