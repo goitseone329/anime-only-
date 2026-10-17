@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anime Heaven</title>
-    <!-- Bypasses the MyAnimeList image hotlinking block -->
+    <!-- FIX 1: This stops your Vercel URL from sending a signature to MyAnimeList, forcing poster graphics to unblock -->
     <meta name="referrer" content="no-referrer">
     <style>
         /* --- GLOBAL BASE THEME --- */
@@ -273,8 +273,7 @@
 
     <!-- --- DYNAMIC VIDLINK ROUTINE --- -->
     <script>
-        // Updated target to use the unblocked VidLink embed service routing system
-        const VIDLINK_EMBED_BASE = 'https://vidlink.pro';
+        const VIDLINK_EMBED_BASE = 'https://vidlink.pro/anime';
 
         function initializeStream(id, streamTitle) {
             const embedTarget = document.getElementById('video-stream-frame');
@@ -284,18 +283,18 @@
 
             if (!embedTarget || !loaderOverlay) return;
 
-            // Show spinner animation overlay while video initializes
             loaderOverlay.style.display = 'flex';
             if (interfaceHeading) interfaceHeading.textContent = `Playing: ${streamTitle}`;
             if (auxiliaryStatus) auxiliaryStatus.textContent = 'Streaming Client: Connecting VidLink Node...';
 
-            // Fixed URL endpoint mapping using explicit query strings for episode tracking
-            embedTarget.src = `${VIDLINK_EMBED_BASE}/${id}?episode=1`;
+            // FIX 2: Correct routing structure matching VidLink API standards
+            embedTarget.src = `${VIDLINK_EMBED_BASE}/${id}/1/sub`;
 
-            // Hide spinner overlay automatically when player container content resolves
             embedTarget.onload = function() {
                 loaderOverlay.style.display = 'none';
                 if (auxiliaryStatus) auxiliaryStatus.textContent = 'Streaming Client: Active';
             };
         }
     </script>
+</body>
+</html>
