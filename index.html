@@ -33,49 +33,20 @@
             padding: 8px;
             border-radius: 5px;
             margin-right: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.2rem;
         }
-        .logo-box svg {
-            width: 28px;
-            height: 28px;
-            fill: #fff;
-        }
-
-        /* SEARCH BAR SYSTEM */
-        .search-wrapper {
-            position: relative;
+        .search-container {
             flex-grow: 1;
-            max-width: 600px;
+            position: relative;
         }
-        .search-input {
+        .search-container input {
             width: 100%;
+            padding: 8px 12px;
             background-color: #1a1a1a;
             border: 1px solid #333;
-            border-radius: 4px;
-            padding: 10px 40px 10px 15px;
             color: #fff;
-            font-size: 0.95rem;
-            outline: none;
-        }
-        .search-input:focus {
-            border-color: #ff0000;
-        }
-        .search-icon-btn {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-        }
-        .search-icon-btn svg {
-            width: 16px; height: 16px; fill: #ff0000;
+            border-radius: 4px;
         }
 
         /* INTEGRATED VIDEO PLAYER CONSOLE CONTAINER */
@@ -92,16 +63,20 @@
             width: 90%;
             max-width: 800px;
             position: relative;
-            padding-top: 56.25%; /* Fixed 16:9 ratio layout */
+            padding-top: 56.25%; /* Fixed 16:9 ratio aspect */
             background-color: #0c0c0c;
             border: 2px solid #222;
             border-radius: 6px;
             overflow: hidden;
         }
-        /* UPGRADED: Replaced iframe with smooth, unblocked native web video controller framework */
-        .player-wrapper video {
+        /* UPGRADED: Handles responsive multi-source iframes or videos flawlessly */
+        .player-wrapper iframe, .player-wrapper video {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%; background: #000;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
         }
         .player-details {
             width: 90%;
@@ -110,15 +85,20 @@
             text-align: left;
         }
         .player-details h2 {
-            font-size: 1.1rem; color: #ff0000; margin-bottom: 4px;
+            font-size: 1.1rem;
+            color: #ff0000;
+            margin-bottom: 4px;
         }
         .player-details p {
-            font-size: 0.85rem; color: #888;
+            font-size: 0.85rem;
+            color: #888;
         }
 
         /* MAIN CONTENT LAYOUT */
         .container {
-            max-width: 1200px; margin: 0 auto; padding: 25px 15px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
         }
         .section-title {
             font-size: 1.4rem;
@@ -131,7 +111,7 @@
         /* CARDS GRID SYSTEM */
         .anime-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
             gap: 15px;
         }
 
@@ -147,22 +127,34 @@
         .anime-card:hover {
             transform: translateY(-5px);
             border-color: #ff0000;
-            box-shadow: 0 5px 15px rgba(250, 0, 0, 0.2);
+            box-shadow: 0 5px 15px rgba(250, 0, 0, 0.3);
         }
         .anime-poster-wrapper {
-            position: relative; width: 100%; padding-top: 140%; overflow: hidden; background-color: #1a1a1a;
+            position: relative;
+            width: 100%;
+            padding-top: 140%; /* Strict aspect ratio for posters */
         }
         .anime-poster-wrapper img {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         .anime-card-info {
             padding: 10px;
         }
         .anime-card-info h3 {
-            font-size: 0.85rem; margin-bottom: 4px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .anime-card-info p {
-            font-size: 0.75rem; color: #ff0000;
+            font-size: 0.75rem;
+            color: #ff0000;
         }
     </style>
 </head>
@@ -170,101 +162,109 @@
 
     <!-- NAVIGATION BAR HEADER -->
     <header>
-        <div class="logo-box" onclick="window.location.reload();">
-            <svg viewBox="0 0 24 24">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9v-2h2v2zm0-4H9V7h2v5zm4 4h-2v-5h2v5zm0-6h-2V7h2v3z"/>
-            </svg>
-        </div>
-        <div class="search-wrapper">
-            <input type="text" class="search-input" id="anime-search" placeholder="Search Anime...">
-            <button class="search-icon-btn" id="search-button">
-                <svg viewBox="0 0 24 24">
-                    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-                </svg>
-            </button>
+        <div class="logo-box">AH</div>
+        <div class="search-container">
+            <input type="text" placeholder="Search Anime...">
         </div>
     </header>
 
-    <!-- INTEGRATED CONSOLE PLAYER SECTION -->
+    <!-- CORE INTEGRATED PLAYER CONSOLE -->
     <section class="player-section">
-        <div class="player-wrapper">
-            <!-- FIXED UNBLOCKED PLAYER: Native HTML5 web controller engine resolves cross-origin domain drops entirely -->
-            <video id="video-stream" controls autoplay preload="metadata" poster="https://api-fetch.website">
-                <source src="https://googleapis.com" type="video/mp4">
-            </video>
+        <div class="player-wrapper" id="player-container">
+            <!-- Default fallback message content or default trailer frame -->
+            <iframe id="video-frame" src="https://youtube.com" allowfullscreen></iframe>
         </div>
         <div class="player-details">
-            <h2>Playing: Welcome to Anime Heaven</h2>
-            <p>Streaming Client: Active</p>
+            <h2 id="current-title">Playing: Welcome to Anime Heaven</h2>
+            <p id="current-status">Streaming Client: Active (Select an anime below to watch)</p>
         </div>
     </section>
 
-    <!-- MAIN DISPLAY AREA -->
+    <!-- TRENDING GRID LAYOUT SECTION -->
     <main class="container">
-        <div class="section-title">Trending Anime</div>
+        <h2 class="section-title">Trending Anime</h2>
         <div class="anime-grid" id="trending-grid">
-            <!-- Dynamic catalog objects render here cleanly on startup -->
+            <!-- Dynamic Jikan API content injects cards here automatically -->
         </div>
     </main>
 
-    <!-- JIKAN & UNBLOCKED ANIFY STREAM GENERATOR MODULE CONTEXT SCRIPT -->
+    <!-- JIKAN METADATA & STREAM LINK COMBINATION LAYER Script -->
     <script>
-        const JIKAN_BASE_URL = 'https://jikan.moe';
-        const FALLBACK_IMAGE = 'data:image/svg+xml;utf8,<svg xmlns="http://w3.org" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%231a1a1a"/><text x="50" y="55" font-family="Arial" font-size="10" fill="%23888" text-anchor="middle">No Poster</text></svg>';
+        const JIKAN_API_URL = 'https://jikan.moe';
+        
+        // Dynamic streaming path configuration 
+        // Maps Jikan MAL IDs to free embeddable delivery players
+        function getStreamingSourceUrl(malId) {
+            // Using a standard embedded aggregator mirror path
+            return `https://vidsrc.to{malId}/1/1`;
+        }
 
-        // 1. POPULATE LANDING GRID DYNAMICALLY WITH INSTANT SELECTOR CORRECTION
-        async function fetchTrendingCatalog() {
-            const container = document.getElementById('trending-grid');
-            if (!container) return;
-
+        // Fetch Top Airing Items directly via live API handshakes
+        async function fetchTrendingAnime() {
             try {
-                const res = await fetch(`${JIKAN_BASE_URL}/top/anime?filter=bypopularity&limit=12`);
-                const parsed = await res.json();
-                const animeData = parsed.data;
-
-                container.innerHTML = ''; 
-
-                animeData.forEach(anime => {
-                    const thumbnail = anime.images?.jpg?.large_image_url || anime.images?.jpg?.image_url || FALLBACK_IMAGE;
-                    const card = document.createElement('div');
-                    card.className = 'anime-card';
-                    card.onclick = () => launchVideoPlayer(anime.title);
-
-                    card.innerHTML = `
-                        <div class="anime-poster-wrapper">
-                            <img src="${thumbnail}" alt="${anime.title}" loading="lazy">
-                        </div>
-                        <div class="anime-card-info">
-                            <h3>${anime.title}</h3>
-                            <p>⭐ Score: ${anime.score || 'N/A'}</p>
-                        </div>
-                    `;
-                    container.appendChild(card);
-                });
-            } catch (err) {
-                console.error("Failed to acquire trending resources:", err);
-                container.innerHTML = `<p style="padding: 20px; color: #ff0000; width: 100%; text-align: center;">Unable to pull down catalog.</p>`;
+                const response = await fetch(JIKAN_API_URL);
+                const result = await response.json();
+                
+                if (result && result.data) {
+                    renderAnimeGrid(result.data);
+                }
+            } catch (error) {
+                console.error("Error pulling database profiles from Jikan:", error);
+                document.getElementById('trending-grid').innerHTML = '<p style="color:#ff0000; padding:20px;">Failed to load catalog. Please refresh.</p>';
             }
         }
 
-        // 2. SEARCH HANDLER COMPONENT
-        async function executeSearchAction() {
-            const input = document.getElementById('anime-search');
-            const container = document.getElementById('trending-grid');
-            const heading = document.querySelector('.section-title');
+        // Programmatically generate individual cards inside the responsive layout grid
+        function renderAnimeGrid(animeList) {
+            const gridContainer = document.getElementById('trending-grid');
+            gridContainer.innerHTML = ''; // Sanitize initial setup loading string
 
-            if (!input || !container) return;
-            const phrase = input.value.trim();
-            if (!phrase) return;
+            animeList.forEach(anime => {
+                const card = document.createElement('div');
+                card.className = 'anime-card';
+                
+                // Build internal template content block
+                card.innerHTML = `
+                    <div class="anime-poster-wrapper">
+                        <img src="${anime.images.jpg.large_image_url}" alt="${anime.title}" loading="lazy">
+                    </div>
+                    <div class="anime-card-info">
+                        <h3>${anime.title}</h3>
+                        <p>★ ${anime.score || 'N/A'}</p>
+                    </div>
+                `;
 
-            if (heading) heading.textContent = `Search Results for: "${phrase}"`;
-            container.innerHTML = '<p style="padding: 30px; text-align: center; width: 100%;">Searching live server directory...</p>';
+                // Add active click-event node properties to update the player console dynamically
+                card.addEventListener('click', () => {
+                    loadAnimeStream(anime.mal_id, anime.title);
+                });
 
-            try {
-                const res = await fetch(`${JIKAN_BASE_URL}/anime?q=${encodeURIComponent(phrase)}&limit=12`);
-                const parsed = await res.json();
-                const matched = parsed.data;
+                gridContainer.appendChild(card);
+            });
+        }
 
-                container.innerHTML = '';
+        // Handles hot-swapping stream sources safely when clicking a choice card item
+        function loadAnimeStream(malId, title) {
+            const videoFrame = document.getElementById('video-frame');
+            const currentTitle = document.getElementById('current-title');
+            const currentStatus = document.getElementById('current-status');
 
-                if (!matched || matched.length === 0) {
+            // Generate the dynamic play link 
+            const sourceUrl = getStreamingSourceUrl(malId);
+
+            // Update UI components simultaneously 
+            currentTitle.innerText = `Playing: ${title}`;
+            currentStatus.innerText = `Streaming Client: Active (ID: ${malId} - Episode 1)`;
+            
+            // Swap out the underlying source frame cleanly
+            videoFrame.src = sourceUrl;
+            
+            // Scroll user smoothly to the video screen layout container on mobile viewports
+            document.querySelector('.player-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Bootstraps runtime loops upon loading context windows successfully
+        window.addEventListener('DOMContentLoaded', fetchTrendingAnime);
+    </script>
+</body>
+</html>
