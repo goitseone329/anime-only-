@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anime Heaven</title>
+    <!-- Bypasses the MyAnimeList image hotlinking block -->
+    <meta name="referrer" content="no-referrer">
     <style>
         /* --- GLOBAL BASE THEME --- */
         body {
@@ -212,16 +214,16 @@
             <!-- Loading Indicator Placeholder UI -->
             <div class="player-placeholder" id="video-loader">
                 <div class="spinner"></div>
-                <div style="font-weight: bold; color: #fff; margin-bottom: 5px;">Ready to Stream</div>
-                <div>Tap a card below to load the streaming container</div>
+                <div style="font-weight: bold; color: #fff; margin-bottom: 5px;">Welcome to Anime Heaven</div>
+                <div>Select an item card below to load the secure video player node.</div>
             </div>
             <!-- Streaming Embed Frame -->
             <iframe id="video-stream-frame" src="" allowfullscreen></iframe>
         </div>
         
         <div class="player-details">
-            <h2 id="now-playing-title">Playing: Welcome to Anime Heaven</h2>
-            <p id="client-status-text">Streaming Client: Ready</p>
+            <h2 id="now-playing-title">Playing: Waiting for Selection</h2>
+            <p id="client-status-text">Streaming Server Client: Idle</p>
         </div>
     </div>
 
@@ -230,7 +232,6 @@
         <div class="section-title">Trending Anime</div>
         <div class="anime-grid" id="anime-display-grid">
             
-            <!-- Hardcoded baseline elements build instantly inside the markup -->
             <div class="anime-card" style="cursor: pointer;" onclick="initializeStream('21', 'One Piece')">
                 <div class="card-image-wrapper" style="background-image: url('https://myanimelist.net');"></div>
                 <div class="card-details">
@@ -270,9 +271,9 @@
         </div>
     </div>
 
-    <!-- --- DYNAMIC STREAM ROUTINE --- -->
+    <!-- --- DYNAMIC VIDLINK ROUTINE --- -->
     <script>
-        // UPDATED: Changed configuration base URL to target VidLink directly
+        // Updated target to use the unblocked VidLink embed service routing system
         const VIDLINK_EMBED_BASE = 'https://vidlink.pro';
 
         function initializeStream(id, streamTitle) {
@@ -283,20 +284,18 @@
 
             if (!embedTarget || !loaderOverlay) return;
 
-            // Activate loading configuration display
+            // Show spinner animation overlay while video initializes
             loaderOverlay.style.display = 'flex';
             if (interfaceHeading) interfaceHeading.textContent = `Playing: ${streamTitle}`;
-            if (auxiliaryStatus) auxiliaryStatus.textContent = 'Streaming Client: Connecting VidLink...';
+            if (auxiliaryStatus) auxiliaryStatus.textContent = 'Streaming Client: Connecting VidLink Node...';
 
-            // FIXED ROUTING: Configured to use VidLink's expected query parameter format
+            // Fixed URL endpoint mapping using explicit query strings for episode tracking
             embedTarget.src = `${VIDLINK_EMBED_BASE}/${id}?episode=1`;
 
-            // Dismantle loader asset panel instantly upon iframe load
+            // Hide spinner overlay automatically when player container content resolves
             embedTarget.onload = function() {
                 loaderOverlay.style.display = 'none';
                 if (auxiliaryStatus) auxiliaryStatus.textContent = 'Streaming Client: Active';
             };
         }
     </script>
-</body>
-</html>
