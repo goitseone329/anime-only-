@@ -1,296 +1,326 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anime Heaven</title>
-    <!-- FIX 1: This hides your Vercel URL info from MyAnimeList so your card images can unblock instantly -->
-    <meta name="referrer" content="no-referrer">
-    <style>
-        /* --- GLOBAL BASE THEME --- */
-        body {
-            background-color: #060606;
-            color: #ffffff;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anime Heaven</title>
+  <!-- FIX 1: This hides your Vercel URL info from referrers -->
+  <meta name="referrer" content="no-referrer">
+  <style>
+    /* --- GLOBAL BASE THEME --- */
+    body {
+      background-color: #060606;
+      color: #ffffff;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
 
-        header {
-            background-color: #0e0e0e;
-            display: flex;
-            align-items: center;
-            padding: 10px 20px;
-            border-bottom: 2px solid #ff0000;
-        }
+    header {
+      background-color: #0e0e0e;
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+      border-bottom: 2px solid #ff0000;
+    }
 
-        .logo-box {
-            background-color: #ff0000;
-            color: #ffffff;
-            font-weight: bold;
-            padding: 5px 10px;
-            border-radius: 3px;
-            margin-right: 15px;
-            font-size: 1.1rem;
-        }
+    .logo-box {
+      background-color: #ff0000;
+      color: #ffffff;
+      font-weight: bold;
+      padding: 5px 10px;
+      border-radius: 3px;
+      margin-right: 15px;
+      font-size: 1.1rem;
+    }
 
-        .search-bar {
-            background-color: #161616;
-            border: 1px solid #222222;
-            color: #ffffff;
-            padding: 8px 12px;
-            border-radius: 4px;
-            width: 100%;
-            max-width: 400px;
-        }
+    .search-bar {
+      background-color: #161616;
+      border: 1px solid #222222;
+      color: #ffffff;
+      padding: 8px 12px;
+      border-radius: 4px;
+      width: 100%;
+      max-width: 400px;
+    }
 
-        /* --- STABLE CONTROLS DISPLAY COMPONENT --- */
-        .player-container {
-            padding: 15px 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    /* --- STABLE CONTROLS DISPLAY COMPONENT --- */
+    .player-container {
+      padding: 15px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-        .player-wrapper {
-            width: 90%;
-            max-width: 800px;
-            position: relative;
-            padding-top: 56.25%; /* Fixed 16:9 Aspect Ratio */
-            background: linear-gradient(135deg, #111111, #020202);
-            border: 2px solid #222222;
-            border-radius: 6px;
-            overflow: hidden;
-        }
+    .player-wrapper {
+      width: 90%;
+      max-width: 800px;
+      aspect-ratio: 16 / 9;
+      background-color: #0e0e0e;
+      border: 2px solid #1a1a1a;
+      border-radius: 6px;
+      position: relative;
+      overflow: hidden;
+    }
 
-        /* --- CENTRALIZED PLAYER ACTIONS WINDOW --- */
-        .player-placeholder {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: #ccc;
-            text-align: center;
-            padding: 20px;
-            box-sizing: border-box;
-            z-index: 5;
-        }
+    /* --- CENTRALIZED PLAYER ACTIONS WINDOW --- */
+    .player-placeholder {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #ccc;
+      text-align: center;
+      padding: 20px;
+      box-sizing: border-box;
+      z-index: 5;
+      background-color: rgba(14, 14, 14, 0.95);
+    }
 
-        /* Sleek Red Watch Button Layout */
-        .stream-action-btn {
-            background-color: #ff0000;
-            color: #ffffff;
-            border: none;
-            padding: 12px 30px;
-            font-size: 1rem;
-            font-weight: bold;
-            border-radius: 4px;
-            cursor: pointer;
-            text-decoration: none;
-            margin-top: 15px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: background 0.2s ease, transform 0.1s ease;
-            display: inline-block;
-            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);
-        }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 2;
+    }
 
-        .stream-action-btn:hover {
-            background-color: #cc0000;
-        }
+    /* --- Sleek Red Watch Button Layout */
+    .stream-action-btn {
+      background-color: #ff0000;
+      color: #ffffff;
+      border: none;
+      padding: 12px 30px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 4px;
+      cursor: pointer;
+      text-decoration: none;
+      margin-top: 15px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: background 0.2s ease, transform 0.2s ease;
+      display: inline-block;
+      box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);
+    }
 
-        .stream-action-btn:active {
-            transform: scale(0.98);
-        }
+    .stream-action-btn:active {
+      transform: scale(0.98);
+    }
 
-        .player-details {
-            width: 90%;
-            max-width: 800px;
-            padding: 15px 0 0 0;
-            text-align: left;
-            box-sizing: border-box;
-        }
+    .player-details {
+      width: 90%;
+      max-width: 800px;
+      padding: 15px 0 0 0;
+      text-align: left;
+      box-sizing: border-box;
+    }
 
-        .player-details h2 {
-            font-size: 1.2rem;
-            color: #ff0000;
-            margin: 0 0 4px 0;
-        }
+    .player-details h2 {
+      font-size: 1.2rem;
+      color: #ff0000;
+      margin: 0 0 4px 0;
+    }
 
-        .player-details p {
-            font-size: 0.85rem;
-            color: #888;
-            margin: 0;
-        }
+    .player-details p {
+      font-size: 0.85rem;
+      color: #888;
+      margin: 0;
+    }
 
-        /* --- MAIN CONTENT LAYOUT --- */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+    /* --- MAIN CONTENT LAYOUT --- */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
 
-        .section-title {
-            font-size: 1.4rem;
-            font-weight: bold;
-            margin-bottom: 20px;
-            border-left: 4px solid #ff0000;
-            padding-left: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+    .section-title {
+      font-size: 1.4rem;
+      border-left: 4px solid #ff0000;
+      padding-left: 10px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
 
-        /* --- CARDS GRID SYSTEM --- */
-        .anime-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 20px;
-        }
+    /* --- CARDS GRID SYSTEM --- */
+    .anime-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 20px;
+    }
 
-        .anime-card {
-            background-color: #0e0e0e;
-            border: 1px solid #1a1a1a;
-            border-radius: 6px;
-            overflow: hidden;
-            transition: transform 0.2s ease, border-color 0.2s ease;
-        }
+    .anime-card {
+      background-color: #0e0e0e;
+      border: 1px solid #1a1a1a;
+      border-radius: 6px;
+      overflow: hidden;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+      cursor: pointer;
+    }
 
-        .anime-card:hover {
-            transform: translateY(-4px);
-            border-color: #ff0000;
-        }
+    .anime-card:hover {
+      transform: translateY(-4px);
+      border-color: #ff0000;
+    }
 
-        .card-image-wrapper {
-            background-size: cover;
-            background-position: center;
-            height: 240px;
-            width: 100%;
-            background-color: #1a1a1a;
-        }
+    .card-image-wrapper {
+      background-size: cover;
+      background-position: center;
+      height: 240px;
+      width: 100%;
+      background-color: #1a1a1a;
+    }
 
-        .card-details {
-            padding: 10px;
-        }
+    .card-details {
+      padding: 10px;
+    }
 
-        .banner-title {
-            display: block;
-            color: #ff0000;
-            font-size: 0.7rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            margin-bottom: 2px;
-        }
+    .card-details h3 {
+      font-size: 0.95rem;
+      margin: 5px 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
-        .card-details h3 {
-            font-size: 0.9rem;
-            margin: 0 0 6px 0;
-            color: #ffffff;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+    .banner-title {
+      display: block;
+      color: #ff0000;
+      font-size: 0.7rem;
+      font-weight: bold;
+    }
 
-        .rating {
-            font-size: 0.8rem;
-            color: #ffcc00;
-            font-weight: bold;
-        }
-    </style>
+    .rating {
+      font-size: 0.8rem;
+      color: #ffcc00;
+    }
+
+    .loading-text {
+      color: #888;
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 4px 0;
+    }
+  </style>
 </head>
 <body>
 
-    <!-- Header Navigation -->
-    <header>
-        <div class="logo-box">AH</div>
-        <input type="text" class="search-bar" placeholder="Search Anime...">
-    </header>
+  <header>
+    <div class="logo-box">ANIME</div>
+    <input type="text" class="search-bar" placeholder="Search anime...">
+  </header>
 
-    <!-- Video Action Container Block -->
-    <div class="player-container">
-        <div class="player-wrapper">
-            <!-- Dynamic Central Action Console -->
-            <div class="player-placeholder">
-                <div id="player-status-message" style="font-weight: bold; color: #fff; font-size: 1.1rem; margin-bottom: 5px;">
-                    Welcome to Anime Heaven
-                </div>
-                <div id="player-sub-message" style="font-size: 0.9rem; padding: 0 10px; color: #888;">
-                    Select an item card below to open the secure player client node.
-                </div>
-                <!-- FIX 2: Bypasses iframe restrictions by opening the unblocked VidLink player safely in a separate tab -->
-                <a href="#" target="_blank" id="external-watch-trigger" class="stream-action-btn" style="display: none;">
-                    🚀 Launch Video Player
-                </a>
-            </div>
-        </div>
+  <div class="player-container">
+    <div class="player-wrapper">
+      <!-- Media Embed Area -->
+      <div id="placeholder-screen" class="player-placeholder">
+        <p>No media stream targeting currently loaded.</p>
+        <p style="font-size: 0.8rem; color: #666;">Select a dynamic node card lower on the grid interface architecture to bind connection layout endpoints.</p>
+      </div>
+      <iframe id="video-embed-frame" style="display: none;" allowfullscreen></iframe>
+    </div>
+    
+    <div class="player-details">
+      <h2 id="statusMsg">Playing: Select an Anime</h2>
+      <p id="subMsg">Streaming Client: Idle</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="section-title">Trending Anime</div>
+    <!-- Clean grid node targets for runtime engine injection logic -->
+    <div id="trending-anime-grid" class="anime-grid">
+      <div class="loading-text">Connecting to Jikan API pipeline node structure...</div>
+    </div>
+  </div>
+
+  <!-- --- DYNAMIC DISPATCH ENGINE --- -->
+  <script>
+    // System Configuration Coordinates
+    const JIKAN_API_BASE = 'https://jikan.moe';
+    const VIDLINK_EMBED_BASE = 'https://vidlink.pro';
+
+    /**
+     * Dispatches runtime request targets to populate UI card matrices 
+     */
+    async function loadTrendingAnime() {
+      const gridContainer = document.getElementById('trending-anime-grid');
+      if (!gridContainer) return;
+
+      try {
+        // Fetch popular global items directly via MyAnimeList engine bridges
+        const response = await fetch(`${JIKAN_API_BASE}/top/anime?filter=bypopularity&limit=12`);
+        const result = await response.json();
         
-        <div class="player-details">
-            <h2 id="now-playing-title">Playing: Waiting for Selection</h2>
-            <p id="client-status-text">Streaming Server Client: Idle</p>
-        </div>
-    </div>
+        // Wipe interface template placeholders
+        gridContainer.innerHTML = '';
 
-    <!-- Cards Catalog Grid Section -->
-    <div class="container">
-        <div class="section-title">Trending Anime</div>
-        <div class="anime-grid" id="anime-display-grid">
-            
-            <div class="anime-card" style="cursor: pointer;" onclick="prepareStreamNode('21', 'One Piece')">
-                <div class="card-image-wrapper" style="background-image: url('https://myanimelist.net');"></div>
-                <div class="card-details">
-                    <span class="banner-title">ONE PIECE</span>
-                    <h3>One Piece</h3>
-                    <span class="rating">★ 8.72</span>
-                </div>
+        if (!result.data || result.data.length === 0) {
+          gridContainer.innerHTML = `<div class="loading-text">No data packets received from downstream structural networks.</div>`;
+          return;
+        }
+
+        // Loop array data structures mapping entities dynamically into document fragments
+        result.data.forEach(anime => {
+          const card = document.createElement('div');
+          card.className = 'anime-card';
+          
+          // Cross-connect selection parameters cleanly into live player loops
+          card.addEventListener('click', () => {
+            prepareStreamNode(anime.mal_id, anime.title);
+          });
+
+          card.innerHTML = `
+            <div class="card-image-wrapper" style="background-image: url('${anime.images.jpg.image_url}');"></div>
+            <div class="card-details">
+              <span class="banner-title">${anime.type || 'TV'}</span>
+              <h3>${anime.title}</h3>
+              <span class="rating">★ ${anime.score || 'N/A'}</span>
             </div>
+          `;
+          gridContainer.appendChild(card);
+        });
 
-            <div class="anime-card" style="cursor: pointer;" onclick="prepareStreamNode('1735', 'Naruto Shippuden')">
-                <div class="card-image-wrapper" style="background-image: url('https://myanimelist.net');"></div>
-                <div class="card-details">
-                    <span class="banner-title">NARUTO</span>
-                    <h3>Naruto Shippuden</h3>
-                    <span class="rating">★ 8.21</span>
-                </div>
-            </div>
+      } catch (error) {
+        console.error('API Pipeline Break:', error);
+        gridContainer.innerHTML = `<div class="loading-text" style="color: #ff0000;">Engine initialization failed. Pipeline error context logs.</div>`;
+      }
+    }
 
-            <div class="anime-card" style="cursor: pointer;" onclick="prepareStreamNode('5114', 'Fullmetal Alchemist: Brotherhood')">
-                <div class="card-image-wrapper" style="background-image: url('https://myanimelist.net');"></div>
-                <div class="card-details">
-                    <span class="banner-title">TV</span>
-                    <h3>Fullmetal Alchemist: B.</h3>
-                    <span class="rating">★ 9.10</span>
-                </div>
-            </div>
+    /**
+     * Binds structural dynamic element routing data targeting third party streaming contexts
+     */
+    function prepareStreamNode(id, streamTitle) {
+      const statusMsg = document.getElementById('statusMsg');
+      const subMsg = document.getElementById('subMsg');
+      const placeholderScreen = document.getElementById('placeholder-screen');
+      const embedFrame = document.getElementById('video-embed-frame');
 
-            <div class="anime-card" style="cursor: pointer;" onclick="prepareStreamNode('38000', 'Demon Slayer: Kimetsu no Yaiba')">
-                <div class="card-image-wrapper" style="background-image: url('https://myanimelist.net');"></div>
-                <div class="card-details">
-                    <span class="banner-title">TV</span>
-                    <h3>Demon Slayer</h3>
-                    <span class="rating">★ 8.47</span>
-                </div>
-            </div>
+      if (!statusMsg || !subMsg || !embedFrame || !placeholderScreen) return;
 
-        </div>
-    </div>
+      // Update functional UI typography states safely
+      statusMsg.textContent = `Playing: ${streamTitle}`;
+      subMsg.textContent = `Streaming Client: Active (MAL Node ID: ${id})`;
 
-    <!-- --- DYNAMIC DISPATCH ENGINE --- -->
-    <script>
-        // Set standard endpoint format path coordinates
-        const VIDLINK_EMBED_BASE = 'https://vidlink.pro';
+      // Strip placeholders out of standard frame visualization flow states
+      placeholderScreen.style.display = 'none';
+      embedFrame.style.display = 'block';
 
-        function prepareStreamNode(id, streamTitle) {
-            const launchBtn = document.getElementById('external-watch-trigger');
-            const statusMsg = document.getElementById('player-status-message');
-            const subMsg = document.getElementById('player-sub-message');
-            const interfaceHeading = document.getElementById('now-playing-title');
-            const auxiliaryStatus = document.getElementById('client-status-text');
+      // Re-route clean dynamic query nodes directly into the target media frame interface structures
+      embedFrame.src = `${VIDLINK_EMBED_BASE}/${id}`;
+    }
 
-            if (!launchBtn || !statusMsg) return;
-
-            statusMsg.textContent = `Stream Target: ${streamTitle}`;
-            subMsg.textContent = "Your connection node link has been configured safely.";
+    // Bind event loop listeners tracking system frame processing loops
+    document.addEventListener('DOMContentLoaded', loadTrendingAnime);
+  </script>
+</body>
+</html>
