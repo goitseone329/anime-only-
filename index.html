@@ -32,6 +32,7 @@
       border-radius: 3px;
       margin-right: 15px;
       font-size: 1.1rem;
+      cursor: pointer;
     }
 
     .search-bar {
@@ -42,6 +43,12 @@
       border-radius: 4px;
       width: 100%;
       max-width: 400px;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .search-bar:focus {
+      border-color: #ff0000;
     }
 
     /* --- STABLE CONTROLS DISPLAY COMPONENT --- */
@@ -92,29 +99,6 @@
       z-index: 2;
     }
 
-    /* --- Sleek Red Watch Button Layout */
-    .stream-action-btn {
-      background-color: #ff0000;
-      color: #ffffff;
-      border: none;
-      padding: 12px 30px;
-      font-size: 1rem;
-      font-weight: bold;
-      border-radius: 4px;
-      cursor: pointer;
-      text-decoration: none;
-      margin-top: 15px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      transition: background 0.2s ease, transform 0.2s ease;
-      display: inline-block;
-      box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);
-    }
-
-    .stream-action-btn:active {
-      transform: scale(0.98);
-    }
-
     .player-details {
       width: 90%;
       max-width: 800px;
@@ -132,7 +116,70 @@
     .player-details p {
       font-size: 0.85rem;
       color: #888;
-      margin: 0;
+      margin: 0 0 15px 0;
+    }
+
+    /* --- DYNAMIC EPISODE SELECTOR LAYOUT --- */
+    .episode-control-panel {
+      display: none; /* Injected on active selection */
+      background-color: #0e0e0e;
+      border: 1px solid #1a1a1a;
+      border-radius: 4px;
+      padding: 15px;
+      margin-top: 5px;
+    }
+
+    .episode-panel-title {
+      font-size: 0.9rem;
+      color: #fff;
+      font-weight: bold;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .episode-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+      gap: 8px;
+      max-height: 150px;
+      overflow-y: auto;
+      padding-right: 5px;
+    }
+
+    /* Custom scrollbar for episode box */
+    .episode-grid::-webkit-scrollbar {
+      width: 6px;
+    }
+    .episode-grid::-webkit-scrollbar-thumb {
+      background-color: #222;
+      border-radius: 3px;
+    }
+
+    .episode-btn {
+      background-color: #161616;
+      border: 1px solid #222;
+      color: #ccc;
+      padding: 6px 0;
+      font-size: 0.8rem;
+      font-weight: bold;
+      text-align: center;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .episode-btn:hover {
+      background-color: #222;
+      color: #fff;
+      border-color: #444;
+    }
+
+    .episode-btn.active {
+      background-color: #ff0000;
+      color: #fff;
+      border-color: #ff0000;
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
     }
 
     /* --- MAIN CONTENT LAYOUT --- */
@@ -215,8 +262,8 @@
 <body>
 
   <header>
-    <div class="logo-box">ANIME</div>
-    <input type="text" class="search-bar" placeholder="Search anime...">
+    <div class="logo-box" id="logoHomeBtn">ANIME</div>
+    <input type="text" class="search-bar" id="searchEngineInput" placeholder="Search anime dynamically...">
   </header>
 
   <div class="player-container">
@@ -232,11 +279,17 @@
     <div class="player-details">
       <h2 id="statusMsg">Playing: Select an Anime</h2>
       <p id="subMsg">Streaming Client: Idle</p>
+      
+      <!-- Live Dynamic Episode Controls -->
+      <div class="episode-control-panel" id="episodeControlPanel">
+        <div class="episode-panel-title">Select Episode</div>
+        <div class="episode-grid" id="episodeButtonGrid"></div>
+      </div>
     </div>
   </div>
 
   <div class="container">
-    <div class="section-title">Trending Anime</div>
+    <div class="section-title" id="gridTitleDisplay">Trending Anime</div>
     <!-- Clean grid node targets for runtime engine injection logic -->
     <div id="trending-anime-grid" class="anime-grid">
       <div class="loading-text">Connecting to Jikan API pipeline node structure...</div>
@@ -249,47 +302,25 @@
     const JIKAN_API_BASE = 'https://jikan.moe';
     const VIDLINK_EMBED_BASE = 'https://vidlink.pro';
 
+    // State Processing Registries
+    let searchDebounceTimeout = null;
+    let activeAnimeId = null;
+    let activeAnimeTitle = "";
+
     /**
-     * Dispatches runtime request targets to populate UI card matrices 
+     * Dispatches runtime request targets to populate UI card matrices (Default Trending View)
      */
     async function loadTrendingAnime() {
+      document.getElementById('gridTitleDisplay').textContent = "Trending Anime";
       const gridContainer = document.getElementById('trending-anime-grid');
       if (!gridContainer) return;
 
+      gridContainer.innerHTML = `<div class="loading-text">Fetching latest matrix packets...</div>`;
+
       try {
-        // Fetch popular global items directly via MyAnimeList engine bridges
         const response = await fetch(`${JIKAN_API_BASE}/top/anime?filter=bypopularity&limit=12`);
         const result = await response.json();
-        
-        // Wipe interface template placeholders
-        gridContainer.innerHTML = '';
-
-        if (!result.data || result.data.length === 0) {
-          gridContainer.innerHTML = `<div class="loading-text">No data packets received from downstream structural networks.</div>`;
-          return;
-        }
-
-        // Loop array data structures mapping entities dynamically into document fragments
-        result.data.forEach(anime => {
-          const card = document.createElement('div');
-          card.className = 'anime-card';
-          
-          // Cross-connect selection parameters cleanly into live player loops
-          card.addEventListener('click', () => {
-            prepareStreamNode(anime.mal_id, anime.title);
-          });
-
-          card.innerHTML = `
-            <div class="card-image-wrapper" style="background-image: url('${anime.images.jpg.image_url}');"></div>
-            <div class="card-details">
-              <span class="banner-title">${anime.type || 'TV'}</span>
-              <h3>${anime.title}</h3>
-              <span class="rating">★ ${anime.score || 'N/A'}</span>
-            </div>
-          `;
-          gridContainer.appendChild(card);
-        });
-
+        renderCardMatrix(result.data);
       } catch (error) {
         console.error('API Pipeline Break:', error);
         gridContainer.innerHTML = `<div class="loading-text" style="color: #ff0000;">Engine initialization failed. Pipeline error context logs.</div>`;
@@ -297,30 +328,47 @@
     }
 
     /**
-     * Binds structural dynamic element routing data targeting third party streaming contexts
+     * Executes queries via search input filters
      */
-    function prepareStreamNode(id, streamTitle) {
-      const statusMsg = document.getElementById('statusMsg');
-      const subMsg = document.getElementById('subMsg');
-      const placeholderScreen = document.getElementById('placeholder-screen');
-      const embedFrame = document.getElementById('video-embed-frame');
+    async function executeAnimeSearch(query) {
+      if (!query.trim()) {
+        loadTrendingAnime();
+        return;
+      }
 
-      if (!statusMsg || !subMsg || !embedFrame || !placeholderScreen) return;
+      document.getElementById('gridTitleDisplay').textContent = `Search Results for: "${query}"`;
+      const gridContainer = document.getElementById('trending-anime-grid');
+      gridContainer.innerHTML = `<div class="loading-text">Searching API records...</div>`;
 
-      // Update functional UI typography states safely
-      statusMsg.textContent = `Playing: ${streamTitle}`;
-      subMsg.textContent = `Streaming Client: Active (MAL Node ID: ${id})`;
-
-      // Strip placeholders out of standard frame visualization flow states
-      placeholderScreen.style.display = 'none';
-      embedFrame.style.display = 'block';
-
-      // Re-route clean dynamic query nodes directly into the target media frame interface structures
-      embedFrame.src = `${VIDLINK_EMBED_BASE}/${id}`;
+      try {
+        const response = await fetch(`${JIKAN_API_BASE}/anime?q=${encodeURIComponent(query)}&limit=12`);
+        const result = await response.json();
+        renderCardMatrix(result.data);
+      } catch (error) {
+        console.error('Search Pipeline Break:', error);
+        gridContainer.innerHTML = `<div class="loading-text" style="color: #ff0000;">Search pipeline failed. Query parsing logs aborted.</div>`;
+      }
     }
 
-    // Bind event loop listeners tracking system frame processing loops
-    document.addEventListener('DOMContentLoaded', loadTrendingAnime);
-  </script>
-</body>
-</html>
+    /**
+     * Renders array data blocks down to individual UI card nodes
+     */
+    function renderCardMatrix(animeArray) {
+      const gridContainer = document.getElementById('trending-anime-grid');
+      gridContainer.innerHTML = '';
+
+      if (!animeArray || animeArray.length === 0) {
+        gridContainer.innerHTML = `<div class="loading-text">No target data streams found matching current query profile.</div>`;
+        return;
+      }
+
+      animeArray.forEach(anime => {
+        const card = document.createElement('div');
+        card.className = 'anime-card';
+        
+        card.addEventListener('click', () => {
+          // Pass absolute total episode count to bootstrap the episode matrix control panel
+          prepareStreamNode(anime.mal_id, anime.title, anime.episodes || 1);
+        });
+
+        card.innerHTML = `
