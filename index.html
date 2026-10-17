@@ -223,17 +223,11 @@
     <!-- INTEGRATED CONSOLE PLAYER SECTION -->
     <section class="player-section">
         <div class="player-wrapper">
-            <!-- CHANGED: Replaced the standard path with the secure API path and added restrictive sandbox properties -->
-            <iframe id="video-stream" 
-                    src="https://vidsrc.sh" 
-                    referrerpolicy="origin"
-                    sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"
-                    allow="autoplay; encrypted-media" 
-                    allowfullscreen>
-            </iframe>
+            <!-- UPGRADED PLAYER: Initial startup video utilizes the clean VidLink layout framework -->
+            <iframe id="video-stream" src="https://vidlink.pro" allowfullscreen></iframe>
         </div>
         <div class="player-details">
-            <h2>Playing: Naruto Shippuden</h2>
+            <h2>Playing: Naruto</h2>
             <p>Streaming Client: Active</p>
         </div>
     </section>
@@ -242,11 +236,11 @@
     <main class="container">
         <div class="section-title">Trending Anime</div>
         <div class="anime-grid" id="trending-grid">
-            <!-- Interactively loaded components populate here -->
+            <!-- Dynamic catalog entries populate here -->
         </div>
     </main>
 
-    <!-- JIKAN & TMDB CONVERSION DATA GENERATOR CONTEXT SCRIPT -->
+    <!-- JIKAN & VIDLINK INTEGRATION SYSTEM SCRIPT -->
     <script>
         const JIKAN_BASE_URL = 'https://jikan.moe';
         const FALLBACK_IMAGE = 'data:image/svg+xml;utf8,<svg xmlns="http://w3.org" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%231a1a1a"/><text x="50" y="55" font-family="Arial" font-size="10" fill="%23888" text-anchor="middle">No Poster</text></svg>';
@@ -278,7 +272,7 @@
                             <p>⭐ Score: ${anime.score || 'N/A'}</p>
                         </div>
                     `;
-                    container.appendChild(container.appendChild(card) && card);
+                    container.appendChild(card);
                 });
             } catch (err) {
                 console.error("Failed to acquire trending resources:", err);
@@ -296,3 +290,7 @@
             const phrase = input.value.trim();
             if (!phrase) return;
 
+            if (heading) heading.textContent = `Search Results for: "${phrase}"`;
+            container.innerHTML = '<p style="padding: 30px; text-align: center; width: 100%;">Searching live server directory...</p>';
+
+            try {
