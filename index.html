@@ -3,163 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anime Only - Stream Free Anime</title>
+    <title>Anime Only</title>
     <!-- Font Awesome for clean interface icons -->
     <link rel="stylesheet" href="https://cloudflare.com">
     <style>
-        /* Base Reset & Anime Heaven Layout Settings */
+        /* Base Reset & Design Variables */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         :root {
-            --main-dark: #0f172a;       /* Dark base background */
-            --panel-bg: #1e293b;        /* Lighter background panels */
-            --anime-blue: #3b82f6;      /* Classic Anime Heaven layout brand color (Cyan/Blue variant) */
-            --bright-blue: #60a5fa;     /* Hover highlight accent blue */
-            --text-main: #f8fafc;       /* Off-white text */
-            --text-muted: #94a3b8;      /* Structural metadata text */
+            --bg-color: #0b0c10;
+            --card-bg: #1f2833;
+            --primary-red: #e50914;
+            --text-light: #ffffff;
+            --text-gray: #c5c6c7;
         }
 
         body {
-            background-color: var(--main-dark);
-            color: var(--text-main);
+            background-color: var(--bg-color);
+            color: var(--text-light);
             min-height: 100vh;
+            padding-bottom: 2rem;
         }
 
-        /* Top Header Utility Area */
+        /* Header & Navigation Layout */
         header {
-            background-color: #0b0f19;
-            border-bottom: 3px solid var(--anime-blue);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            background-color: #000000;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            border-bottom: 2px solid var(--primary-red);
         }
 
-        .header-wrap {
-            max-width: 1300px;
-            margin: 0 auto;
-            padding: 0.8rem 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1rem;
-        }
-
-        /* Branding inspired by Anime Heaven's block signature */
-        .brand {
-            font-size: 1.6rem;
+        .logo {
+            font-size: 2.2rem;
             font-weight: 800;
-            letter-spacing: -0.5px;
+            color: var(--primary-red);
             text-transform: uppercase;
-            color: #ffffff;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-        }
-
-        .brand span {
-            background-color: var(--anime-blue);
-            color: #ffffff;
-            padding: 0.1rem 0.5rem;
-            border-radius: 4px;
-            margin-left: 4px;
-            box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
-        }
-
-        /* Centered Filter/Search Bar block */
-        .search-area {
-            flex: 1;
-            max-width: 500px;
-            position: relative;
-        }
-
-        .search-area input {
-            width: 100%;
-            background-color: #1e293b;
-            border: 1px solid #334155;
-            padding: 0.6rem 2.5rem 0.6rem 1rem;
-            border-radius: 20px;
-            color: #ffffff;
-            font-size: 0.9rem;
-            outline: none;
-            transition: all 0.2s ease;
-        }
-
-        .search-area input:focus {
-            border-color: var(--anime-blue);
-            box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
-        }
-
-        .search-area i {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-        }
-
-        /* Core Section Grid Setup */
-        .container {
-            max-width: 1300px;
-            margin: 1.5rem auto;
-            padding: 0 1rem;
-            display: grid;
-            grid-template-columns: 1fr 320px; /* Main layout feed + classic sidebar panel */
-            gap: 1.5rem;
-        }
-
-        .main-feed {
-            min-width: 0; /* Prevents flex/grid blowouts */
-        }
-
-        /* Headings mimicking old-school content streams */
-        .block-heading {
-            background-color: var(--panel-bg);
-            border-left: 5px solid var(--anime-blue);
-            padding: 0.6rem 1rem;
-            font-size: 1.1rem;
-            font-weight: bold;
-            text-transform: uppercase;
+            letter-spacing: 2px;
             margin-bottom: 1rem;
+        }
+
+        .logo span {
+            color: var(--text-light);
+        }
+
+        /* Search input bar styling matching your layout */
+        .search-box {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.8rem 1.5rem;
+            background-color: #121212;
+            border: 1px solid #333;
+            border-radius: 25px;
+            color: var(--text-light);
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary-red);
+            box-shadow: 0 0 10px rgba(229, 9, 20, 0.4);
+        }
+
+        /* Main Workspace Container Layout */
+        main {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            border-left: 5px solid var(--primary-red);
+            padding-left: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
         }
 
         /* High-density grid for quick scanning like Anime Heaven */
-        .anime-stream {
+        .anime-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 1.5rem;
         }
 
-        .anime-item {
-            background-color: var(--panel-bg);
-            border-radius: 4px;
+        .anime-card {
+            background-color: var(--card-bg);
+            border-radius: 6px;
             overflow: hidden;
-            position: relative;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
             cursor: pointer;
-            transition: transform 0.2s ease;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid #2d3748;
+            position: relative;
         }
 
-        .anime-item:hover {
+        .anime-card:hover {
             transform: translateY(-4px);
+            box-shadow: 0 5px 15px rgba(229, 9, 20, 0.4);
+            border-color: var(--primary-red);
         }
 
-        .thumb-box {
+        .poster-wrapper {
             position: relative;
             width: 100%;
-            padding-top: 140%; /* Perfect standard anime poster scale */
-            background-color: #0b0f19;
+            padding-top: 140%; /* Perfect 1:1.4 scale dimension for posters */
+            background-color: #121212;
         }
 
-        .thumb-box img {
+        .poster-wrapper img {
             position: absolute;
             top: 0;
             left: 0;
@@ -168,14 +134,15 @@
             object-fit: cover;
         }
 
-        /* Sub/Dub status badge tags overlaying the poster graphics */
+        /* Badges overlaying the poster graphics */
         .status-badge {
             position: absolute;
-            top: 5px;
-            left: 5px;
-            background-color: rgba(15, 23, 42, 0.85);
-            border-left: 3px solid var(--anime-blue);
-            padding: 0.2rem 0.4rem;
+            top: 6px;
+            left: 6px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-left: 3px solid var(--primary-red);
+            color: #ffffff;
+            padding: 0.2rem 0.5rem;
             font-size: 0.75rem;
             font-weight: bold;
             border-radius: 2px;
@@ -183,110 +150,61 @@
 
         .ep-badge {
             position: absolute;
-            bottom: 5px;
-            right: 5px;
-            background-color: var(--anime-blue);
+            bottom: 6px;
+            right: 6px;
+            background-color: var(--primary-red);
             color: #ffffff;
-            padding: 0.1rem 0.4rem;
+            padding: 0.1rem 0.5rem;
             font-size: 0.75rem;
             font-weight: bold;
             border-radius: 2px;
         }
 
-        .item-details {
-            padding: 0.6rem;
+        .anime-info {
+            padding: 0.8rem;
         }
 
-        .item-title {
-            font-size: 0.85rem;
-            font-weight: bold;
-            line-height: 1.3;
-            height: 2.6rem; /* Restricts overflow across variable names */
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            color: var(--text-main);
-        }
-
-        .item-title:hover {
-            color: var(--bright-blue);
-        }
-
-        /* Classic right-side scheduling panel details */
-        .sidebar-panel {
-            background-color: var(--panel-bg);
-            padding: 1rem;
-            border-radius: 4px;
-            height: fit-content;
-        }
-
-        .sidebar-title {
-            font-size: 1rem;
-            text-transform: uppercase;
-            border-bottom: 2px solid var(--anime-blue);
-            padding-bottom: 0.5rem;
-            margin-bottom: 1rem;
-            font-weight: bold;
-        }
-
-        .ranking-list {
-            list-style: none;
-        }
-
-        .ranking-row {
-            display: flex;
-            align-items: center;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #334155;
-            font-size: 0.85rem;
-        }
-
-        .ranking-num {
-            font-weight: bold;
-            color: var(--anime-blue);
-            width: 25px;
-        }
-
-        .ranking-name {
-            flex: 1;
+        .anime-title {
+            font-size: 0.9rem;
+            font-weight: 600;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            padding-right: 5px;
+            color: var(--text-light);
         }
 
-        /* Compact Streaming Modal Layer */
-        .stream-overlay {
+        /* Video Streaming Pop-up Overlay Setup */
+        .modal {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(11, 15, 25, 0.95);
+            background-color: rgba(0, 0, 0, 0.95);
             z-index: 2000;
             justify-content: center;
             align-items: center;
             padding: 1rem;
         }
 
-        .player-frame {
-            background-color: var(--main-dark);
+        .modal-content {
+            background-color: var(--bg-color);
             width: 100%;
-            max-width: 860px;
-            border: 2px solid var(--anime-blue);
-            border-radius: 6px;
+            max-width: 800px;
+            border-radius: 8px;
+            border: 2px solid var(--primary-red);
+            overflow: hidden;
             position: relative;
         }
 
-        .video-box {
+        .video-container {
             position: relative;
-            padding-bottom: 56.25%; /* Fixed widescreen 16:9 box window */
+            padding-bottom: 56.25%; /* Fixed widescreen 16:9 box container window */
             height: 0;
         }
 
-        .video-box iframe {
+        .video-container iframe {
             position: absolute;
             top: 0;
             left: 0;
@@ -294,56 +212,113 @@
             height: 100%;
         }
 
-        .close-overlay {
+        .close-modal {
             position: absolute;
             top: -45px;
             right: 0;
-            background: none;
-            border: none;
             color: white;
             font-size: 2.2rem;
             cursor: pointer;
+            background: none;
+            border: none;
+            outline: none;
         }
 
-        /* Screen Scaling adjustments for clean rendering on Android Phones */
-        @media (max-width: 850px) {
-            .container {
-                grid-template-columns: 1fr;
-            }
-            .sidebar-panel {
-                display: none; /* Drop sidebar on narrow mobile profiles to prioritize media index */
-            }
-        }
-
+        /* Responsive Breakpoint Scalers for Android Screen Displays */
         @media (max-width: 480px) {
-            .header-wrap {
-                flex-direction: column;
-                align-items: stretch;
+            .anime-grid {
+                grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+                gap: 0.8rem;
             }
-            .brand {
-                justify-content: center;
-            }
-            .anime-stream {
-                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-                gap: 0.6rem;
+            .section-title {
+                font-size: 1.3rem;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- Header Navigation Section -->
+    <!-- Main Header Component -->
     <header>
-        <div class="header-wrap">
-            <a href="#" class="brand">Anime<span>Only</span></a>
-            <div class="search-area">
-                <input type="text" id="directorySearch" placeholder="Search anime index...">
-                <i class="fa-solid fa-magnifying-glass"></i>
-            </div>
+        <div class="logo">Anime<span>Only</span></div>
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search anime titles...">
         </div>
     </header>
 
     <!-- Content Workspace Wrapper -->
-    <div class="container">
-        
-        <!-- Left Side: Interactive Directory Feed -->
+    <main>
+        <h2 class="section-title">Trending Anime</h2>
+        <div class="anime-grid" id="animeGrid">
+            <!-- Dynamic project cards populate automatically via javascript below -->
+        </div>
+    </main>
+
+    <!-- Video Streaming Modal Component Layer -->
+    <div class="modal" id="videoModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeBtn">&times;</button>
+            <div class="video-container">
+                <iframe id="videoPlayer" src="" frameborder="0" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interface Logic Controller -->
+    <script>
+        // Core local anime series databank structure
+        const animeData = [
+            {
+                title: "Chainsaw Man",
+                image: "https://unsplash.com",
+                type: "SUB",
+                episodes: "Ep 12",
+                embedUrl: "https://youtube.com" 
+            },
+            {
+                title: "Attack on Titan",
+                image: "https://unsplash.com", 
+                type: "SUB",
+                episodes: "Ep 87",
+                embedUrl: "https://youtube.com" 
+            },
+            {
+                title: "Demon Slayer",
+                image: "https://unsplash.com",
+                type: "DUB",
+                episodes: "Ep 26",
+                embedUrl: "https://youtube.com"
+            }
+        ];
+
+        const animeGrid = document.getElementById('animeGrid');
+        const searchInput = document.getElementById('searchInput');
+        const videoModal = document.getElementById('videoModal');
+        const videoPlayer = document.getElementById('videoPlayer');
+        const closeBtn = document.getElementById('closeBtn');
+
+        // Dynamic presentation renderer generator layout loop
+        function displayAnime(items) {
+            animeGrid.innerHTML = "";
+            if(items.length === 0) {
+                animeGrid.innerHTML = `<p style="color: var(--text-gray); grid-column: 1/-1; padding: 1rem;">No results found.</p>`;
+                return;
+            }
+
+            items.forEach(anime => {
+                const card = document.createElement('div');
+                card.classList.add('anime-card');
+                card.innerHTML = `
+                    <div class="poster-wrapper">
+                        <img src="${anime.image}" alt="${anime.title}">
+                        <span class="status-badge">${anime.type}</span>
+                        <span class="ep-badge">${anime.episodes}</span>
+                    </div>
+                    <div class="anime-info">
+                        <div class="anime-title">${anime.title}</div>
+                    </div>
+                `;
+                
+                // Clicking an anime element handles pop-up launcher routines
+                card.addEventListener('click', () => {
+                    videoPlayer.src = anime.embedUrl;
