@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anime Only</title>
+    <title>Anime Only - Stream</title>
     <style>
         :root {
             --bg-primary: #0b0c10;
@@ -28,7 +28,7 @@
             min-height: 100vh;
         }
 
-        /* Header & Logo Navbar Layout */
+        /* Navbar Header components */
         header {
             background-color: var(--bg-secondary);
             padding: 1.5rem 1rem;
@@ -42,17 +42,12 @@
             letter-spacing: 1px;
             text-transform: uppercase;
             margin-bottom: 1.2rem;
+            cursor: pointer;
         }
 
-        .logo span:first-child {
-            color: var(--accent-color);
-        }
+        .logo span:first-child { color: var(--accent-color); }
+        .logo span:last-child { color: var(--text-main); }
 
-        .logo span:last-child {
-            color: var(--text-main);
-        }
-
-        /* Search input controls */
         .search-container {
             width: 100%;
             max-width: 450px;
@@ -68,26 +63,20 @@
             border-radius: 25px;
             font-size: 0.95rem;
             outline: none;
-            transition: all 0.3s ease;
         }
 
-        .search-bar:focus {
-            border-color: var(--accent-color);
-            background-color: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 0 8px rgba(229, 9, 20, 0.3);
-        }
-
-        /* Trending Section Heading styling */
         main {
             padding: 1.5rem 1rem;
             max-width: 1200px;
             margin: 0 auto;
         }
 
+        /* Main Catalog View Grid layout */
+        #catalog-view { display: block; }
+
         .section-title {
             font-size: 1.4rem;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
             margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
@@ -101,17 +90,14 @@
             height: 1.4rem;
             background-color: var(--accent-color);
             margin-right: 10px;
-            border-radius: 2px;
         }
 
-        /* Anime Grid System layout */
         .anime-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
             gap: 16px;
         }
 
-        /* Fixed Anime Card Structure via Absolute Overlays */
         .anime-card {
             background-color: var(--card-bg);
             border-radius: 6px;
@@ -121,18 +107,12 @@
             flex-direction: column;
             cursor: pointer;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            transition: transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
-        .anime-card:hover {
-            transform: translateY(-5px);
-        }
-
-        /* Image containment area */
         .img-wrapper {
             position: relative;
             width: 100%;
-            padding-top: 145%; /* 2:3 Anime poster layout scaling */
+            padding-top: 145%;
             background-color: #1a232e;
         }
 
@@ -145,7 +125,6 @@
             object-fit: cover;
         }
 
-        /* Floated Badge Component styles */
         .badge-sub-dub {
             position: absolute;
             top: 8px;
@@ -156,8 +135,6 @@
             padding: 3px 8px;
             font-size: 0.7rem;
             font-weight: 800;
-            text-transform: uppercase;
-            border-radius: 0 3px 3px 0;
             z-index: 2;
         }
 
@@ -174,176 +151,185 @@
             z-index: 2;
         }
 
-        /* Bottom Text Details Zone */
         .anime-details {
             background-color: var(--bg-secondary);
             padding: 10px 8px;
             text-align: left;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .anime-title {
             font-size: 0.88rem;
             font-weight: 600;
-            color: var(--text-main);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        /* Status States */
+        /* ================= WATCH PAGE STREAMING INTERFACE ================= */
+        #watch-view {
+            display: none; /* Controlled dynamically via JS */
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .stream-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stream-episode-indicator {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        /* Next Episode Navigation Trigger Button */
+        .btn-next-ep {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: opacity 0.2s;
+        }
+
+        .btn-next-ep:hover { opacity: 0.9; }
+
+        /* Perfect 16:9 Video Box block match */
+        .player-container {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio Layout */
+            background-color: #000;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .player-container video, .player-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Dynamic Tool & Control Bars matching references */
+        .action-control-bar {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        .action-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px;
+            font-weight: bold;
+            font-size: 1rem;
+            min-width: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .btn-wide {
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+        .btn-download {
+            display: block;
+            width: 100%;
+            background-color: var(--accent-color);
+            color: white;
+            padding: 14px;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Social Share Strip */
+        .social-strip {
+            background-color: var(--bg-secondary);
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            border-radius: 4px;
+        }
+
+        .social-icon {
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .social-icon:hover { color: var(--accent-color); }
+
         .status-msg {
             grid-column: 1 / -1;
             text-align: center;
             padding: 3rem 1rem;
             color: var(--text-secondary);
-            font-size: 1rem;
-        }
-
-        /* ================= MODAL DISPLAY SYSTEM ================= */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.85);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 999;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-            padding: 1rem;
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .modal-container {
-            background-color: var(--bg-secondary);
-            width: 100%;
-            max-width: 600px;
-            border-radius: 12px;
-            overflow: hidden;
-            position: relative;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transform: scale(0.9);
-            transition: transform 0.3s ease;
-        }
-
-        .modal-overlay.active .modal-container {
-            transform: scale(1);
-        }
-
-        .modal-close-btn {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: rgba(0, 0, 0, 0.5);
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-            transition: background 0.2s;
-        }
-
-        .modal-close-btn:hover {
-            background: var(--accent-color);
-        }
-
-        .video-box {
-            position: relative;
-            width: 100%;
-            padding-top: 56.25%; /* 16:9 Aspect Ratio */
-            background-color: #000;
-        }
-
-        .video-box iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        .modal-info {
-            padding: 1.5rem;
-        }
-
-        .modal-anime-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: var(--text-main);
-        }
-
-        .modal-anime-meta {
-            font-size: 0.85rem;
-            color: var(--accent-color);
-            margin-bottom: 1rem;
-            font-weight: 600;
-        }
-
-        .modal-anime-synopsis {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            line-height: 1.5;
-            max-height: 150px;
-            overflow-y: auto;
-            padding-right: 5px;
-        }
-
-        /* Custom Scrollbar for Synopsis Window */
-        .modal-anime-synopsis::-webkit-scrollbar {
-            width: 4px;
-        }
-        .modal-anime-synopsis::-webkit-scrollbar-thumb {
-            background: var(--card-bg);
-            border-radius: 4px;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo"><span>Anime</span><span>Only</span></div>
-        <div class="search-container">
+        <div class="logo" id="nav-logo"><span>Anime</span><span>Only</span></div>
+        <div class="search-container" id="nav-search-box">
             <input type="text" id="anime-search" class="search-bar" placeholder="Search anime titles...">
         </div>
     </header>
 
     <main>
-        <section id="trending-section">
+        <!-- VIEW 1: MAIN HOMEPAGE DISPLAY CATALOG -->
+        <section id="catalog-view">
             <h1 class="section-title" id="display-title">Trending Anime</h1>
             <div id="anime-grid" class="anime-grid">
-                <p class="status-msg">Loading dynamic titles from catalog...</p>
+                <p class="status-msg">Loading direct catalog updates...</p>
             </div>
         </section>
-    </main>
 
-    <!-- Global Video/Info Modal Window Structure -->
-    <div id="anime-modal" class="modal-overlay">
-        <div class="modal-container">
-            <button id="modal-close" class="modal-close-btn">&times;</button>
-            <div class="video-box">
-                <iframe id="modal-video" src="" allowfullscreen allow="autoplay"></iframe>
-                <div id="video-fallback" class="status-msg" style="display: none; position: absolute; top:0; left:0; width:100%; height:100%; background:#1a1a1a; margin:0; display:flex; align-items:center; justify-content:center;">No Preview Trailer Available</div>
+        <!-- VIEW 2: DYNAMIC VIDEO STREAMING INTERFACE LAYOUT -->
+        <section id="watch-view">
+            <h2 id="stream-anime-title" class="stream-title">Anime Title</h2>
+            <div id="stream-episode-num" class="stream-episode-indicator">Episode 1</div>
+            
+            <button id="next-ep-top-btn" class="btn-next-ep">Episode 2</button>
+
+            <!-- Video Core Player Placement (Loads a default fallback demo stream loop safely) -->
+            <div class="player-container">
+                <video id="main-video-player" controls preload="metadata" poster="">
+                    <source src="https://googleapis.com" type="video/mp4">
+                    Your device web browser doesn't support HTML5 native media components.
+                </video>
             </div>
-            <div class="modal-info">
-                <h2 id="modal-title" class="modal-anime-title">Anime Title</h2>
+
+            <!-- Controller Utility Bars -->
+            <div class="action-control-bar">
+                <button class="action-btn btn-wide" id="btn-back-catalog">W2G</button>
+                <button class="action-btn" title="Share Content">🔗</button>
+                <button class="action-btn" id="btn-prev-control" title="Previous Episode">←</button>
+                <button class="action-btn" id="btn-next-control" title="Next Episode">→</button>
+                <button class="action-btn" title="Take Screenshot">📷</button>
+            </div>
+
+            <a href="#" id="download-link" class="btn-download" download>Download Episode 1</a>
+
+            <!-- Grid Footer Community Strips -->
+            <div class="social-strip">
