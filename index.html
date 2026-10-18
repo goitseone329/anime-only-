@@ -300,8 +300,32 @@
     let activeAnimeId = null;
     let activeAnimeTitle = "";
 
+    // Run initialization logic on startup
+    window.addEventListener('DOMContentLoaded', initApp);
+
+    // Wire up home button and search navigation fields
+    document.getElementById('logoHomeBtn').addEventListener('click', () => {
+      document.getElementById('searchEngineInput').value = "";
+      document.getElementById('gridTitleDisplay').innerText = "Trending Anime";
+      loadTrendingAnime();
+    });
+
+    document.getElementById('searchEngineInput').addEventListener('input', (e) => {
+      clearTimeout(searchDebounceTimeout);
+      const query = e.target.value.trim();
+      
+      searchDebounceTimeout = setTimeout(() => {
+        if (query.length > 2) {
+          executeAnimeSearch(query);
+        } else if (query.length === 0) {
+          document.getElementById('gridTitleDisplay').innerText = "Trending Anime";
+          loadTrendingAnime();
+        }
+      }, 500); // 500ms delay to stop API spamming while typing
+    });
+
     /**
-     * Initializes the app and checks if the URL contains a direct link to an anime
+     * Initializes the app and checks if the URL contains a direct link parameters
      */
     async function initApp() {
       const pathSegments = window.location.pathname.split('/').filter(segment => segment !== "");
@@ -316,7 +340,7 @@
             const response = await fetch(`${JIKAN_API_BASE}/anime/${targetId}`);
             const result = await response.json();
             if (result && result.data) {
-              prepareStreamNode(result.data.mal_id, result.data.title, result.data.episodes || 1);
+              prepareStreamNode(result.data.mal_id, result.data.title, result.data.episodes || 12);
               switchEpisode(parseInt(targetEp) || 1);
             }
           } catch (e) {
@@ -324,7 +348,6 @@
           }
         }
       }
-      
       loadTrendingAnime();
     }
 
@@ -332,47 +355,24 @@
      * Dispatches runtime request targets to populate UI card matrices
      */
     async function loadTrendingAnime() {
-      document.getElementById('gridTitleDisplay').textContent = "Trending Anime";
-      const gridContainer = document.getElementById('trending-anime-grid');
-      if (!gridContainer) return;
-
-      gridContainer.innerHTML = `<div class="loading-text">Fetching latest matrix packets...</div>`;
-
+      const grid = document.getElementById('trending-anime-grid');
+      grid.innerHTML = '<div class="loading-text">Loading top anime dataset...</div>';
+      
       try {
-        const response = await fetch(`${JIKAN_API_BASE}/top/anime?filter=bypopularity&limit=12`);
+        const response = await fetch(`${JIKAN_API_BASE}/top/anime?filter=bypopularity&limit=20`);
         const result = await response.json();
-        renderCardMatrix(result.data);
-      } catch (error) {
-        console.error('API Pipeline Break:', error);
-        gridContainer.innerHTML = `<div class="loading-text" style="color: #ff0000;">Engine initialization failed.</div>`;
+        if (result && result.data) {
+          renderAnimeCards(result.data);
+        }
+      } catch (e) {
+        grid.innerHTML = '<div class="loading-text" style="color: #ff0000;">Failed loading trending stream pipelines.</div>';
+        console.error(e);
       }
     }
 
     /**
-     * Executes queries via search input filters
+     * Executes queries against the search endpoint
      */
     async function executeAnimeSearch(query) {
-      if (!query.trim()) {
-        loadTrendingAnime();
-        return;
-      }
-
-      document.getElementById('gridTitleDisplay').textContent = `Search Results for: "${query}"`;
-      const gridContainer = document.getElementById('trending-anime-grid');
-      gridContainer.innerHTML = `<div class="loading-text">Searching API records...</div>`;
-
-      try {
-        const response = await fetch(`${JIKAN_API_BASE}/anime?q=${encodeURIComponent(query)}&limit=12`);
-        const result = await response.json();
-        renderCardMatrix(result.data);
-      } catch (error) {
-        console.error('Search Pipeline Break:', error);
-        gridContainer.innerHTML = `<div class="loading-text" style="color: #ff0000;">Search pipeline failed.</div>`;
-      }
-    }
-
-    /**
-     * Renders array data blocks down to individual UI card nodes
-     */
-    function renderCardMatrix(animeArray) {
-      const gridContainer = document.getElementById('trending-anime-grid');
+      const grid = document.getElementById('trending-anime-grid');
+      document.getElementById('gridTitleDisplay').innerText = `Search Results: "${query}"`;
