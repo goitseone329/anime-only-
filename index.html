@@ -292,47 +292,61 @@
     </div>
   </div>
 
-  <!-- --- OFFLINE DISPATCH ENGINE --- -->
   <script>
-    const VIDLINK_EMBED_BASE = 'https://vidlink.pro';
-
-    // Reliable built-in database matrix mapping directly to video stream endpoints
-    const LOCAL_DATABASE = [
-      { mal_id: 20, title: "Naruto", type: "TV", episodes: 220, score: "7.99", image: "https://unsplash.com" },
-      { mal_id: 1735, title: "Naruto: Shippuden", type: "TV", episodes: 500, score: "8.26", image: "https://unsplash.com" },
-      { mal_id: 21, title: "One Piece", type: "TV", episodes: 1100, score: "8.73", image: "https://unsplash.com" },
-      { mal_id: 5114, title: "Fullmetal Alchemist: Brotherhood", type: "TV", episodes: 64, score: "9.10", image: "https://unsplash.com" },
-      { mal_id: 1535, title: "Death Note", type: "TV", episodes: 37, score: "8.62", image: "https://unsplash.com" },
-      { mal_id: 30276, title: "One Punch Man", type: "TV", episodes: 12, score: "8.50", image: "https://unsplash.com" },
-      { mal_id: 38000, title: "Demon Slayer: Kimetsu no Yaiba", type: "TV", episodes: 26, score: "8.49", image: "https://unsplash.com" },
-      { mal_id: 16498, title: "Attack on Titan", type: "TV", episodes: 25, score: "8.54", image: "https://unsplash.com" },
-      { mal_id: 31964, title: "My Hero Academia", type: "TV", episodes: 13, score: "7.89", image: "https://unsplash.com" },
-      { mal_id: 40010, title: "Jujutsu Kaisen", type: "TV", episodes: 24, score: "8.63", image: "https://unsplash.com" },
-      { mal_id: 269, title: "Bleach", type: "TV", episodes: 366, score: "7.92", image: "https://unsplash.com" },
-      { mal_id: 11061, title: "Hunter x Hunter (2011)", type: "TV", episodes: 148, score: "9.04", image: "https://unsplash.com" }
+    // Self-contained data library mapping directly into the VidLink frame delivery system
+    const DATABASE = [
+      { id: 20, title: "Naruto", type: "TV", episodes: 220, score: "7.99", img: "https://myanimelist.net" },
+      { id: 1735, title: "Naruto: Shippuden", type: "TV", episodes: 500, score: "8.26", img: "https://myanimelist.net" },
+      { id: 21, title: "One Piece", type: "TV", episodes: 1100, score: "8.73", img: "https://myanimelist.net" },
+      { id: 5114, title: "Fullmetal Alchemist: Brotherhood", type: "TV", episodes: 64, score: "9.10", img: "https://myanimelist.net" },
+      { id: 1535, title: "Death Note", type: "TV", episodes: 37, score: "8.62", img: "https://myanimelist.net" },
+      { id: 30276, title: "One Punch Man", type: "TV", episodes: 12, score: "8.50", img: "https://myanimelist.net" },
+      { id: 38000, title: "Demon Slayer", type: "TV", episodes: 26, score: "8.49", img: "https://myanimelist.net" },
+      { id: 16498, title: "Attack on Titan S2", type: "TV", episodes: 12, score: "8.54", img: "https://myanimelist.net" },
+      { id: 31964, title: "My Hero Academia", type: "TV", episodes: 13, score: "7.89", img: "https://myanimelist.net" },
+      { id: 40010, title: "Jujutsu Kaisen", type: "TV", episodes: 24, score: "8.63", img: "https://myanimelist.net" },
+      { id: 269, title: "Bleach", type: "TV", episodes: 366, score: "7.92", img: "https://myanimelist.net" },
+      { id: 11061, title: "Hunter x Hunter (2011)", type: "TV", episodes: 148, score: "9.04", img: "https://myanimelist.net" }
     ];
 
-    let searchDebounceTimeout = null;
-    let activeAnimeId = null;
-    let activeAnimeTitle = "";
+    let activeMalId = null;
 
+    // Guaranteed setup trigger
     window.addEventListener('DOMContentLoaded', () => {
-      renderAnimeCards(LOCAL_DATABASE);
+      displayCards(DATABASE);
+      setupSearch();
     });
 
-    document.getElementById('logoHomeBtn').addEventListener('click', () => {
-      document.getElementById('searchEngineInput').value = "";
-      document.getElementById('gridTitleDisplay').innerText = "Popular Anime";
-      renderAnimeCards(LOCAL_DATABASE);
-    });
+    function displayCards(list) {
+      const targetGrid = document.getElementById('trending-anime-grid');
+      if (!targetGrid) return;
+      targetGrid.innerHTML = "";
 
-    document.getElementById('searchEngineInput').addEventListener('input', (e) => {
-      clearTimeout(searchDebounceTimeout);
-      const query = e.target.value.trim().toLowerCase();
-      
-      searchDebounceTimeout = setTimeout(() => {
-        if (query.length > 0) {
-          document.getElementById('gridTitleDisplay').innerText = `Search Results: ${e.target.value}`;
-          const filtered = LOCAL_DATABASE.filter(a => a.title.toLowerCase().includes(query));
-          if (filtered.length > 0) {
-            renderAnimeCards(filtered);
+      list.forEach(anime => {
+        const item = document.createElement('div');
+        item.className = 'anime-card';
+        item.innerHTML = `
+          <div class="card-image-wrapper" style="background-image: url('${anime.img}');"></div>
+          <div class="card-details">
+            <span class="banner-title">${anime.type} (${anime.episodes} eps)</span>
+            <h3>${anime.title}</h3>
+            <span class="rating">★ ${anime.score}</span>
+          </div>
+        `;
+        item.addEventListener('click', () => selectAnime(anime));
+        targetGrid.appendChild(item);
+      });
+    }
+
+    function setupSearch() {
+      const input = document.getElementById('searchEngineInput');
+      const title = document.getElementById('gridTitleDisplay');
+      const home = document.getElementById('logoHomeBtn');
+
+      if (home) {
+        home.addEventListener('click', () => {
+          if (input) input.value = "";
+          if (title) title.innerText = "Popular Anime";
+          displayCards(DATABASE);
+        });
+      }
