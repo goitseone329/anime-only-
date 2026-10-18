@@ -6,7 +6,6 @@
     <title>Anime Heaven</title>
     <meta name="referrer" content="no-referrer">
     <style>
-        /* --- GLOBAL BASE THEME --- */
         body {
             background-color: #060606;
             color: #ffffff;
@@ -45,7 +44,6 @@
         .search-bar:focus {
             border-color: #ff0000;
         }
-        /* --- STABLE CONTROLS DISPLAY COMPONENT --- */
         .player-container {
             padding: 15px 0;
             display: flex;
@@ -62,7 +60,6 @@
             position: relative;
             overflow: hidden;
         }
-        /* --- CENTRALIZED PLAYER ACTIONS WINDOW --- */
         .player-placeholder {
             position: absolute;
             top: 0;
@@ -106,7 +103,6 @@
             color: #888;
             margin: 0 0 15px 0;
         }
-        /* --- DYNAMIC EPISODE SELECTOR LAYOUT --- */
         .episode-control-panel {
             display: none;
             background-color: #0e0e0e;
@@ -162,7 +158,6 @@
             border-color: #ff0000;
             box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
         }
-        /* --- MAIN CONTENT LAYOUT --- */
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -176,7 +171,6 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-        /* --- CARDS GRID SYSTEM --- */
         .anime-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -270,7 +264,6 @@
     </div>
 
     <script>
-        // Internal asset storage using localized styling definitions
         const APP_DATABASE = [
             { mal_id: 20, name: "Naruto", type: "TV", epsCount: 220, score: "7.99", label: "🍥" },
             { mal_id: 1735, name: "Naruto: Shippuden", type: "TV", epsCount: 500, score: "8.26", label: "⚡" },
@@ -288,7 +281,6 @@
 
         let chosenAnimeId = null;
 
-        // Secure mount initialization loops
         window.addEventListener('DOMContentLoaded', () => {
             executeCatalogRender(APP_DATABASE);
             initializeSearchLogic();
@@ -297,3 +289,13 @@
         function executeCatalogRender(targetList) {
             const containerGrid = document.getElementById('trending-anime-grid');
             if (!containerGrid) return;
+            containerGrid.innerHTML = "";
+
+            if (targetList.length === 0) {
+                containerGrid.innerHTML = `<div class="loading-text">No matching anime titles found.</div>`;
+                return;
+            }
+
+            targetList.forEach(anime => {
+                const layoutCard = document.createElement('div');
+                layoutCard.className = 'anime-card';
