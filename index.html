@@ -1,3 +1,9 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anime Heaven</title>
   <meta name="referrer" content="no-referrer">
   <style>
     /* --- GLOBAL BASE THEME --- */
@@ -256,14 +262,14 @@
 
   <header>
     <div class="logo-box" id="logoHomeBtn">ANIME</div>
-    <input type="text" class="search-bar" id="searchEngineInput" placeholder="Search anime via AniList API...">
+    <input type="text" class="search-bar" id="searchEngineInput" placeholder="Search built-in titles...">
   </header>
 
   <div class="player-container">
     <div class="player-wrapper">
       <div id="placeholder-screen" class="player-placeholder">
         <p>No media stream targeting currently loaded.</p>
-        <p style="font-size: 0.8rem; color: #666;">Select a dynamic node card lower on the grid interface architecture to bind connection layout endpoints.</p>
+        <p style="font-size: 0.8rem; color: #666;">Select an anime below to generate the stream endpoints.</p>
       </div>
       <iframe id="video-embed-frame" style="display: none;" allowfullscreen></iframe>
     </div>
@@ -280,110 +286,53 @@
   </div>
 
   <div class="container">
-    <div class="section-title" id="gridTitleDisplay">Trending Anime</div>
+    <div class="section-title" id="gridTitleDisplay">Popular Anime</div>
     <div id="trending-anime-grid" class="anime-grid">
-      <div class="loading-text">Connecting to AniList GraphQL Pipeline...</div>
+      <div class="loading-text">Loading catalog repository...</div>
     </div>
   </div>
 
-  <!-- --- DYNAMIC DISPATCH ENGINE WITH ROUTING --- -->
+  <!-- --- OFFLINE DISPATCH ENGINE --- -->
   <script>
-    const ANILIST_GRAPHQL_ENDPOINT = 'https://anilist.co';
     const VIDLINK_EMBED_BASE = 'https://vidlink.pro';
+
+    // Reliable built-in database matrix mapping directly to video stream endpoints
+    const LOCAL_DATABASE = [
+      { mal_id: 20, title: "Naruto", type: "TV", episodes: 220, score: "7.99", image: "https://unsplash.com" },
+      { mal_id: 1735, title: "Naruto: Shippuden", type: "TV", episodes: 500, score: "8.26", image: "https://unsplash.com" },
+      { mal_id: 21, title: "One Piece", type: "TV", episodes: 1100, score: "8.73", image: "https://unsplash.com" },
+      { mal_id: 5114, title: "Fullmetal Alchemist: Brotherhood", type: "TV", episodes: 64, score: "9.10", image: "https://unsplash.com" },
+      { mal_id: 1535, title: "Death Note", type: "TV", episodes: 37, score: "8.62", image: "https://unsplash.com" },
+      { mal_id: 30276, title: "One Punch Man", type: "TV", episodes: 12, score: "8.50", image: "https://unsplash.com" },
+      { mal_id: 38000, title: "Demon Slayer: Kimetsu no Yaiba", type: "TV", episodes: 26, score: "8.49", image: "https://unsplash.com" },
+      { mal_id: 16498, title: "Attack on Titan", type: "TV", episodes: 25, score: "8.54", image: "https://unsplash.com" },
+      { mal_id: 31964, title: "My Hero Academia", type: "TV", episodes: 13, score: "7.89", image: "https://unsplash.com" },
+      { mal_id: 40010, title: "Jujutsu Kaisen", type: "TV", episodes: 24, score: "8.63", image: "https://unsplash.com" },
+      { mal_id: 269, title: "Bleach", type: "TV", episodes: 366, score: "7.92", image: "https://unsplash.com" },
+      { mal_id: 11061, title: "Hunter x Hunter (2011)", type: "TV", episodes: 148, score: "9.04", image: "https://unsplash.com" }
+    ];
 
     let searchDebounceTimeout = null;
     let activeAnimeId = null;
     let activeAnimeTitle = "";
 
-    window.addEventListener('DOMContentLoaded', initApp);
+    window.addEventListener('DOMContentLoaded', () => {
+      renderAnimeCards(LOCAL_DATABASE);
+    });
 
     document.getElementById('logoHomeBtn').addEventListener('click', () => {
       document.getElementById('searchEngineInput').value = "";
-      document.getElementById('gridTitleDisplay').innerText = "Trending Anime";
-      loadTrendingAnime();
+      document.getElementById('gridTitleDisplay').innerText = "Popular Anime";
+      renderAnimeCards(LOCAL_DATABASE);
     });
 
     document.getElementById('searchEngineInput').addEventListener('input', (e) => {
       clearTimeout(searchDebounceTimeout);
-      const query = e.target.value.trim();
+      const query = e.target.value.trim().toLowerCase();
       
       searchDebounceTimeout = setTimeout(() => {
-        if (query.length > 2) {
-          executeAnimeSearch(query);
-        } else if (query.length === 0) {
-          document.getElementById('gridTitleDisplay').innerText = "Trending Anime";
-          loadTrendingAnime();
-        }
-      }, 500); 
-    });
-
-    function initApp() {
-      loadTrendingAnime();
-    }
-
-    // Dynamic AniList Network Dispatcher
-    async function queryAniList(graphqlQuery, variables) {
-      const options = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: JSON.stringify({ query: graphqlQuery, variables: variables })
-      };
-      const response = await fetch(ANILIST_GRAPHQL_ENDPOINT, options);
-      const json = await response.json();
-      return json.data;
-    }
-
-    async function loadTrendingAnime() {
-      const grid = document.getElementById('trending-anime-grid');
-      grid.innerHTML = '<div class="loading-text">Connecting to AniList GraphQL Pipeline...</div>';
-
-      const trendingQuery = `
-        query {
-          Page(page: 1, perPage: 24) {
-            media(type: ANIME, sort: TRENDING_DESC) {
-              idMal
-              title { english romaji }
-              episodes
-              averageScore
-              coverImage { large }
-              format
-            }
-          }
-        }
-      `;
-      
-      try {
-        const data = await queryAniList(trendingQuery, {});
-        if (data?.Page?.media) {
-          renderAnimeCards(data.Page.media);
-        }
-      } catch (error) {
-        console.error("AniList connection error:", error);
-        grid.innerHTML = '<div class="loading-text">Failed to fetch live catalog from AniList network.</div>';
-      }
-    }
-
-    async function executeAnimeSearch(query) {
-      const grid = document.getElementById('trending-anime-grid');
-      document.getElementById('gridTitleDisplay').innerText = `Search Results: ${query}`;
-      grid.innerHTML = '<div class="loading-text">Searching AniList database indexes...</div>';
-
-      const searchQuery = `
-        query ($search: String) {
-          Page(page: 1, perPage: 24) {
-            media(type: ANIME, search: $search) {
-              idMal
-              title { english romaji }
-              episodes
-              averageScore
-              coverImage { large }
-              format
-            }
-          }
-        }
-      `;
-      
-      try {
+        if (query.length > 0) {
+          document.getElementById('gridTitleDisplay').innerText = `Search Results: ${e.target.value}`;
+          const filtered = LOCAL_DATABASE.filter(a => a.title.toLowerCase().includes(query));
+          if (filtered.length > 0) {
+            renderAnimeCards(filtered);
