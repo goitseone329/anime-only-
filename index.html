@@ -70,7 +70,6 @@
             margin: 0 auto;
         }
 
-        /* Catalog Layout */
         #catalog-view { display: block; }
 
         .section-title {
@@ -169,7 +168,6 @@
             text-overflow: ellipsis;
         }
 
-        /* ================= WATCH LAYOUT PLAYER ================= */
         #watch-view {
             display: none;
             max-width: 800px;
@@ -262,13 +260,6 @@
             gap: 20px;
             border-radius: 4px;
         }
-
-        .status-msg {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 3rem 1rem;
-            color: var(--text-secondary);
-        }
     </style>
 </head>
 <body>
@@ -335,5 +326,6 @@
         let currentActiveAnime = null;
         let currentEpisodeInt = 1;
 
-        // Hardcoded catalog storage to isolate errors
         const localDatabase = [
+            { id: 1, title: "Chainsaw Man", image: "https://justwatch.com", episodes: 12, type: "SUB" },
+            { id: 2, title: "Attack On Titan", image: "https://justwatch.com", episodes: 87, type: "SUB" },
