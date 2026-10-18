@@ -321,11 +321,11 @@
           document.getElementById('gridTitleDisplay').innerText = "Trending Anime";
           loadTrendingAnime();
         }
-      }, 500); // 500ms delay to stop API spamming while typing
+      }, 500); 
     });
 
     /**
-     * Initializes the app and checks if the URL contains a direct link parameters
+     * Initializes the app and checks if the URL contains direct link parameters
      */
     async function initApp() {
       const pathSegments = window.location.pathname.split('/').filter(segment => segment !== "");
