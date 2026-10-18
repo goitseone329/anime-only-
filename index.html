@@ -288,65 +288,58 @@
   <div class="container">
     <div class="section-title" id="gridTitleDisplay">Popular Anime</div>
     <div id="trending-anime-grid" class="anime-grid">
-      <div class="loading-text">Loading catalog repository...</div>
+      <!-- Fallback element initialized directly inside structural architecture -->
+      <div class="loading-text" id="initializationMessage">Configuring internal engine data blocks...</div>
     </div>
   </div>
 
   <script>
-    // Self-contained data library mapping directly into the VidLink frame delivery system
-    const DATABASE = [
-      { id: 20, title: "Naruto", type: "TV", episodes: 220, score: "7.99", img: "https://myanimelist.net" },
-      { id: 1735, title: "Naruto: Shippuden", type: "TV", episodes: 500, score: "8.26", img: "https://myanimelist.net" },
-      { id: 21, title: "One Piece", type: "TV", episodes: 1100, score: "8.73", img: "https://myanimelist.net" },
-      { id: 5114, title: "Fullmetal Alchemist: Brotherhood", type: "TV", episodes: 64, score: "9.10", img: "https://myanimelist.net" },
-      { id: 1535, title: "Death Note", type: "TV", episodes: 37, score: "8.62", img: "https://myanimelist.net" },
-      { id: 30276, title: "One Punch Man", type: "TV", episodes: 12, score: "8.50", img: "https://myanimelist.net" },
-      { id: 38000, title: "Demon Slayer", type: "TV", episodes: 26, score: "8.49", img: "https://myanimelist.net" },
-      { id: 16498, title: "Attack on Titan S2", type: "TV", episodes: 12, score: "8.54", img: "https://myanimelist.net" },
-      { id: 31964, title: "My Hero Academia", type: "TV", episodes: 13, score: "7.89", img: "https://myanimelist.net" },
-      { id: 40010, title: "Jujutsu Kaisen", type: "TV", episodes: 24, score: "8.63", img: "https://myanimelist.net" },
-      { id: 269, title: "Bleach", type: "TV", episodes: 366, score: "7.92", img: "https://myanimelist.net" },
-      { id: 11061, title: "Hunter x Hunter (2011)", type: "TV", episodes: 148, score: "9.04", img: "https://myanimelist.net" }
+    const VIDLINK_EMBED_BASE = "https://vidlink.pro";
+
+    const APP_DATABASE = [
+      { mal_id: 20, name: "Naruto", type: "TV", epsCount: 220, score: "7.99", cover: "https://myanimelist.net" },
+      { mal_id: 1735, name: "Naruto: Shippuden", type: "TV", epsCount: 500, score: "8.26", cover: "https://myanimelist.net" },
+      { mal_id: 21, name: "One Piece", type: "TV", epsCount: 1100, score: "8.73", cover: "https://myanimelist.net" },
+      { mal_id: 5114, name: "Fullmetal Alchemist: Brotherhood", type: "TV", epsCount: 64, score: "9.10", cover: "https://myanimelist.net" },
+      { mal_id: 1535, name: "Death Note", type: "TV", epsCount: 37, score: "8.62", cover: "https://myanimelist.net" },
+      { mal_id: 30276, name: "One Punch Man", type: "TV", epsCount: 12, score: "8.50", cover: "https://myanimelist.net" },
+      { mal_id: 38000, name: "Demon Slayer", type: "TV", epsCount: 26, score: "8.49", cover: "https://myanimelist.net" },
+      { mal_id: 16498, name: "Attack on Titan S2", type: "TV", epsCount: 12, score: "8.54", cover: "https://myanimelist.net" },
+      { mal_id: 31964, name: "My Hero Academia", type: "TV", epsCount: 13, score: "7.89", cover: "https://myanimelist.net" },
+      { mal_id: 40010, name: "Jujutsu Kaisen", type: "TV", epsCount: 24, score: "8.63", cover: "https://myanimelist.net" },
+      { mal_id: 269, name: "Bleach", type: "TV", epsCount: 366, score: "7.92", cover: "https://myanimelist.net" },
+      { mal_id: 11061, name: "Hunter x Hunter (2011)", type: "TV", epsCount: 148, score: "9.04", cover: "https://myanimelist.net" }
     ];
 
-    let activeMalId = null;
+    let chosenAnimeId = null;
 
-    // Guaranteed setup trigger
-    window.addEventListener('DOMContentLoaded', () => {
-      displayCards(DATABASE);
-      setupSearch();
-    });
+    // Secure operational attachment point loops
+    window.onload = function() {
+      executeCatalogRender(APP_DATABASE);
+      initializeSearchLogic();
+    };
 
-    function displayCards(list) {
-      const targetGrid = document.getElementById('trending-anime-grid');
-      if (!targetGrid) return;
-      targetGrid.innerHTML = "";
+    function executeCatalogRender(targetList) {
+      const containerGrid = document.getElementById('trending-anime-grid');
+      if (!containerGrid) return;
+      containerGrid.innerHTML = "";
 
-      list.forEach(anime => {
-        const item = document.createElement('div');
-        item.className = 'anime-card';
-        item.innerHTML = `
-          <div class="card-image-wrapper" style="background-image: url('${anime.img}');"></div>
+      targetList.forEach(anime => {
+        const layoutCard = document.createElement('div');
+        layoutCard.className = 'anime-card';
+        layoutCard.innerHTML = `
+          <div class="card-image-wrapper" style="background-image: url('${anime.cover}');"></div>
           <div class="card-details">
-            <span class="banner-title">${anime.type} (${anime.episodes} eps)</span>
-            <h3>${anime.title}</h3>
+            <span class="banner-title">${anime.type} (${anime.epsCount} eps)</span>
+            <h3>${anime.name}</h3>
             <span class="rating">★ ${anime.score}</span>
           </div>
         `;
-        item.addEventListener('click', () => selectAnime(anime));
-        targetGrid.appendChild(item);
+        layoutCard.onclick = function() { bindActiveSelection(anime); };
+        containerGrid.appendChild(layoutCard);
       });
     }
 
-    function setupSearch() {
-      const input = document.getElementById('searchEngineInput');
-      const title = document.getElementById('gridTitleDisplay');
-      const home = document.getElementById('logoHomeBtn');
-
-      if (home) {
-        home.addEventListener('click', () => {
-          if (input) input.value = "";
-          if (title) title.innerText = "Popular Anime";
-          displayCards(DATABASE);
-        });
-      }
+    function initializeSearchLogic() {
+      const inputElement = document.getElementById('searchEngineInput');
+      const textDisplay = document.getElementById('gridTitleDisplay');
