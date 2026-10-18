@@ -294,17 +294,17 @@
 
   <!-- --- DYNAMIC DISPATCH ENGINE WITH ROUTING --- -->
   <script>
-    const JIKAN_API_BASE = 'https://jikan.moe';
+    // Configured primary and reliable proxy pipeline endpoints
+    const JIKAN_PRIMARY = 'https://jikan.moe';
+    const JIKAN_BACKUP = 'https://allorigins.win' + encodeURIComponent('https://jikan.moe');
     const VIDLINK_EMBED_BASE = 'https://vidlink.pro';
 
     let searchDebounceTimeout = null;
     let activeAnimeId = null;
     let activeAnimeTitle = "";
 
-    // Run initialization logic on startup
     window.addEventListener('DOMContentLoaded', initApp);
 
-    // Wire up home button and search navigation fields
     document.getElementById('logoHomeBtn').addEventListener('click', () => {
       document.getElementById('searchEngineInput').value = "";
       document.getElementById('gridTitleDisplay').innerText = "Trending Anime";
@@ -325,24 +325,35 @@
       }, 500); 
     });
 
-    /**
-     * Initializes the app cleanly by loading top results directly
-     */
     async function initApp() {
       loadTrendingAnime();
     }
 
-    /**
-     * Dispatches runtime request targets to populate UI card matrices
-     */
+    // High reliability network fetch utility
+    async function safetyFetch(endpointUrl) {
+      try {
+        const response = await fetch(endpointUrl);
+        if (!response.ok) throw new Error('Status limit caught');
+        return await response.json();
+      } catch (e) {
+        // Automatically switch over to the proxy backup channel pipeline
+        if (!endpointUrl.includes('allorigins')) {
+          console.warn("Primary API rate limited. Routing via connection proxy fallback channel...");
+          const fallbackUrl = 'https://allorigins.win' + encodeURIComponent(endpointUrl);
+          const backupRes = await fetch(fallbackUrl);
+          const textData = await backupRes.json();
+          return JSON.parse(textData.contents);
+        }
+        throw e;
+      }
+    }
+
     async function loadTrendingAnime() {
       const grid = document.getElementById('trending-anime-grid');
       grid.innerHTML = '<div class="loading-text">Connecting to Jikan API pipeline node structure...</div>';
       
       try {
-        const response = await fetch(`${JIKAN_API_BASE}/top/anime?filter=bypopularity&limit=24`);
-        const result = await response.json();
-        
+        const result = await safetyFetch(`${JIKAN_PRIMARY}/top/anime?filter=bypopularity&limit=24`);
         if (result.data && result.data.length > 0) {
           renderAnimeCards(result.data);
         } else {
@@ -350,32 +361,13 @@
         }
       } catch (error) {
         console.error("Error fetching trending anime:", error);
-        grid.innerHTML = '<div class="loading-text">Failed to connect to API pipeline. Server may be rate-limited.</div>';
+        grid.innerHTML = '<div class="loading-text">Failed to connect to API pipeline. Server down or blocking connections.</div>';
       }
     }
 
-    /**
-     * Executes anime title search against the Jikan API
-     */
     async function executeAnimeSearch(query) {
       const grid = document.getElementById('trending-anime-grid');
       document.getElementById('gridTitleDisplay').innerText = `Search Results: ${query}`;
       grid.innerHTML = '<div class="loading-text">Searching API indexes...</div>';
 
       try {
-        const response = await fetch(`${JIKAN_API_BASE}/anime?q=${encodeURIComponent(query)}&limit=24`);
-        const result = await response.json();
-
-        if (result.data && result.data.length > 0) {
-          renderAnimeCards(result.data);
-        } else {
-          grid.innerHTML = '<div class="loading-text">No matching anime titles found.</div>';
-        }
-      } catch (error) {
-        console.error("Error searching anime:", error);
-        grid.innerHTML = '<div class="loading-text">Search pipeline error occurred. Please try again.</div>';
-      }
-    }
-
-    /**
-     * Generates HTML layout components for the anime result grid
