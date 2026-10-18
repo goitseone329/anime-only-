@@ -205,7 +205,7 @@
         .player-container {
             position: relative;
             width: 100%;
-            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            padding-top: 56.25%;
             background-color: #000;
             margin-bottom: 1.5rem;
         }
@@ -283,9 +283,7 @@
     <main>
         <section id="catalog-view">
             <h1 class="section-title" id="display-title">Trending Anime</h1>
-            <div id="anime-grid" class="anime-grid">
-                <p class="status-msg">Loading direct catalog updates...</p>
-            </div>
+            <div id="anime-grid" class="anime-grid"></div>
         </section>
 
         <section id="watch-view">
@@ -337,3 +335,5 @@
         let currentActiveAnime = null;
         let currentEpisodeInt = 1;
 
+        // Hardcoded catalog storage to isolate errors
+        const localDatabase = [
