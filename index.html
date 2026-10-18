@@ -189,7 +189,7 @@
             border-color: #ff0000;
         }
         .card-image-wrapper {
-            height: 240px; /* Adjusted height slightly to accommodate standard poster ratios */
+            height: 240px;
             width: 100%;
             background-color: #1a1a1a;
             display: flex;
@@ -229,7 +229,7 @@
 
     <header>
         <div class="logo-box" id="logoHomeBtn">ANIME</div>
-        <input type="text" class="search-bar" id="searchEngineInput" placeholder="Search built-in titles...">
+        <input type="text" class="search-bar" id="searchEngineInput" placeholder="Search live titles...">
     </header>
 
     <div class="player-container">
@@ -260,32 +260,39 @@
     </div>
 
     <script>
-        const PUBLIC_API_URL = "https://jikan.moe";
         const gridContainer = document.getElementById("trending-anime-grid");
+        const gridTitleDisplay = document.getElementById("gridTitleDisplay");
+        const searchInput = document.getElementById("searchEngineInput");
+        const logoHomeBtn = document.getElementById("logoHomeBtn");
+        
+        let searchDebounceTimeout;
 
-        async function assembleEngineConfigurations() {
+        // Engine execution function to fetch data and paint the UI grid
+        async function fetchAnimeData(endpointUrl, sectionHeading) {
+            gridContainer.innerHTML = '<div class="loading-text">Assembling engine configurations...</div>';
+            gridTitleDisplay.textContent = sectionHeading;
+
             try {
-                // Fetch dynamic entries from public REST API 
-                const response = await fetch(PUBLIC_API_URL);
+                const response = await fetch(endpointUrl);
+                if (!response.ok) throw new Error(`HTTP Error Status: ${response.status}`);
                 
-                if (!response.ok) {
-                    throw new Error(`API Endpoint error: ${response.status}`);
-                }
-                
-                const jsonResult = await response.json();
-                const animeList = jsonResult.data;
+                const result = await response.json();
+                const animeList = result.data || [];
 
-                // Clear out static assembly engine text placeholder
                 gridContainer.innerHTML = "";
 
-                // Populate grid items dynamically
+                if (animeList.length === 0) {
+                    gridContainer.innerHTML = '<div class="loading-text">No anime configurations matching your search were found.</div>';
+                    return;
+                }
+
                 animeList.forEach(anime => {
                     const card = document.createElement("div");
                     card.className = "anime-card";
                     
                     card.innerHTML = `
                         <div class="card-image-wrapper">
-                            <img src="${anime.images.jpg.image_url}" alt="${anime.title}" style="width:100%; height:100%; object-fit:cover;">
+                            <img src="${anime.images?.jpg?.image_url || ''}" alt="${anime.title}" style="width:100%; height:100%; object-fit:cover;">
                         </div>
                         <div class="card-details">
                             <span class="banner-title">${anime.type || 'TV'} (${anime.episodes || '?'})</span>
@@ -294,9 +301,5 @@
                         </div>
                     `;
                     
-                    // Wire framework player state transformations on element clicks
                     card.addEventListener("click", () => {
                         document.getElementById("statusMsg").textContent = `Playing: ${anime.title}`;
-                        document.getElementById("subMsg").textContent = `Streaming Client: Frame parsing initialized for entry ID ${anime.mal_id}`;
-                        
-                        // Stream pipeline mapping hooks go here
