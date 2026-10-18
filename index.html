@@ -1,1 +1,292 @@
 
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 2;
+    }
+
+    .player-details {
+      width: 90%;
+      max-width: 800px;
+      padding: 15px 0 0 0;
+      text-align: left;
+      box-sizing: border-box;
+    }
+
+    .player-details h2 {
+      font-size: 1.2rem;
+      color: #ff0000;
+      margin: 0 0 4px 0;
+    }
+
+    .player-details p {
+      font-size: 0.85rem;
+      color: #888;
+      margin: 0 0 15px 0;
+    }
+
+    /* --- DYNAMIC EPISODE SELECTOR LAYOUT --- */
+    .episode-control-panel {
+      display: none;
+      background-color: #0e0e0e;
+      border: 1px solid #1a1a1a;
+      border-radius: 4px;
+      padding: 15px;
+      margin-top: 5px;
+    }
+
+    .episode-panel-title {
+      font-size: 0.9rem;
+      color: #fff;
+      font-weight: bold;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .episode-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+      gap: 8px;
+      max-height: 150px;
+      overflow-y: auto;
+      padding-right: 5px;
+    }
+
+    .episode-grid::-webkit-scrollbar {
+      width: 6px;
+    }
+    .episode-grid::-webkit-scrollbar-thumb {
+      background-color: #222;
+      border-radius: 3px;
+    }
+
+    .episode-btn {
+      background-color: #161616;
+      border: 1px solid #222;
+      color: #ccc;
+      padding: 6px 0;
+      font-size: 0.8rem;
+      font-weight: bold;
+      text-align: center;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      outline: none;
+    }
+
+    .episode-btn:hover {
+      background-color: #222;
+      color: #fff;
+      border-color: #444;
+    }
+
+    .episode-btn.active {
+      background-color: #ff0000;
+      color: #fff;
+      border-color: #ff0000;
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+    }
+
+    /* --- MAIN CONTENT LAYOUT --- */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      border-left: 4px solid #ff0000;
+      padding-left: 10px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* --- CARDS GRID SYSTEM --- */
+    .anime-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 20px;
+    }
+
+    .anime-card {
+      background-color: #0e0e0e;
+      border: 1px solid #1a1a1a;
+      border-radius: 6px;
+      overflow: hidden;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+      cursor: pointer;
+    }
+
+    .anime-card:hover {
+      transform: translateY(-4px);
+      border-color: #ff0000;
+    }
+
+    .card-image-wrapper {
+      background-size: cover;
+      background-position: center;
+      height: 240px;
+      width: 100%;
+      background-color: #1a1a1a;
+    }
+
+    .card-details {
+      padding: 10px;
+    }
+
+    .card-details h3 {
+      font-size: 0.95rem;
+      margin: 5px 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .banner-title {
+      display: block;
+      color: #ff0000;
+      font-size: 0.7rem;
+      font-weight: bold;
+    }
+
+    .rating {
+      font-size: 0.8rem;
+      color: #ffcc00;
+    }
+
+    .loading-text {
+      color: #888;
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 4px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo-box" id="logoHomeBtn">ANIME</div>
+    <input type="text" class="search-bar" id="searchEngineInput" placeholder="Search anime dynamically...">
+  </header>
+
+  <div class="player-container">
+    <div class="player-wrapper">
+      <div id="placeholder-screen" class="player-placeholder">
+        <p>No media stream targeting currently loaded.</p>
+        <p style="font-size: 0.8rem; color: #666;">Select a dynamic node card lower on the grid interface architecture to bind connection layout endpoints.</p>
+      </div>
+      <iframe id="video-embed-frame" style="display: none;" allowfullscreen></iframe>
+    </div>
+    
+    <div class="player-details">
+      <h2 id="statusMsg">Playing: Select an Anime</h2>
+      <p id="subMsg">Streaming Client: Idle</p>
+      
+      <div class="episode-control-panel" id="episodeControlPanel">
+        <div class="episode-panel-title">Select Episode</div>
+        <div class="episode-grid" id="episodeButtonGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="section-title" id="gridTitleDisplay">Trending Anime</div>
+    <div id="trending-anime-grid" class="anime-grid">
+      <div class="loading-text">Connecting to Jikan API pipeline node structure...</div>
+    </div>
+  </div>
+
+  <!-- --- DYNAMIC DISPATCH ENGINE WITH ROUTING --- -->
+  <script>
+    const JIKAN_API_BASE = 'https://jikan.moe';
+    const VIDLINK_EMBED_BASE = 'https://vidlink.pro';
+
+    let searchDebounceTimeout = null;
+    let activeAnimeId = null;
+    let activeAnimeTitle = "";
+
+    // Run initialization logic on startup
+    window.addEventListener('DOMContentLoaded', initApp);
+
+    // Wire up home button and search navigation fields
+    document.getElementById('logoHomeBtn').addEventListener('click', () => {
+      document.getElementById('searchEngineInput').value = "";
+      document.getElementById('gridTitleDisplay').innerText = "Trending Anime";
+      loadTrendingAnime();
+    });
+
+    document.getElementById('searchEngineInput').addEventListener('input', (e) => {
+      clearTimeout(searchDebounceTimeout);
+      const query = e.target.value.trim();
+      
+      searchDebounceTimeout = setTimeout(() => {
+        if (query.length > 2) {
+          executeAnimeSearch(query);
+        } else if (query.length === 0) {
+          document.getElementById('gridTitleDisplay').innerText = "Trending Anime";
+          loadTrendingAnime();
+        }
+      }, 500); 
+    });
+
+    /**
+     * Initializes the app cleanly by loading top results directly
+     */
+    async function initApp() {
+      loadTrendingAnime();
+    }
+
+    /**
+     * Dispatches runtime request targets to populate UI card matrices
+     */
+    async function loadTrendingAnime() {
+      const grid = document.getElementById('trending-anime-grid');
+      grid.innerHTML = '<div class="loading-text">Connecting to Jikan API pipeline node structure...</div>';
+      
+      try {
+        const response = await fetch(`${JIKAN_API_BASE}/top/anime?filter=bypopularity&limit=24`);
+        const result = await response.json();
+        
+        if (result.data && result.data.length > 0) {
+          renderAnimeCards(result.data);
+        } else {
+          grid.innerHTML = '<div class="loading-text">No trending anime found.</div>';
+        }
+      } catch (error) {
+        console.error("Error fetching trending anime:", error);
+        grid.innerHTML = '<div class="loading-text">Failed to connect to API pipeline. Server may be rate-limited.</div>';
+      }
+    }
+
+    /**
+     * Executes anime title search against the Jikan API
+     */
+    async function executeAnimeSearch(query) {
+      const grid = document.getElementById('trending-anime-grid');
+      document.getElementById('gridTitleDisplay').innerText = `Search Results: ${query}`;
+      grid.innerHTML = '<div class="loading-text">Searching API indexes...</div>';
+
+      try {
+        const response = await fetch(`${JIKAN_API_BASE}/anime?q=${encodeURIComponent(query)}&limit=24`);
+        const result = await response.json();
+
+        if (result.data && result.data.length > 0) {
+          renderAnimeCards(result.data);
+        } else {
+          grid.innerHTML = '<div class="loading-text">No matching anime titles found.</div>';
+        }
+      } catch (error) {
+        console.error("Error searching anime:", error);
+        grid.innerHTML = '<div class="loading-text">Search pipeline error occurred. Please try again.</div>';
+      }
+    }
+
+    /**
+     * Generates HTML layout components for the anime result grid
