@@ -189,13 +189,17 @@
             border-color: #ff0000;
         }
         .card-image-wrapper {
-            height: 240px;
+            height: 180px;
             width: 100%;
             background-color: #1a1a1a;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: #ff0000;
             border-bottom: 1px solid #222;
+            text-transform: uppercase;
         }
         .card-details {
             padding: 10px;
@@ -229,7 +233,7 @@
 
     <header>
         <div class="logo-box" id="logoHomeBtn">ANIME</div>
-        <input type="text" class="search-bar" id="searchEngineInput" placeholder="Search live titles...">
+        <input type="text" class="search-bar" id="searchEngineInput" placeholder="Search built-in titles...">
     </header>
 
     <div class="player-container">
@@ -260,46 +264,38 @@
     </div>
 
     <script>
-        const gridContainer = document.getElementById("trending-anime-grid");
-        const gridTitleDisplay = document.getElementById("gridTitleDisplay");
-        const searchInput = document.getElementById("searchEngineInput");
-        const logoHomeBtn = document.getElementById("logoHomeBtn");
-        
-        let searchDebounceTimeout;
+        const APP_DATABASE = [
+            { mal_id: 20, name: "Naruto", type: "TV", epsCount: 220, score: "7.99", label: "🍥" },
+            { mal_id: 1735, name: "Naruto: Shippuden", type: "TV", epsCount: 500, score: "8.26", label: "⚡" },
+            { mal_id: 21, name: "One Piece", type: "TV", epsCount: 1100, score: "8.73", label: "☠️" },
+            { mal_id: 5114, name: "Fullmetal Alchemist", type: "TV", epsCount: 64, score: "9.10", label: "🪙" },
+            { mal_id: 1535, name: "Death Note", type: "TV", epsCount: 37, score: "8.62", label: "📓" },
+            { mal_id: 30276, name: "One Punch Man", type: "TV", epsCount: 12, score: "8.50", label: "👊" },
+            { mal_id: 38000, name: "Demon Slayer", type: "TV", epsCount: 26, score: "8.49", label: "⚔️" },
+            { mal_id: 16498, name: "Attack on Titan", type: "TV", epsCount: 25, score: "8.54", label: "🧱" },
+            { mal_id: 31964, name: "My Hero Academia", type: "TV", epsCount: 13, score: "7.89", label: "💥" },
+            { mal_id: 40010, name: "Jujutsu Kaisen", type: "TV", epsCount: 24, score: "8.63", label: "☯️" },
+            { mal_id: 269, name: "Bleach", type: "TV", epsCount: 366, score: "7.92", label: "⚔️" },
+            { mal_id: 11061, name: "Hunter x Hunter", type: "TV", epsCount: 148, score: "9.04", label: "🎣" }
+        ];
 
-        // Engine execution function to fetch data and paint the UI grid
-        async function fetchAnimeData(endpointUrl, sectionHeading) {
-            gridContainer.innerHTML = '<div class="loading-text">Assembling engine configurations...</div>';
-            gridTitleDisplay.textContent = sectionHeading;
+        let chosenAnimeId = null;
 
-            try {
-                const response = await fetch(endpointUrl);
-                if (!response.ok) throw new Error(`HTTP Error Status: ${response.status}`);
-                
-                const result = await response.json();
-                const animeList = result.data || [];
+        window.addEventListener('DOMContentLoaded', () => {
+            executeCatalogRender(APP_DATABASE);
+            initializeSearchLogic();
+        });
 
-                gridContainer.innerHTML = "";
+        function executeCatalogRender(targetList) {
+            const containerGrid = document.getElementById('trending-anime-grid');
+            if (!containerGrid) return;
+            containerGrid.innerHTML = "";
 
-                if (animeList.length === 0) {
-                    gridContainer.innerHTML = '<div class="loading-text">No anime configurations matching your search were found.</div>';
-                    return;
-                }
+            if (targetList.length === 0) {
+                containerGrid.innerHTML = `<div class="loading-text">No matching anime titles found.</div>`;
+                return;
+            }
 
-                animeList.forEach(anime => {
-                    const card = document.createElement("div");
-                    card.className = "anime-card";
-                    
-                    card.innerHTML = `
-                        <div class="card-image-wrapper">
-                            <img src="${anime.images?.jpg?.image_url || ''}" alt="${anime.title}" style="width:100%; height:100%; object-fit:cover;">
-                        </div>
-                        <div class="card-details">
-                            <span class="banner-title">${anime.type || 'TV'} (${anime.episodes || '?'})</span>
-                            <h3>${anime.title}</h3>
-                            <div class="rating">⭐ ${anime.score || 'N/A'}</div>
-                        </div>
-                    `;
-                    
-                    card.addEventListener("click", () => {
-                        document.getElementById("statusMsg").textContent = `Playing: ${anime.title}`;
+            targetList.forEach(anime => {
+                const layoutCard = document.createElement('div');
+                layoutCard.className = 'anime-card';
