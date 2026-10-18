@@ -165,6 +165,7 @@
       border-radius: 3px;
       cursor: pointer;
       transition: all 0.2s ease;
+      outline: none;
     }
 
     .episode-btn:hover {
@@ -293,7 +294,7 @@
 
   <!-- --- DYNAMIC DISPATCH ENGINE WITH ROUTING --- -->
   <script>
-    const JIKAN_API_BASE = 'https://api.jikan.moe/v4';
+    const JIKAN_API_BASE = 'https://jikan.moe';
     const VIDLINK_EMBED_BASE = 'https://vidlink.pro';
 
     let searchDebounceTimeout = null;
@@ -336,48 +337,45 @@
      */
     async function loadTrendingAnime() {
       const grid = document.getElementById('trending-anime-grid');
-      grid.innerHTML = '<div class="loading-text">Loading top anime dataset...</div>';
+      grid.innerHTML = '<div class="loading-text">Connecting to Jikan API pipeline node structure...</div>';
       
       try {
-        const response = await fetch(`${JIKAN_API_BASE}/top/anime?filter=bypopularity&limit=20`);
+        const response = await fetch(`${JIKAN_API_BASE}/top/anime?filter=bypopularity&limit=24`);
         const result = await response.json();
-        if (result && result.data) {
+        
+        if (result.data && result.data.length > 0) {
           renderAnimeCards(result.data);
+        } else {
+          grid.innerHTML = '<div class="loading-text">No trending anime found.</div>';
         }
-      } catch (e) {
-        grid.innerHTML = '<div class="loading-text" style="color: #ff0000;">Failed loading trending stream pipelines.</div>';
-        console.error(e);
+      } catch (error) {
+        console.error("Error fetching trending anime:", error);
+        grid.innerHTML = '<div class="loading-text">Failed to connect to API pipeline. Server may be rate-limited.</div>';
       }
     }
 
     /**
-     * Executes queries against the search endpoint
+     * Executes anime title search against the Jikan API
      */
     async function executeAnimeSearch(query) {
       const grid = document.getElementById('trending-anime-grid');
-      document.getElementById('gridTitleDisplay').innerText = `Search Results: "${query}"`;
-      grid.innerHTML = '<div class="loading-text">Searching database nodes...</div>';
+      document.getElementById('gridTitleDisplay').innerText = `Search Results: ${query}`;
+      grid.innerHTML = '<div class="loading-text">Searching API indexes...</div>';
 
       try {
         const response = await fetch(`${JIKAN_API_BASE}/anime?q=${encodeURIComponent(query)}&limit=24`);
         const result = await response.json();
-        if (result && result.data) {
+
+        if (result.data && result.data.length > 0) {
           renderAnimeCards(result.data);
+        } else {
+          grid.innerHTML = '<div class="loading-text">No matching anime titles found.</div>';
         }
-      } catch (e) {
-        grid.innerHTML = '<div class="loading-text" style="color: #ff0000;">Search query routing execution error.</div>';
-        console.error(e);
+      } catch (error) {
+        console.error("Error searching anime:", error);
+        grid.innerHTML = '<div class="loading-text">Search pipeline error occurred. Please try again.</div>';
       }
     }
 
     /**
-     * Master render function to output standard structures into layout frameworks
-     */
-    function renderAnimeCards(animeList) {
-      const grid = document.getElementById('trending-anime-grid');
-      grid.innerHTML = "";
-
-      if (animeList.length === 0) {
-        grid.innerHTML = '<div class="loading-text">No anime entry items matched the targeted profile filters.</div>';
-        return;
-      }
+     * Generates HTML layout components for the anime result grid
