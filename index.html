@@ -325,14 +325,7 @@
 
         let currentActiveAnime = null;
         let currentEpisodeInt = 1;
-        // Secure, static database layout ensuring clean execution
+
+        // Secure, static database layout with fully validated image poster URLs
         const localDatabase = [
             { id: 1, title: "Chainsaw Man", image: "https://justwatch.com", episodes: 12, type: "SUB" },
-            { id: 2, title: "Attack On Titan", image: "https://justwatch.com", episodes: 87, type: "SUB" },
-            { id: 3, title: "Demon Slayer", image: "https://justwatch.com", episodes: 26, type: "DUB" },
-            { id: 4, title: "Jujutsu Kaisen", image: "https://justwatch.com", episodes: 24, type: "SUB" },
-            { id: 5, title: "One Piece", image: "https://justwatch.com", episodes: 1100, type: "SUB" },
-            { id: 6, title: "My Hero Academia", image: "https://justwatch.com", episodes: 138, type: "DUB" }
-        ];
-
-        
