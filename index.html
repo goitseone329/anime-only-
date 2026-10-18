@@ -196,6 +196,7 @@
             align-items: center;
             justify-content: center;
             border-bottom: 1px solid #222;
+            font-size: 2rem;
         }
         .card-details {
             padding: 10px;
@@ -229,7 +230,7 @@
 
     <header>
         <div class="logo-box" id="logoHomeBtn">ANIME</div>
-        <input type="text" class="search-bar" id="searchEngineInput" placeholder="Search live titles...">
+        <input type="text" class="search-bar" id="searchEngineInput" placeholder="Search built-in or live titles...">
     </header>
 
     <div class="player-container">
@@ -238,7 +239,6 @@
                 <p>No media stream targeting currently loaded.</p>
                 <p style="font-size: 0.8rem; color: #666;">Select an anime below to generate the stream endpoints.</p>
             </div>
-            <!-- Connected Iframe Target Engine Component -->
             <iframe id="video-embed-frame" style="display: none;" allowfullscreen></iframe>
         </div>
         
@@ -246,7 +246,6 @@
             <h2 id="statusMsg">Playing: Select an Anime</h2>
             <p id="subMsg">Streaming Client: Idle</p>
             
-            <!-- Dynamic Module Episode Component Panel -->
             <div class="episode-control-panel" id="episodeControlPanel">
                 <div class="episode-panel-title">Select Episode</div>
                 <div class="episode-grid" id="episodeButtonGrid"></div>
@@ -262,6 +261,16 @@
     </div>
 
     <script>
+        // Internal Backup Database Core (Fires instantly if public API links hit CORS or timeout failures)
+        const BACKUP_DATABASE = [
+            { mal_id: 20, title: "Naruto", type: "TV", episodes: 220, score: "7.99", backupImage: "🍥" },
+            { mal_id: 1735, title: "Naruto: Shippuden", type: "TV", episodes: 500, score: "8.26", backupImage: "⚡" },
+            { mal_id: 21, title: "One Piece", type: "TV", episodes: 1100, score: "8.75", backupImage: "☠️" },
+            { mal_id: 30276, title: "One Punch Man", type: "TV", episodes: 12, score: "8.51", backupImage: "👊" },
+            { mal_id: 38000, title: "Demon Slayer", type: "TV", episodes: 26, score: "8.49", backupImage: "⚔️" },
+            { mal_id: 5114, title: "Fullmetal Alchemist: Brotherhood", type: "TV", episodes: 64, score: "9.10", backupImage: "🦾" }
+        ];
+
         const gridContainer = document.getElementById("trending-anime-grid");
         const gridTitleDisplay = document.getElementById("gridTitleDisplay");
         const searchInput = document.getElementById("searchEngineInput");
@@ -276,30 +285,13 @@
 
         let searchDebounceTimeout;
 
-        // Base Dynamic Open Player API Link Engine (Uses public MAL framework embeds)
         function buildStreamingEmbedLink(malId, episodeNum) {
             return `https://vidsrc.to{malId}/${episodeNum}`;
         }
 
-        // Module to load the active player stream configuration frame
         function mountPlayerStreamEngine(malId, titleName, episodeNum) {
             placeholderScreen.style.display = "none";
             videoEmbedFrame.style.display = "block";
-            
-            // Inject target routing parameters into the video window player element
             videoEmbedFrame.src = buildStreamingEmbedLink(malId, episodeNum);
             
             statusMsg.textContent = `Playing: ${titleName}`;
-            subMsg.textContent = `Streaming Client: Active (Episode ${episodeNum})`;
-
-            // Sync active visual styling state classes on the targeted panel button
-            document.querySelectorAll(".episode-btn").forEach(btn => {
-                btn.classList.remove("active");
-                if(parseInt(btn.getAttribute("data-ep")) === episodeNum) {
-                    btn.classList.add("active");
-                }
-            });
-        }
-
-        // Generator routine to populate the dynamic module lists
-        function assembleEpisodeControlPanel(anime) {
