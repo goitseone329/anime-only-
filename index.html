@@ -219,11 +219,17 @@
     }
 
     .card-image-wrapper {
-      background-size: cover;
-      background-position: center;
-      height: 240px;
+      height: 180px;
       width: 100%;
       background-color: #1a1a1a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.5rem;
+      color: #ff0000;
+      border-bottom: 1px solid #222;
+      text-transform: uppercase;
     }
 
     .card-details {
@@ -240,7 +246,7 @@
 
     .banner-title {
       display: block;
-      color: #ff0000;
+      color: #aaa;
       font-size: 0.7rem;
       font-weight: bold;
     }
@@ -288,36 +294,34 @@
   <div class="container">
     <div class="section-title" id="gridTitleDisplay">Popular Anime</div>
     <div id="trending-anime-grid" class="anime-grid">
-      <!-- Fallback element initialized directly inside structural architecture -->
-      <div class="loading-text" id="initializationMessage">Configuring internal engine data blocks...</div>
+      <div class="loading-text">Assembling engine configurations...</div>
     </div>
   </div>
 
   <script>
-    const VIDLINK_EMBED_BASE = "https://vidlink.pro";
-
+    // Bulletproof internal asset storage using localized styling definitions
     const APP_DATABASE = [
-      { mal_id: 20, name: "Naruto", type: "TV", epsCount: 220, score: "7.99", cover: "https://myanimelist.net" },
-      { mal_id: 1735, name: "Naruto: Shippuden", type: "TV", epsCount: 500, score: "8.26", cover: "https://myanimelist.net" },
-      { mal_id: 21, name: "One Piece", type: "TV", epsCount: 1100, score: "8.73", cover: "https://myanimelist.net" },
-      { mal_id: 5114, name: "Fullmetal Alchemist: Brotherhood", type: "TV", epsCount: 64, score: "9.10", cover: "https://myanimelist.net" },
-      { mal_id: 1535, name: "Death Note", type: "TV", epsCount: 37, score: "8.62", cover: "https://myanimelist.net" },
-      { mal_id: 30276, name: "One Punch Man", type: "TV", epsCount: 12, score: "8.50", cover: "https://myanimelist.net" },
-      { mal_id: 38000, name: "Demon Slayer", type: "TV", epsCount: 26, score: "8.49", cover: "https://myanimelist.net" },
-      { mal_id: 16498, name: "Attack on Titan S2", type: "TV", epsCount: 12, score: "8.54", cover: "https://myanimelist.net" },
-      { mal_id: 31964, name: "My Hero Academia", type: "TV", epsCount: 13, score: "7.89", cover: "https://myanimelist.net" },
-      { mal_id: 40010, name: "Jujutsu Kaisen", type: "TV", epsCount: 24, score: "8.63", cover: "https://myanimelist.net" },
-      { mal_id: 269, name: "Bleach", type: "TV", epsCount: 366, score: "7.92", cover: "https://myanimelist.net" },
-      { mal_id: 11061, name: "Hunter x Hunter (2011)", type: "TV", epsCount: 148, score: "9.04", cover: "https://myanimelist.net" }
+      { mal_id: 20, name: "Naruto", type: "TV", epsCount: 220, score: "7.99", label: "🍥" },
+      { mal_id: 1735, name: "Naruto: Shippuden", type: "TV", epsCount: 500, score: "8.26", label: "⚡" },
+      { mal_id: 21, name: "One Piece", type: "TV", epsCount: 1100, score: "8.73", label: "☠️" },
+      { mal_id: 5114, name: "Fullmetal Alchemist", type: "TV", epsCount: 64, score: "9.10", label: "🪙" },
+      { mal_id: 1535, name: "Death Note", type: "TV", epsCount: 37, score: "8.62", label: "📓" },
+      { mal_id: 30276, name: "One Punch Man", type: "TV", epsCount: 12, score: "8.50", label: "👊" },
+      { mal_id: 38000, name: "Demon Slayer", type: "TV", epsCount: 26, score: "8.49", label: "⚔️" },
+      { mal_id: 16498, name: "Attack on Titan", type: "TV", epsCount: 25, score: "8.54", label: "🧱" },
+      { mal_id: 31964, name: "My Hero Academia", type: "TV", epsCount: 13, score: "7.89", label: "💥" },
+      { mal_id: 40010, name: "Jujutsu Kaisen", type: "TV", epsCount: 24, score: "8.63", label: "☯️" },
+      { mal_id: 269, name: "Bleach", type: "TV", epsCount: 366, score: "7.92", label: "⚔️" },
+      { mal_id: 11061, name: "Hunter x Hunter", type: "TV", epsCount: 148, score: "9.04", label: "🎣" }
     ];
 
     let chosenAnimeId = null;
 
-    // Secure operational attachment point loops
-    window.onload = function() {
+    // Secure mount initialization loops
+    window.addEventListener('DOMContentLoaded', () => {
       executeCatalogRender(APP_DATABASE);
       initializeSearchLogic();
-    };
+    });
 
     function executeCatalogRender(targetList) {
       const containerGrid = document.getElementById('trending-anime-grid');
@@ -328,14 +332,14 @@
         const layoutCard = document.createElement('div');
         layoutCard.className = 'anime-card';
         layoutCard.innerHTML = `
-          <div class="card-image-wrapper" style="background-image: url('${anime.cover}');"></div>
+          <div class="card-image-wrapper">${anime.label}</div>
           <div class="card-details">
             <span class="banner-title">${anime.type} (${anime.epsCount} eps)</span>
             <h3>${anime.name}</h3>
             <span class="rating">★ ${anime.score}</span>
           </div>
         `;
-        layoutCard.onclick = function() { bindActiveSelection(anime); };
+        layoutCard.addEventListener('click', () => bindActiveSelection(anime));
         containerGrid.appendChild(layoutCard);
       });
     }
@@ -343,3 +347,18 @@
     function initializeSearchLogic() {
       const inputElement = document.getElementById('searchEngineInput');
       const textDisplay = document.getElementById('gridTitleDisplay');
+      const logoHome = document.getElementById('logoHomeBtn');
+
+      if (logoHome) {
+        logoHome.addEventListener('click', () => {
+          if (inputElement) inputElement.value = "";
+          if (textDisplay) textDisplay.innerText = "Popular Anime";
+          executeCatalogRender(APP_DATABASE);
+        });
+      }
+
+      if (inputElement) {
+        inputElement.addEventListener('input', (e) => {
+          const filterValue = e.target.value.trim().toLowerCase();
+          if (filterValue.length > 0) {
+            if (textDisplay) textDisplay.innerText = "Search Results: " + e.target.value;
