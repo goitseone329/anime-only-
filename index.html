@@ -1,148 +1,165 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anime Only</title>
-    <!-- Font Awesome for search icon -->
+    <title>Anime Only - Stream Free Anime</title>
+    <!-- Font Awesome for clean interface icons -->
     <link rel="stylesheet" href="https://cloudflare.com">
     <style>
-        /* Base Reset & Variables */
+        /* Base Reset & Anime Heaven Layout Settings */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: Arial, Helvetica, sans-serif;
         }
 
         :root {
-            --bg-color: #0b0c10;
-            --card-bg: #1f2833;
-            --primary-red: #e50914;
-            --accent-red: #ff3333;
-            --text-light: #ffffff;
-            --text-gray: #c5c6c7;
+            --main-dark: #0f172a;       /* Dark base background */
+            --panel-bg: #1e293b;        /* Lighter background panels */
+            --anime-blue: #3b82f6;      /* Classic Anime Heaven layout brand color (Cyan/Blue variant) */
+            --bright-blue: #60a5fa;     /* Hover highlight accent blue */
+            --text-main: #f8fafc;       /* Off-white text */
+            --text-muted: #94a3b8;      /* Structural metadata text */
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-light);
+            background-color: var(--main-dark);
+            color: var(--text-main);
             min-height: 100vh;
         }
 
-        /* Header & Navigation */
+        /* Top Header Utility Area */
         header {
-            background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(11,12,16,1) 100%);
-            padding: 1rem 2rem;
+            background-color: #0b0f19;
+            border-bottom: 3px solid var(--anime-blue);
             position: sticky;
             top: 0;
-            z-index: 100;
-            border-bottom: 2px solid var(--primary-red);
+            z-index: 1000;
         }
 
-        .nav-container {
-            max-width: 1200px;
+        .header-wrap {
+            max-width: 1300px;
             margin: 0 auto;
+            padding: 0.8rem 1rem;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
+            justify-content: space-between;
             gap: 1rem;
         }
 
-        .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: var(--primary-red);
+        /* Branding inspired by Anime Heaven's block signature */
+        .brand {
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(229, 9, 20, 0.5);
+            color: #ffffff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
         }
 
-        .logo span {
-            color: var(--text-light);
+        .brand span {
+            background-color: var(--anime-blue);
+            color: #ffffff;
+            padding: 0.1rem 0.5rem;
+            border-radius: 4px;
+            margin-left: 4px;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
         }
 
-        /* Search Bar Setup */
-        .search-box {
+        /* Centered Filter/Search Bar block */
+        .search-area {
+            flex: 1;
+            max-width: 500px;
             position: relative;
-            width: 100%;
-            max-width: 400px;
         }
 
-        .search-box input {
+        .search-area input {
             width: 100%;
+            background-color: #1e293b;
+            border: 1px solid #334155;
             padding: 0.6rem 2.5rem 0.6rem 1rem;
-            background-color: #121212;
-            border: 1px solid #333;
             border-radius: 20px;
-            color: var(--text-light);
+            color: #ffffff;
             font-size: 0.9rem;
             outline: none;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
 
-        .search-box input:focus {
-            border-color: var(--primary-red);
-            box-shadow: 0 0 8px rgba(229, 9, 20, 0.4);
+        .search-area input:focus {
+            border-color: var(--anime-blue);
+            box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
         }
 
-        .search-box i {
+        .search-area i {
             position: absolute;
             right: 15px;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--text-gray);
+            color: var(--text-muted);
         }
 
-        /* Main Container Layout */
-        main {
-            max-width: 1200px;
-            margin: 2rem auto;
+        /* Core Section Grid Setup */
+        .container {
+            max-width: 1300px;
+            margin: 1.5rem auto;
             padding: 0 1rem;
-        }
-
-        .section-title {
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-            border-left: 4px solid var(--primary-red);
-            padding-left: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* Anime Grid & Cards */
-        .anime-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            grid-template-columns: 1fr 320px; /* Main layout feed + classic sidebar panel */
             gap: 1.5rem;
         }
 
-        .anime-card {
-            background-color: var(--card-bg);
-            border-radius: 8px;
+        .main-feed {
+            min-width: 0; /* Prevents flex/grid blowouts */
+        }
+
+        /* Headings mimicking old-school content streams */
+        .block-heading {
+            background-color: var(--panel-bg);
+            border-left: 5px solid var(--anime-blue);
+            padding: 0.6rem 1rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* High-density grid for quick scanning like Anime Heaven */
+        .anime-stream {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .anime-item {
+            background-color: var(--panel-bg);
+            border-radius: 4px;
             overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer;
-            border: 1px solid #2d3748;
             position: relative;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
-        .anime-card:hover {
-            transform: translateY(-5s);
-            box-shadow: 0 5px 15px rgba(229, 9, 20, 0.3);
-            border-color: var(--primary-red);
+        .anime-item:hover {
+            transform: translateY(-4px);
         }
 
-        .poster-wrapper {
+        .thumb-box {
             position: relative;
             width: 100%;
-            padding-top: 140%; /* 1:1.4 aspect ratio for posters */
-            background-color: #121212;
+            padding-top: 140%; /* Perfect standard anime poster scale */
+            background-color: #0b0f19;
         }
 
-        .poster-wrapper img {
+        .thumb-box img {
             position: absolute;
             top: 0;
             left: 0;
@@ -151,58 +168,125 @@
             object-fit: cover;
         }
 
-        .anime-info {
-            padding: 0.8rem;
+        /* Sub/Dub status badge tags overlaying the poster graphics */
+        .status-badge {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background-color: rgba(15, 23, 42, 0.85);
+            border-left: 3px solid var(--anime-blue);
+            padding: 0.2rem 0.4rem;
+            font-size: 0.75rem;
+            font-weight: bold;
+            border-radius: 2px;
         }
 
-        .anime-title {
-            font-size: 0.95rem;
-            font-weight: 600;
+        .ep-badge {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background-color: var(--anime-blue);
+            color: #ffffff;
+            padding: 0.1rem 0.4rem;
+            font-size: 0.75rem;
+            font-weight: bold;
+            border-radius: 2px;
+        }
+
+        .item-details {
+            padding: 0.6rem;
+        }
+
+        .item-title {
+            font-size: 0.85rem;
+            font-weight: bold;
+            line-height: 1.3;
+            height: 2.6rem; /* Restricts overflow across variable names */
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            color: var(--text-main);
+        }
+
+        .item-title:hover {
+            color: var(--bright-blue);
+        }
+
+        /* Classic right-side scheduling panel details */
+        .sidebar-panel {
+            background-color: var(--panel-bg);
+            padding: 1rem;
+            border-radius: 4px;
+            height: fit-content;
+        }
+
+        .sidebar-title {
+            font-size: 1rem;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--anime-blue);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+
+        .ranking-list {
+            list-style: none;
+        }
+
+        .ranking-row {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #334155;
+            font-size: 0.85rem;
+        }
+
+        .ranking-num {
+            font-weight: bold;
+            color: var(--anime-blue);
+            width: 25px;
+        }
+
+        .ranking-name {
+            flex: 1;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            margin-bottom: 0.3rem;
+            padding-right: 5px;
         }
 
-        .anime-meta {
-            font-size: 0.8rem;
-            color: var(--text-gray);
-            display: flex;
-            justify-content: space-between;
-        }
-
-        /* Video Modal Overlays */
-        .modal {
+        /* Compact Streaming Modal Layer */
+        .stream-overlay {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
-            z-index: 1000;
+            background-color: rgba(11, 15, 25, 0.95);
+            z-index: 2000;
             justify-content: center;
             align-items: center;
             padding: 1rem;
         }
 
-        .modal-content {
-            background-color: var(--bg-color);
+        .player-frame {
+            background-color: var(--main-dark);
             width: 100%;
-            max-width: 800px;
-            border-radius: 8px;
-            border: 2px solid var(--primary-red);
-            overflow: hidden;
+            max-width: 860px;
+            border: 2px solid var(--anime-blue);
+            border-radius: 6px;
             position: relative;
         }
 
-        .video-container {
+        .video-box {
             position: relative;
-            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            padding-bottom: 56.25%; /* Fixed widescreen 16:9 box window */
             height: 0;
         }
 
-        .video-container iframe {
+        .video-box iframe {
             position: absolute;
             top: 0;
             left: 0;
@@ -210,121 +294,57 @@
             height: 100%;
         }
 
-        .close-modal {
+        .close-overlay {
             position: absolute;
-            top: -40px;
+            top: -45px;
             right: 0;
-            color: white;
-            font-size: 2rem;
-            cursor: pointer;
             background: none;
             border: none;
+            color: white;
+            font-size: 2.2rem;
+            cursor: pointer;
         }
 
-        /* Responsive Tweaks */
+        /* Screen Scaling adjustments for clean rendering on Android Phones */
+        @media (max-width: 850px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            .sidebar-panel {
+                display: none; /* Drop sidebar on narrow mobile profiles to prioritize media index */
+            }
+        }
+
         @media (max-width: 480px) {
-            .nav-container {
+            .header-wrap {
                 flex-direction: column;
-                align-items: flex-start;
+                align-items: stretch;
             }
-            .search-box {
-                max-width: 100%;
+            .brand {
+                justify-content: center;
             }
-            .anime-grid {
-                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-                gap: 1rem;
+            .anime-stream {
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+                gap: 0.6rem;
             }
         }
     </style>
 </head>
 <body>
 
+    <!-- Header Navigation Section -->
     <header>
-        <div class="nav-container">
-            <div class="logo">Anime<span>Only</span></div>
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Search anime titles...">
+        <div class="header-wrap">
+            <a href="#" class="brand">Anime<span>Only</span></a>
+            <div class="search-area">
+                <input type="text" id="directorySearch" placeholder="Search anime index...">
                 <i class="fa-solid fa-magnifying-glass"></i>
             </div>
         </div>
     </header>
 
-    <main>
-        <h2 class="section-title">Trending Anime</h2>
-        <div class="anime-grid" id="animeGrid">
-            <!-- Cards will inject dynamically via JavaScript -->
-        </div>
-    </main>
-
-    <!-- Video Streaming Modal -->
-    <div class="modal" id="videoModal">
-        <div class="modal-content">
-            <button class="close-modal" id="closeBtn">&times;</button>
-            <div class="video-container">
-                <iframe id="videoPlayer" src="" frameborder="0" allowfullscreen></iframe>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Placeholder local anime dataset 
-        const animeData = [
-            {
-                title: "Chainsaw Man",
-                image: "https://unsplash.com", // Replace with real poster URL
-                type: "Subbed",
-                episodes: "12/12",
-                embedUrl: "https://youtube.com" // Replace with embed streaming links
-            },
-            {
-                title: "Attack on Titan",
-                image: "https://unsplash.com", 
-                type: "Subbed",
-                episodes: "87/87",
-                embedUrl: "https://youtube.com" 
-            },
-            {
-                title: "Demon Slayer",
-                image: "https://unsplash.com",
-                type: "Subbed",
-                episodes: "26/26",
-                embedUrl: "https://youtube.com"
-            }
-        ];
-
-        const animeGrid = document.getElementById('animeGrid');
-        const searchInput = document.getElementById('searchInput');
-        const videoModal = document.getElementById('videoModal');
-        const videoPlayer = document.getElementById('videoPlayer');
-        const closeBtn = document.getElementById('closeBtn');
-
-        // Render anime list to home grid
-        function displayAnime(items) {
-            animeGrid.innerHTML = "";
-            if(items.length === 0) {
-                animeGrid.innerHTML = `<p style="color: var(--text-gray); grid-column: 1/-1;">No anime found matching your search.</p>`;
-                return;
-            }
-
-            items.forEach(anime => {
-                const card = document.createElement('div');
-                card.classList.add('anime-card');
-                card.innerHTML = `
-                    <div class="poster-wrapper">
-                        <img src="${anime.image}" alt="${anime.title}">
-                    </div>
-                    <div class="anime-info">
-                        <div class="anime-title">${anime.title}</div>
-                        <div class="anime-meta">
-                            <span>${anime.type}</span>
-                            <span>Eps: ${anime.episodes}</span>
-                        </div>
-                    </div>
-                `;
-                
-                // Click card event to trigger the player modal
-                card.addEventListener('click', () => {
-                    videoPlayer.src = anime.embedUrl;
-                    videoModal.style.display = 'flex';
-                });
-
+    <!-- Content Workspace Wrapper -->
+    <div class="container">
+        
+        <!-- Left Side: Interactive Directory Feed -->
+        <main class="main-feed">
