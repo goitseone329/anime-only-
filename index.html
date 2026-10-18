@@ -293,7 +293,7 @@
 
   <!-- --- DYNAMIC DISPATCH ENGINE WITH ROUTING --- -->
   <script>
-    const JIKAN_API_BASE = 'https://jikan.moe';
+    const JIKAN_API_BASE = 'https://api.jikan.moe/v4';
     const VIDLINK_EMBED_BASE = 'https://vidlink.pro';
 
     let searchDebounceTimeout = null;
@@ -325,10 +325,9 @@
     });
 
     /**
-     * Initializes the app safely without routing errors
+     * Initializes the app cleanly by loading top results directly
      */
     async function initApp() {
-      // Safely loads trending titles first to prevent initialization crashes
       loadTrendingAnime();
     }
 
@@ -379,3 +378,6 @@
       grid.innerHTML = "";
 
       if (animeList.length === 0) {
+        grid.innerHTML = '<div class="loading-text">No anime entry items matched the targeted profile filters.</div>';
+        return;
+      }
