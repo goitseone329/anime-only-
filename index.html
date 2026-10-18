@@ -189,17 +189,13 @@
             border-color: #ff0000;
         }
         .card-image-wrapper {
-            height: 180px;
+            height: 240px; /* Adjusted height slightly to accommodate standard poster ratios */
             width: 100%;
             background-color: #1a1a1a;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            font-size: 1.5rem;
-            color: #ff0000;
             border-bottom: 1px solid #222;
-            text-transform: uppercase;
         }
         .card-details {
             padding: 10px;
@@ -264,38 +260,43 @@
     </div>
 
     <script>
-        const APP_DATABASE = [
-            { mal_id: 20, name: "Naruto", type: "TV", epsCount: 220, score: "7.99", label: "🍥" },
-            { mal_id: 1735, name: "Naruto: Shippuden", type: "TV", epsCount: 500, score: "8.26", label: "⚡" },
-            { mal_id: 21, name: "One Piece", type: "TV", epsCount: 1100, score: "8.73", label: "☠️" },
-            { mal_id: 5114, name: "Fullmetal Alchemist", type: "TV", epsCount: 64, score: "9.10", label: "🪙" },
-            { mal_id: 1535, name: "Death Note", type: "TV", epsCount: 37, score: "8.62", label: "📓" },
-            { mal_id: 30276, name: "One Punch Man", type: "TV", epsCount: 12, score: "8.50", label: "👊" },
-            { mal_id: 38000, name: "Demon Slayer", type: "TV", epsCount: 26, score: "8.49", label: "⚔️" },
-            { mal_id: 16498, name: "Attack on Titan", type: "TV", epsCount: 25, score: "8.54", label: "🧱" },
-            { mal_id: 31964, name: "My Hero Academia", type: "TV", epsCount: 13, score: "7.89", label: "💥" },
-            { mal_id: 40010, name: "Jujutsu Kaisen", type: "TV", epsCount: 24, score: "8.63", label: "☯️" },
-            { mal_id: 269, name: "Bleach", type: "TV", epsCount: 366, score: "7.92", label: "⚔️" },
-            { mal_id: 11061, name: "Hunter x Hunter", type: "TV", epsCount: 148, score: "9.04", label: "🎣" }
-        ];
+        const PUBLIC_API_URL = "https://jikan.moe";
+        const gridContainer = document.getElementById("trending-anime-grid");
 
-        let chosenAnimeId = null;
+        async function assembleEngineConfigurations() {
+            try {
+                // Fetch dynamic entries from public REST API 
+                const response = await fetch(PUBLIC_API_URL);
+                
+                if (!response.ok) {
+                    throw new Error(`API Endpoint error: ${response.status}`);
+                }
+                
+                const jsonResult = await response.json();
+                const animeList = jsonResult.data;
 
-        window.addEventListener('DOMContentLoaded', () => {
-            executeCatalogRender(APP_DATABASE);
-            initializeSearchLogic();
-        });
+                // Clear out static assembly engine text placeholder
+                gridContainer.innerHTML = "";
 
-        function executeCatalogRender(targetList) {
-            const containerGrid = document.getElementById('trending-anime-grid');
-            if (!containerGrid) return;
-            containerGrid.innerHTML = "";
-
-            if (targetList.length === 0) {
-                containerGrid.innerHTML = `<div class="loading-text">No matching anime titles found.</div>`;
-                return;
-            }
-
-            targetList.forEach(anime => {
-                const layoutCard = document.createElement('div');
-                layoutCard.className = 'anime-card';
+                // Populate grid items dynamically
+                animeList.forEach(anime => {
+                    const card = document.createElement("div");
+                    card.className = "anime-card";
+                    
+                    card.innerHTML = `
+                        <div class="card-image-wrapper">
+                            <img src="${anime.images.jpg.image_url}" alt="${anime.title}" style="width:100%; height:100%; object-fit:cover;">
+                        </div>
+                        <div class="card-details">
+                            <span class="banner-title">${anime.type || 'TV'} (${anime.episodes || '?'})</span>
+                            <h3>${anime.title}</h3>
+                            <div class="rating">⭐ ${anime.score || 'N/A'}</div>
+                        </div>
+                    `;
+                    
+                    // Wire framework player state transformations on element clicks
+                    card.addEventListener("click", () => {
+                        document.getElementById("statusMsg").textContent = `Playing: ${anime.title}`;
+                        document.getElementById("subMsg").textContent = `Streaming Client: Frame parsing initialized for entry ID ${anime.mal_id}`;
+                        
+                        // Stream pipeline mapping hooks go here
