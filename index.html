@@ -325,29 +325,10 @@
     });
 
     /**
-     * Initializes the app and checks if the URL contains direct link parameters
+     * Initializes the app safely without routing errors
      */
     async function initApp() {
-      const pathSegments = window.location.pathname.split('/').filter(segment => segment !== "");
-      
-      if (pathSegments.length >= 2) {
-        const isNamedRoute = pathSegments[0] === 'anime';
-        const targetId = isNamedRoute ? pathSegments[1] : pathSegments[0];
-        const targetEp = isNamedRoute ? pathSegments[2] : pathSegments[1];
-        
-        if (targetId && !isNaN(targetId)) {
-          try {
-            const response = await fetch(`${JIKAN_API_BASE}/anime/${targetId}`);
-            const result = await response.json();
-            if (result && result.data) {
-              prepareStreamNode(result.data.mal_id, result.data.title, result.data.episodes || 12);
-              switchEpisode(parseInt(targetEp) || 1);
-            }
-          } catch (e) {
-            console.error("Failed handling direct route parameters", e);
-          }
-        }
-      }
+      // Safely loads trending titles first to prevent initialization crashes
       loadTrendingAnime();
     }
 
@@ -376,3 +357,25 @@
     async function executeAnimeSearch(query) {
       const grid = document.getElementById('trending-anime-grid');
       document.getElementById('gridTitleDisplay').innerText = `Search Results: "${query}"`;
+      grid.innerHTML = '<div class="loading-text">Searching database nodes...</div>';
+
+      try {
+        const response = await fetch(`${JIKAN_API_BASE}/anime?q=${encodeURIComponent(query)}&limit=24`);
+        const result = await response.json();
+        if (result && result.data) {
+          renderAnimeCards(result.data);
+        }
+      } catch (e) {
+        grid.innerHTML = '<div class="loading-text" style="color: #ff0000;">Search query routing execution error.</div>';
+        console.error(e);
+      }
+    }
+
+    /**
+     * Master render function to output standard structures into layout frameworks
+     */
+    function renderAnimeCards(animeList) {
+      const grid = document.getElementById('trending-anime-grid');
+      grid.innerHTML = "";
+
+      if (animeList.length === 0) {
