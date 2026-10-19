@@ -9,6 +9,7 @@
             --bg: #0b0b0f;
             --panel: #17171f;
             --red: #ef233c;
+            --gold: #ffb703;
             --text: #f7f7fb;
             --muted: #aaaab8;
         }
@@ -25,17 +26,39 @@
             background: #111116;
             border-bottom: 1px solid #292933;
             padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         .logo {
             color: var(--red);
             font-size: 23px;
             font-weight: bold;
             cursor: pointer;
-            margin-bottom: 16px;
             text-transform: uppercase;
+            margin: 0;
         }
         .logo span {
             color: white;
+        }
+        .go-pro-btn {
+            background: linear-gradient(45deg, var(--gold), #ff8500);
+            color: #000;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 13px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .go-pro-btn:hover {
+            transform: scale(1.05);
         }
         .search {
             width: 100%;
@@ -75,6 +98,30 @@
             background: var(--red);
             border-color: var(--red);
         }
+        
+        /* Monetization Ad Space Elements */
+        .ad-banner {
+            background: #1a1a24;
+            border: 2px dashed #3a3a4f;
+            color: var(--muted);
+            text-align: center;
+            padding: 20px;
+            margin: 12px 16px;
+            border-radius: 8px;
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            position: relative;
+        }
+        .ad-banner::before {
+            content: "SPONSORED ADVERTISEMENT";
+            display: block;
+            font-size: 9px;
+            color: #ef233c;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
         main {
             padding: 16px;
         }
@@ -239,6 +286,60 @@
         .episode-btn.active {
             background: var(--red);
         }
+        
+        /* Paywall Modal/Overlay styles */
+        .paywall-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 5, 8, 0.95);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        .paywall-content {
+            background: #171724;
+            border: 1px solid #2b2b3d;
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        .paywall-content h2 {
+            color: var(--gold);
+            margin-top: 0;
+        }
+        .paywall-features {
+            text-align: left;
+            margin: 20px 0;
+            padding-left: 20px;
+        }
+        .paywall-features li {
+            margin-bottom: 10px;
+            color: #d1d1de;
+        }
+        .pay-now-btn {
+            background: linear-gradient(45deg, #ef233c, #ff4d6d);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            width: 100%;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close-paywall {
+            background: transparent;
+            color: var(--muted);
+            border: none;
+            margin-top: 12px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
         footer {
             text-align: center;
             padding: 30px 16px;
@@ -261,78 +362,11 @@
 <body>
 
     <header>
-        <div class="logo" id="logoHome">Anime <span>Only</span></div>
+        <div class="header-top">
+            <div class="logo" id="logoHome">Anime <span>Only</span></div>
+            <button class="go-pro-btn" id="goProBtn">👑 Go Pro</button>
+        </div>
         <input class="search" id="animeSearch" type="search" placeholder="Search anime...">
     </header>
 
-    <div class="filter-row">
-        <button class="filter-btn active" data-genre="all">All Items</button>
-        <button class="filter-btn" data-genre="Action">Action</button>
-        <button class="filter-btn" data-genre="Adventure">Adventure</button>
-        <button class="filter-btn" data-genre="watchlist">❤ Watchlist</button>
-    </div>
-
-    <main>
-        <section id="homeView">
-            <h2 class="section-title" id="viewHeading"># Trending Anime</h2>
-            <div class="catalog" id="catalogGrid"></div>
-        </section>
-
-        <section id="watchView" class="hidden">
-            <button class="back-btn" id="btnBack">← Back to Catalog</button>
-            <h2 id="streamTitle">Loading Title...</h2>
-            
-            <div class="action-tray">
-                <button class="watchlist-btn" id="toggleWatchlistBtn">❤ Add to Watchlist</button>
-            </div>
-
-            <div class="player">
-                <video id="mainVideoPlayer" controls playsinline crossorigin="anonymous">
-                    Your browser does not support video playback.
-                </video>
-            </div>
-
-            <div class="player-toolbar">
-                <div>
-                    <a href="https://watch2gether.com" class="w2g-link" id="w2gLink" target="_blank">Watch2Gether Room ↗</a>
-                </div>
-                <div class="toolbar-right">
-                    <button id="prevEpisodeBtn" class="nav-arrow">◀ Prev</button>
-                    <button id="nextEpisodeBtn" class="nav-arrow">Next ▶</button>
-                    <button class="camera-btn" id="screenshotBtn" title="Take Screenshot">📷</button>
-                </div>
-            </div>
-
-            <h3>Episodes</h3>
-            <div id="episodeGrid" class="episode-list"></div>
-        </section>
-    </main>
-
-    <footer>
-        <div class="social-links">
-            <a href="#" target="_blank">💬 Discord</a>
-            <a href="#" target="_blank">🐦 Twitter</a>
-            <a href="#" style="color:var(--red);" target="_blank">❤ Support Us</a>
-        </div>
-    </footer>
-
-    <script>
-        "use strict";
-
-        const BASE_URL = "https://jikan.moe";
-        let cachedAnimeList = [];
-        let selectedAnime = null;
-        let activeEpisodeIdx = 1;
-        let searchQuery = "";
-        let currentGenre = "all";
-        let localWatchlist = JSON.parse(localStorage.getItem('anime_watchlist')) || [];
-
-        // --- DOM Elements ---
-        const catalogGrid = document.getElementById('catalogGrid');
-        const homeView = document.getElementById('homeView');
-        const watchView = document.getElementById('watchView');
-        const animeSearch = document.getElementById('animeSearch');
-        const logoHome = document.getElementById('logoHome');
-        const btnBack = document.getElementById('btnBack');
-        const streamTitle = document.getElementById('streamTitle');
-        const mainVideoPlayer = document.getElementById('mainVideoPlayer');
+    <!-- Top Native Ad Banner Slot -->
