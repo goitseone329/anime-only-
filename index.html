@@ -293,13 +293,11 @@
   </header>
 
   <main>
-    <!-- Grid Home View -->
     <section id="homeView">
       <h2 class="section-title"># Trending Anime</h2>
       <div class="catalog" id="animeCatalog"></div>
     </section>
 
-    <!-- Detailed Stream View -->
     <section id="watchView" class="hidden">
       <button class="secondary back-button" id="backButton">← Back to Anime</button>
       <h2 id="watchTitle">Anime Title</h2>
@@ -375,7 +373,6 @@
     let currentAnime = null;
     let currentEpisodeIndex = 1;
 
-    // DOM Selection
     const homeView = document.getElementById("homeView");
     const watchView = document.getElementById("watchView");
     const animeCatalog = document.getElementById("animeCatalog");
@@ -393,8 +390,9 @@
     const w2gLink = document.getElementById("w2gLink");
     const screenshotButton = document.getElementById("screenshotButton");
 
-    // Initialize Catalog UI
     renderCatalog(animeDatabase);
 
     function renderCatalog(animeArray) {
       animeCatalog.innerHTML = "";
+      if (animeArray.length === 0) {
+        animeCatalog.innerHTML = '<div class="empty">No anime found matching your search.</div>';
