@@ -3,385 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anime Only - Premium Blue Edition</title>
+    <title>Anime Only - Premium Edition</title>
+    
+    <!-- Ad Network Core Scripts Integration -->
+    <script data-cfasync="false" src="https://bauval.org"></script>
+    <script data-cfasync="false" src="https://abscloud.org"></script>
+    
     <style>
         :root {
             --bg: #0b0b0c;
             --panel: #141416;
             --panel-light: #1c1c21;
-            --blue: #2563eb;       /* Primary Electric Blue */
-            --blue-light: #3b82f6; /* Hover / Focus Highlight */
+            --blue: #2563eb;
+            --blue-light: #3b82f6;
             --gold: #ffb703;
             --text: #ffffff;
             --muted: #7a7a85;
             --sub-badge: #00b4d8;
             --dub-badge: #9b5de5;
         }
-        
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             background: var(--bg);
             color: var(--text);
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            padding-top: 70px; /* Offset for sticky header */
+            font-family: Arial, sans-serif;
+            padding-top: 70px;
         }
-
-        /* --- STICKY NAV HEADER --- */
         header {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 70px;
+            top: 0; left: 0; width: 100%; height: 70px;
             background: #000000;
             border-bottom: 2px solid var(--blue);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 16px;
-            z-index: 1000;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 16px; z-index: 1000;
         }
-
-        .brand {
-            font-size: 20px;
-            font-weight: 900;
-            letter-spacing: -1px;
-            text-transform: uppercase;
-            cursor: pointer;
-        }
-
-        .brand span {
-            background: var(--blue);
-            color: #fff;
-            padding: 2px 6px;
-            border-radius: 4px;
-            margin-left: 2px;
-        }
-
-        .search-container {
-            flex: 1;
-            max-width: 450px;
-            margin: 0 16px;
-        }
-
-        .search-bar {
-            width: 100%;
-            padding: 10px 16px;
-            background: var(--panel-light);
-            border: 1px solid #292933;
-            border-radius: 20px;
-            color: #fff;
-            font-size: 14px;
-            outline: none;
-        }
-
-        .search-bar:focus {
-            border-color: var(--blue-light);
-        }
-
-        .pro-trigger {
-            background: linear-gradient(45deg, var(--gold), #ff8500);
-            color: #000;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 12px;
-            cursor: pointer;
-        }
-
-        /* --- AD ZONE STYLING --- */
-        .ad-zone {
-            background: #101014;
-            border: 1px dashed #3a3a4f;
-            color: var(--muted);
-            text-align: center;
-            padding: 15px;
-            margin: 16px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: bold;
-            letter-spacing: 1px;
-        }
-
-        .ad-zone::before {
-            content: "ADVERTISEMENT";
-            display: block;
-            color: var(--blue-light);
-            font-size: 9px;
-            margin-bottom: 4px;
-        }
-
-        /* --- QUICK NAVIGATION BAR --- */
-        .nav-ribbon {
-            display: flex;
-            gap: 8px;
-            padding: 0 16px 12px;
-            overflow-x: auto;
-            white-space: nowrap;
-        }
-
-        .nav-ribbon::-webkit-scrollbar {
-            display: none;
-        }
-
-        .ribbon-btn {
-            background: var(--panel);
-            color: var(--muted);
-            border: 1px solid #23232a;
-            padding: 8px 18px;
-            border-radius: 4px;
-            font-weight: bold;
-            font-size: 13px;
-            cursor: pointer;
-        }
-
-        .ribbon-btn.active {
-            background: var(--blue);
-            color: #fff;
-            border-color: var(--blue);
-        }
-
-        /* --- MEDIA SHELF & HIGH-DENSITY GRID --- */
-        main {
-            padding: 0 16px 40px;
-        }
-
-        .shelf-container {
-            margin-bottom: 30px;
-        }
-
-        .shelf-title {
-            font-size: 18px;
-            font-weight: 800;
-            border-left: 4px solid var(--blue);
-            padding-left: 10px;
-            margin-bottom: 16px;
-            text-transform: uppercase;
-        }
-
-        .catalog-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 12px;
-        }
-
-        @media (min-width: 768px) {
-            .catalog-grid {
-                grid-template-columns: repeat(4, minmax(0, 1fr));
-            }
-        }
-
-        .anime-card {
-            background: var(--panel);
-            border: 1px solid #1f1f26;
-            border-radius: 6px;
-            overflow: hidden;
-            cursor: pointer;
-            position: relative;
-            transition: transform 0.2s;
-        }
-
-        .anime-card:hover {
-            transform: translateY(-2px);
-            border-color: var(--blue-light);
-        }
-
-        .card-cover {
-            height: 160px;
-            background: #252533;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 36px;
-            position: relative;
-        }
-
-        .stream-tag {
-            position: absolute;
-            bottom: 6px;
-            left: 6px;
-            padding: 2px 6px;
-            font-size: 10px;
-            font-weight: bold;
-            border-radius: 3px;
-            color: #fff;
-        }
-
+        .brand { font-size: 20px; font-weight: 900; text-transform: uppercase; cursor: pointer; }
+        .brand span { background: var(--blue); color: #fff; padding: 2px 6px; border-radius: 4px; margin-left: 2px; }
+        .search-container { flex: 1; max-width: 450px; margin: 0 16px; }
+        .search-bar { width: 100%; padding: 10px 16px; background: var(--panel-light); border: 1px solid #292933; border-radius: 20px; color: #fff; outline: none; }
+        .search-bar:focus { border-color: var(--blue-light); }
+        .pro-trigger { background: linear-gradient(45deg, var(--gold), #ff8500); color: #000; border: none; padding: 8px 16px; border-radius: 20px; font-weight: bold; cursor: pointer; }
+        .ad-zone { background: #101014; border: 1px dashed #3a3a4f; color: var(--muted); text-align: center; padding: 15px; margin: 16px; border-radius: 6px; font-size: 11px; font-weight: bold; }
+        .ad-zone::before { content: "ADVERTISEMENT"; display: block; color: var(--blue-light); font-size: 9px; margin-bottom: 4px; }
+        .nav-ribbon { display: flex; gap: 8px; padding: 0 16px 12px; overflow-x: auto; }
+        .ribbon-btn { background: var(--panel); color: var(--muted); border: 1px solid #23232a; padding: 8px 18px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        .ribbon-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+        main { padding: 0 16px 40px; }
+        .shelf-container { margin-bottom: 30px; }
+        .shelf-title { font-size: 18px; font-weight: 800; border-left: 4px solid var(--blue); padding-left: 10px; margin-bottom: 16px; text-transform: uppercase; }
+        .catalog-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+        @media (min-width: 768px) { .catalog-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+        .anime-card { background: var(--panel); border: 1px solid #1f1f26; border-radius: 6px; overflow: hidden; cursor: pointer; position: relative; }
+        .card-cover { height: 160px; background: #252533; display: flex; align-items: center; justify-content: center; font-size: 36px; }
+        .stream-tag { position: absolute; top: 130px; left: 6px; padding: 2px 6px; font-size: 10px; font-weight: bold; border-radius: 3px; color: #fff; }
         .tag-sub { background: var(--sub-badge); }
         .tag-dub { background: var(--dub-badge); }
-
-        .card-info {
-            padding: 10px;
-        }
-
-        .card-info h3 {
-            font-size: 13px;
-            font-weight: 700;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            margin-bottom: 4px;
-        }
-
-        .card-info p {
-            font-size: 11px;
-            color: var(--muted);
-        }
-
-        /* --- THEATER STREAMING VIEWPORT --- */
-        .hidden {
-            display: none !important;
-        }
-
-        #theaterDeck {
-            background: var(--panel);
-            border-radius: 8px;
-            border: 1px solid #23232a;
-            padding: 16px;
-        }
-
-        .back-link {
-            display: inline-block;
-            color: var(--blue-light);
-            font-size: 13px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-bottom: 14px;
-            text-decoration: none;
-        }
-
-        .video-wrapper {
-            width: 100%;
-            background: #000;
-            border-radius: 6px;
-            overflow: hidden;
-            aspect-ratio: 16/9;
-        }
-
-        video {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-
-        .control-ribbon {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--panel-light);
-            padding: 12px;
-            margin: 12px 0;
-            border-radius: 6px;
-            border: 1px solid #292933;
-        }
-
-        .w2g-anchor {
-            color: var(--blue-light);
-            font-weight: bold;
-            font-size: 13px;
-            text-decoration: none;
-        }
-
-        .w2g-anchor:hover {
-            text-decoration: underline;
-        }
-
-        .episode-deck {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-top: 12px;
-        }
-
-        .ep-node {
-            background: var(--panel-light);
-            color: #fff;
-            border: 1px solid #292933;
-            padding: 10px 16px;
-            font-weight: bold;
-            font-size: 13px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .ep-node.active {
-            background: var(--blue);
-            border-color: var(--blue);
-        }
-
-        /* --- BILLING CHECKOUT MODAL OVERLAY --- */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            z-index: 2000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .modal-card {
-            background: var(--panel);
-            border: 1px solid #292933;
-            border-radius: 12px;
-            padding: 24px;
-            max-width: 380px;
-            width: 100%;
-            text-align: center;
-        }
-
-        .modal-card h2 {
-            color: var(--gold);
-            font-size: 20px;
-            margin-bottom: 12px;
-        }
-
-        .checkout-btn {
-            background: var(--blue);
-            color: #fff;
-            font-weight: bold;
-            border: none;
-            padding: 12px;
-            width: 100%;
-            border-radius: 6px;
-            margin-top: 16px;
-            cursor: pointer;
-        }
-
-        .checkout-btn:hover {
-            background: var(--blue-light);
-        }
-
-        .cancel-btn {
-            background: transparent;
-            color: var(--muted);
-            border: none;
-            margin-top: 12px;
-            cursor: pointer;
-            font-size: 13px;
-        }
+        .card-info { padding: 10px; }
+        .card-info h3 { font-size: 13px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .hidden { display: none !important; }
+        #theaterView { background: var(--panel); border-radius: 8px; padding: 16px; border: 1px solid #23232a; }
+        .back-link { color: var(--blue-light); font-size: 13px; font-weight: bold; cursor: pointer; display: inline-block; margin-bottom: 14px; }
+        .video-wrapper { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 6px; overflow: hidden; }
+        video { width: 100%; height: 100%; }
+        .control-ribbon { display: flex; justify-content: space-between; background: var(--panel-light); padding: 12px; margin: 12px 0; border-radius: 6px; }
+        .w2g-anchor { color: var(--blue-light); font-weight: bold; text-decoration: none; }
+        .episode-deck { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+        .ep-node { background: var(--panel-light); color: #fff; border: 1px solid #292933; padding: 10px 16px; font-weight: bold; border-radius: 4px; cursor: pointer; }
+        .ep-node.active { background: var(--blue); border-color: var(--blue); }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); z-index: 2000; display: flex; align-items: center; justify-content: center; }
+        .modal-card { background: var(--panel); padding: 24px; border-radius: 12px; text-align: center; max-width: 380px; width: 100%; }
+        .checkout-btn { background: var(--blue); color: #fff; border: none; padding: 12px; width: 100%; border-radius: 6px; margin-top: 16px; font-weight: bold; cursor: pointer; }
+        .cancel-btn { background: transparent; color: var(--muted); border: none; margin-top: 12px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <!-- Sticky Navigation Top Header Bar -->
     <header>
         <div class="brand" id="logoHome">Anime<span>Only</span></div>
-        <div class="search-container">
-            <input type="search" class="search-bar" id="searchBar" placeholder="Search across database entries...">
-        </div>
+        <div class="search-container"><input type="search" class="search-bar" id="searchBar" placeholder="Search entries..."></div>
         <button class="pro-trigger" id="proBtn">👑 Go Pro</button>
     </header>
 
-    <!-- Ad Anchor A -->
-    <div class="ad-zone" id="adSlotA">Stream secure with ExpressVPN - Special offer inside.</div>
+    <div class="ad-zone" id="adSlotA">Secure Streams Enabled with ExpressVPN Support</div>
 
-    <!-- Scrollable Horizontal View Switcher Ribbon Bar -->
     <div class="nav-ribbon">
+        <button class="ribbon-btn active" data-filter="all">All Releases</button>
+        <button class="ribbon-btn" data-filter="ongoing">Ongoing Series</button>
+        <button class="ribbon-btn" data-filter="movies">Standalone Movies</button>
+        <button class="ribbon-btn" data-filter="watchlist" id="watchlistBtn">❤ My List</button>
+    </div>
+
+    <main>
+        <div id="shelfRowA" class="shelf-container">
+            <div class="shelf-title"># Latest Episodes</div>
+            <div class="catalog-grid" id="latestGrid"></div>
+        </div>
+
+        <div class="ad-zone" id="adSlotB">Upgrade to Premium to clear inline ad content frames.</div>
+
+        <div id="shelfRowB" class="shelf-container">
+            <div class="shelf-title"># Popular Ongoing Series</div>
+            <div class="catalog-grid" id="popularGrid"></div>
+        </div>
+
+        <div id="theaterView" class="hidden">
+            <div class="back-link" id="btnBack">← Back to Portal Catalog</div>
+            <h2 id="mediaTitle" style="font-size: 20px; margin-bottom: 12px;">Loading Title...</h2>
+            <button class="ribbon-btn" id="btnSaveFavorite" style="padding: 6px 12px; margin-bottom: 12px;">❤ Add to List</button>
+            <div class="video-wrapper"><video id="videoCorePlayer" controls playsinline></video></div>
+            <div class="control-ribbon"><a href="#" class="w2g-anchor" id="w2gRoomLink">Launch Synced Watch2Gether Room ↗</a></div>
+            <h3 style="font-size: 15px; margin-top: 16px;">Select Episode</h3>
+            <div class="episode-deck" id="nodeEpisodeGrid"></div>
+        </div>
+    </main>
+
+    <div class="modal-overlay hidden" id="billingModal">
+        <div class="modal-card">
+            <h2>Unlock Pro Core</h2>
+            <button class="checkout-btn" id="btnConfirmPurchase">Upgrade Now for $2.99</button>
+            <button class="cancel-btn" id="btnCancelPaywall">Dismiss</button>
+        </div>
+    </div>
+
+    <script>
+        "use strict";
+
+        const localDatabase = [
+            { id: 201, title: "Chainsaw Slasher", group: "latest", type: "ongoing", episodes: 3, track: "SUB", emoji: "🔥", stream: "https://googleapis.com" },
+            { id: 202, title: "Cyber Punk 2077", group: "latest", type: "ongoing", episodes: 2, track: "DUB", emoji: "🤖", stream: "https://googleapis.com" },
+            { id: 203, title: "Spirited Spirit Escape", group: "latest", type: "movie", episodes: 1, track: "SUB", emoji: "⛩️", stream: "https://googleapis.com" },
+            { id: 204, title: "Jujutsu Combat Realm", group: "popular", type: "ongoing", episodes: 4, track: "SUB", emoji: "☯️", stream: "https://googleapis.com" },
+            { id: 205, title: "Demon Blade Slayers", group: "popular", type: "ongoing", episodes: 5, track: "DUB", emoji: "👺", stream: "https://googleapis.com" }
+        ];
+
+        let selectedAnime = null;
+        let isPremiumUser = false;
+        let localWatchlist = [];
+        let activeFilter = "all";
+
+        const latestGrid = document.getElementById('latestGrid');
+        const popularGrid = document.getElementById('popularGrid');
+        const theaterView = document.getElementById('theaterView');
+        const videoCorePlayer = document.getElementById('videoCorePlayer');
+        const mediaTitle = document.getElementById('mediaTitle');
+        const nodeEpisodeGrid = document.getElementById('nodeEpisodeGrid');
+        const btnBack = document.getElementById('btnBack');
+        const searchBar = document.getElementById('searchBar');
+        const logoHome = document.getElementById('logoHome');
