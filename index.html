@@ -397,15 +397,11 @@ function renderCatalog(list) {
     const card = document.createElement("div");
     card.className = "anime-card";
     
-    const colorLeft = anime.colors || "#ef233c";
-    const colorRight = anime.colors || "#17171f";
+    // Safely verify and extract individual array components for CSS gradient rules
+    const colorLeft = (anime.colors && anime.colors[0]) ? anime.colors[0] : "#ef233c";
+    const colorRight = (anime.colors && anime.colors[1]) ? anime.colors[1] : "#17171f";
     
     card.innerHTML = `
       <div class="poster" style="background: linear-gradient(135deg, ${colorLeft}, ${colorRight})">
         <span>${anime.title}</span>
-      </div>
-      <div class="card-info">
-        <h3>${anime.title}</h3>
-        <p>${anime.description.substring(0, 55)}...</p>
-        <span class="tag">${anime.genre}</span>
       </div>
