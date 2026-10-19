@@ -3,265 +3,385 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anime Only</title>
+    <title>Anime Only - Premium Blue Edition</title>
     <style>
         :root {
-            --bg: #0b0b0f;
-            --panel: #17171f;
-            --red: #ef233c;
+            --bg: #0b0b0c;
+            --panel: #141416;
+            --panel-light: #1c1c21;
+            --blue: #2563eb;       /* Primary Electric Blue */
+            --blue-light: #3b82f6; /* Hover / Focus Highlight */
             --gold: #ffb703;
-            --text: #f7f7fb;
-            --muted: #aaaab8;
+            --text: #ffffff;
+            --muted: #7a7a85;
+            --sub-badge: #00b4d8;
+            --dub-badge: #9b5de5;
         }
-        * { box-sizing: border-box; }
-        body {
+        
+        * {
+            box-sizing: border-box;
             margin: 0;
+            padding: 0;
+        }
+
+        body {
             background: var(--bg);
             color: var(--text);
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            padding-top: 70px; /* Offset for sticky header */
         }
+
+        /* --- STICKY NAV HEADER --- */
         header {
-            background: #111116;
-            border-bottom: 1px solid #292933;
-            padding: 16px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background: #000000;
+            border-bottom: 2px solid var(--blue);
             display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .header-top {
-            display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            z-index: 1000;
         }
-        .logo {
-            color: var(--red);
-            font-size: 23px;
-            font-weight: bold;
-            cursor: pointer;
+
+        .brand {
+            font-size: 20px;
+            font-weight: 900;
+            letter-spacing: -1px;
             text-transform: uppercase;
-            margin: 0;
+            cursor: pointer;
         }
-        .logo span { color: white; }
-        .go-pro-btn {
+
+        .brand span {
+            background: var(--blue);
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 2px;
+        }
+
+        .search-container {
+            flex: 1;
+            max-width: 450px;
+            margin: 0 16px;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 10px 16px;
+            background: var(--panel-light);
+            border: 1px solid #292933;
+            border-radius: 20px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .search-bar:focus {
+            border-color: var(--blue-light);
+        }
+
+        .pro-trigger {
             background: linear-gradient(45deg, var(--gold), #ff8500);
             color: #000;
             border: none;
-            padding: 8px 14px;
+            padding: 8px 16px;
             border-radius: 20px;
+            font-weight: bold;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        /* --- AD ZONE STYLING --- */
+        .ad-zone {
+            background: #101014;
+            border: 1px dashed #3a3a4f;
+            color: var(--muted);
+            text-align: center;
+            padding: 15px;
+            margin: 16px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .ad-zone::before {
+            content: "ADVERTISEMENT";
+            display: block;
+            color: var(--blue-light);
+            font-size: 9px;
+            margin-bottom: 4px;
+        }
+
+        /* --- QUICK NAVIGATION BAR --- */
+        .nav-ribbon {
+            display: flex;
+            gap: 8px;
+            padding: 0 16px 12px;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .nav-ribbon::-webkit-scrollbar {
+            display: none;
+        }
+
+        .ribbon-btn {
+            background: var(--panel);
+            color: var(--muted);
+            border: 1px solid #23232a;
+            padding: 8px 18px;
+            border-radius: 4px;
             font-weight: bold;
             font-size: 13px;
             cursor: pointer;
         }
-        .search {
-            width: 100%;
-            padding: 12px 16px;
-            border-radius: 8px;
-            border: 1px solid #292933;
-            background: #1c1c24;
-            color: white;
-            outline: none;
-            font-size: 15px;
+
+        .ribbon-btn.active {
+            background: var(--blue);
+            color: #fff;
+            border-color: var(--blue);
         }
-        .filter-row {
-            display: flex;
-            gap: 8px;
-            padding: 16px;
-            overflow-x: auto;
-            white-space: nowrap;
-            border-bottom: 1px solid #1c1c24;
+
+        /* --- MEDIA SHELF & HIGH-DENSITY GRID --- */
+        main {
+            padding: 0 16px 40px;
         }
-        .filter-row::-webkit-scrollbar { display: none; }
-        .filter-btn {
-            background: #1c1c24;
-            color: var(--text);
-            border: 1px solid #292933;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
+
+        .shelf-container {
+            margin-bottom: 30px;
         }
-        .filter-btn.active {
-            background: var(--red);
-            border-color: var(--red);
-        }
-        .ad-banner {
-            background: #1a1a24;
-            border: 2px dashed #3a3a4f;
-            color: var(--muted);
-            text-align: center;
-            padding: 20px;
-            margin: 12px 16px;
-            border-radius: 8px;
-            font-size: 12px;
+
+        .shelf-title {
+            font-size: 18px;
+            font-weight: 800;
+            border-left: 4px solid var(--blue);
+            padding-left: 10px;
+            margin-bottom: 16px;
             text-transform: uppercase;
         }
-        main { padding: 16px; }
-        .section-title { margin: 8px 0 20px; font-size: 24px; font-weight: bold; }
-        .catalog {
+
+        .catalog-grid {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 12px;
         }
+
+        @media (min-width: 768px) {
+            .catalog-grid {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
+        }
+
         .anime-card {
             background: var(--panel);
-            border: 1px solid #242430;
-            border-radius: 12px;
+            border: 1px solid #1f1f26;
+            border-radius: 6px;
             overflow: hidden;
             cursor: pointer;
             position: relative;
+            transition: transform 0.2s;
         }
-        .watchlist-badge {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: rgba(239, 35, 60, 0.9);
-            color: white;
-            padding: 4px 6px;
-            border-radius: 5px;
-            font-size: 11px;
-            z-index: 2;
+
+        .anime-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--blue-light);
         }
-        .poster-placeholder {
-            height: 180px;
-            background: #252538;
-            font-size: 40px;
+
+        .card-cover {
+            height: 160px;
+            background: #252533;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
+            font-size: 36px;
+            position: relative;
         }
-        .card-info { padding: 10px; }
-        .card-info h3 { font-size: 14px; margin: 0 0 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .card-info p { color: var(--muted); font-size: 12px; margin: 0; }
-        .hidden { display: none !important; }
-        
-        #watchView { background: var(--panel); border: 1px solid #242430; border-radius: 12px; padding: 16px; }
-        .back-btn { background: #242430; color: white; border: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-bottom: 16px; }
-        .action-tray { margin-bottom: 15px; }
-        .watchlist-btn { background: var(--red); color: white; border: 0; border-radius: 7px; padding: 11px 14px; font-weight: bold; cursor: pointer; }
-        .watchlist-btn.in-list { background: #30303b; }
-        .player { width: 100%; background: black; border-radius: 8px; overflow: hidden; margin: 12px 0; }
-        video { width: 100%; display: block; }
-        
-        .player-toolbar {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            justify-content: space-between;
-            background: #111116;
-            padding: 12px 16px;
+
+        .stream-tag {
+            position: absolute;
+            bottom: 6px;
+            left: 6px;
+            padding: 2px 6px;
+            font-size: 10px;
+            font-weight: bold;
+            border-radius: 3px;
+            color: #fff;
+        }
+
+        .tag-sub { background: var(--sub-badge); }
+        .tag-dub { background: var(--dub-badge); }
+
+        .card-info {
+            padding: 10px;
+        }
+
+        .card-info h3 {
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 4px;
+        }
+
+        .card-info p {
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        /* --- THEATER STREAMING VIEWPORT --- */
+        .hidden {
+            display: none !important;
+        }
+
+        #theaterDeck {
+            background: var(--panel);
             border-radius: 8px;
-            margin: 15px 0;
+            border: 1px solid #23232a;
+            padding: 16px;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: var(--blue-light);
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 14px;
+            text-decoration: none;
+        }
+
+        .video-wrapper {
+            width: 100%;
+            background: #000;
+            border-radius: 6px;
+            overflow: hidden;
+            aspect-ratio: 16/9;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .control-ribbon {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--panel-light);
+            padding: 12px;
+            margin: 12px 0;
+            border-radius: 6px;
             border: 1px solid #292933;
         }
-        .w2g-link { color: #ef233c; text-decoration: none; font-weight: bold; font-size: 14px; }
-        .toolbar-right { display: flex; align-items: center; gap: 10px; }
-        .nav-arrow { background: #252530; border: none; color: white; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
-        .episode-list { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
-        .episode-btn { background: #242430; color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; }
-        .episode-btn.active { background: var(--red); }
-        
-        .paywall-modal {
+
+        .w2g-anchor {
+            color: var(--blue-light);
+            font-weight: bold;
+            font-size: 13px;
+            text-decoration: none;
+        }
+
+        .w2g-anchor:hover {
+            text-decoration: underline;
+        }
+
+        .episode-deck {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .ep-node {
+            background: var(--panel-light);
+            color: #fff;
+            border: 1px solid #292933;
+            padding: 10px 16px;
+            font-weight: bold;
+            font-size: 13px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .ep-node.active {
+            background: var(--blue);
+            border-color: var(--blue);
+        }
+
+        /* --- BILLING CHECKOUT MODAL OVERLAY --- */
+        .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5, 5, 8, 0.95);
-            z-index: 1000;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 24px;
+            padding: 20px;
         }
-        .paywall-content {
-            background: #171724;
-            border: 1px solid #2b2b3d;
-            border-radius: 16px;
-            padding: 30px;
-            max-width: 400px;
+
+        .modal-card {
+            background: var(--panel);
+            border: 1px solid #292933;
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 380px;
             width: 100%;
             text-align: center;
         }
-        .pay-now-btn { background: linear-gradient(45deg, #ef233c, #ff4d6d); color: white; border: none; padding: 12px 24px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; }
-        .close-paywall { background: transparent; color: var(--muted); border: none; margin-top: 12px; cursor: pointer; }
-        footer { text-align: center; padding: 30px 16px; margin-top: 40px; border-top: 1px solid #292933; color: var(--muted); }
+
+        .modal-card h2 {
+            color: var(--gold);
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+
+        .checkout-btn {
+            background: var(--blue);
+            color: #fff;
+            font-weight: bold;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 6px;
+            margin-top: 16px;
+            cursor: pointer;
+        }
+
+        .checkout-btn:hover {
+            background: var(--blue-light);
+        }
+
+        .cancel-btn {
+            background: transparent;
+            color: var(--muted);
+            border: none;
+            margin-top: 12px;
+            cursor: pointer;
+            font-size: 13px;
+        }
     </style>
 </head>
 <body>
 
+    <!-- Sticky Navigation Top Header Bar -->
     <header>
-        <div class="header-top">
-            <div class="logo" id="logoHome">Anime <span>Only</span></div>
-            <button class="go-pro-btn" id="goProBtn">👑 Go Pro</button>
+        <div class="brand" id="logoHome">Anime<span>Only</span></div>
+        <div class="search-container">
+            <input type="search" class="search-bar" id="searchBar" placeholder="Search across database entries...">
         </div>
-        <input class="search" id="animeSearch" type="search" placeholder="Search anime...">
+        <button class="pro-trigger" id="proBtn">👑 Go Pro</button>
     </header>
 
-    <div class="ad-banner" id="topAdSlot">Premium Sponsor Layout Slot</div>
+    <!-- Ad Anchor A -->
+    <div class="ad-zone" id="adSlotA">Stream secure with ExpressVPN - Special offer inside.</div>
 
-    <div class="filter-row">
-        <button class="filter-btn active" data-genre="all">All Items</button>
-        <button class="filter-btn" data-genre="Action">Action</button>
-        <button class="filter-btn" data-genre="Adventure">Adventure</button>
-        <button class="filter-btn" data-genre="watchlist" id="watchlistTabBtn">❤ Watchlist</button>
-    </div>
-
-    <main>
-        <section id="homeView">
-            <h2 class="section-title" id="viewHeading"># Local Experiment Catalog</h2>
-            <div class="catalog" id="catalogGrid"></div>
-        </section>
-
-        <section id="watchView" class="hidden">
-            <button class="back-btn" id="btnBack">← Back to Catalog</button>
-            <h2 id="streamTitle">Loading Title...</h2>
-            
-            <div class="action-tray">
-                <button class="watchlist-btn" id="toggleWatchlistBtn">❤ Add to Watchlist</button>
-            </div>
-
-            <div class="player">
-                <video id="mainVideoPlayer" controls playsinline></video>
-            </div>
-
-            <div class="player-toolbar">
-                <div><a href="#" class="w2g-link" id="w2gLink">Watch2Gether Room ↗</a></div>
-                <div class="toolbar-right">
-                    <button id="prevEpisodeBtn" class="nav-arrow">◀ Prev</button>
-                    <button id="nextEpisodeBtn" class="nav-arrow">Next ▶</button>
-                </div>
-            </div>
-
-            <h3>Episodes</h3>
-            <div id="episodeGrid" class="episode-list"></div>
-        </section>
-    </main>
-
-    <div class="paywall-modal hidden" id="paywallModal">
-        <div class="paywall-content">
-            <h2>Unlock Premium Mode</h2>
-            <p>Upgrade to access custom watchlists and shared watch rooms.</p>
-            <button class="pay-now-btn" id="purchasePremiumBtn">Upgrade for $2.99</button>
-            <button class="close-paywall" id="closePaywallBtn">Continue Basic</button>
-        </div>
-    </div>
-
-    <footer>Anime Only · Pure Experimental Core</footer>
-
-    <script>
-        "use strict";
-
-        // =======================================================
-        // 1. CLEAN SLATE TESTING SUITE
-        // =======================================================
-        (function runCleanSlateEngine() {
-            localStorage.clear();
-            sessionStorage.clear();
-            const urlParams = new URLSearchParams(window.location.search);
-            if (!urlParams.has('nocache')) {
-                urlParams.set('nocache', Date.now());
-                window.location.search = urlParams.toString();
-            }
-        })();
-
-        // =======================================================
-        // 2. INTERNAL DATABASE (NO INTERNET REQUIRED)
+    <!-- Scrollable Horizontal View Switcher Ribbon Bar -->
+    <div class="nav-ribbon">
