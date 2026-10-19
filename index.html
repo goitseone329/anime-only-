@@ -58,6 +58,35 @@
             border-color: var(--red);
         }
 
+        .filter-row {
+            display: flex;
+            gap: 8px;
+            padding: 16px;
+            overflow-x: auto;
+            white-space: nowrap;
+            border-bottom: 1px solid #1c1c24;
+        }
+
+        .filter-row::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter-btn {
+            background: #1c1c24;
+            color: var(--text);
+            border: 1px solid #292933;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .filter-btn.active {
+            background: var(--red);
+            border-color: var(--red);
+        }
+
         main {
             padding: 16px;
         }
@@ -151,6 +180,29 @@
             display: block;
         }
 
+        .player-toolbar {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            justify-content: space-between;
+            background: #111116;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid #292933;
+        }
+
+        .w2g-link {
+            color: #ef233c;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .w2g-link:hover {
+            text-decoration: underline;
+        }
+
         .episode-list {
             display: flex;
             gap: 8px;
@@ -176,6 +228,7 @@
             text-align: center;
             padding: 30px 16px;
             margin-top: 40px;
+            border-top: 1px solid #292933;
         }
 
         .social-links {
@@ -199,14 +252,21 @@
         <input class="search" id="animeSearch" type="search" placeholder="Search anime...">
     </header>
 
+    <!-- Genre Filters Bar -->
+    <div class="filter-row">
+        <button class="filter-btn active" data-genre="all">All Items</button>
+        <button class="filter-btn" data-genre="Action">Action</button>
+        <button class="filter-btn" data-genre="Adventure">Adventure</button>
+    </div>
+
     <main>
-        <!-- Home Catalog View -->
+        <!-- Catalog Grid Section -->
         <section id="homeView">
             <h2 class="section-title" id="viewHeading"># Trending Anime</h2>
             <div class="catalog" id="catalogGrid"></div>
         </section>
 
-        <!-- Player Watch View -->
+        <!-- Dynamic Stream Player View -->
         <section id="watchView" class="hidden">
             <button class="back-btn" id="btnBack">← Back to Catalog</button>
             <h2 id="streamTitle">Loading Title...</h2>
@@ -215,6 +275,13 @@
                 <video id="mainVideoPlayer" controls playsinline>
                     Your browser does not support video playback.
                 </video>
+            </div>
+
+            <!-- Utilities Toolbar -->
+            <div class="player-toolbar">
+                <div>
+                    <a href="https://watch2gether.com" class="w2g-link" id="w2gLink" target="_blank">Watch2Gether Room ↗</a>
+                </div>
             </div>
 
             <h3>Episodes</h3>
@@ -233,13 +300,15 @@
     <script>
         "use strict";
 
-        // Global Application Tracker Variables
+        // Global State Trackers
         let searchQuery = "";
+        let currentGenre = "all";
+        let cachedAnimeList = [];
         let selectedAnime = null;
         let activeEpisodeIdx = 0;
         let debounceTimer;
 
-        // DOM Nodes
+        // UI Selectors
         const catalogGrid = document.getElementById('catalogGrid');
         const homeView = document.getElementById('homeView');
         const watchView = document.getElementById('watchView');
@@ -251,82 +320,31 @@
         const episodeGrid = document.getElementById('episodeGrid');
         const viewHeading = document.getElementById('viewHeading');
 
-        // Fetch Trending Anime Data using Jikan API v4
+        // Fetch Global Trends from Jikan
         async function fetchTrendingAnime() {
             catalogGrid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:20px;">Fetching global trends...</div>';
             try {
                 const response = await fetch('https://jikan.moe');
                 const json = await response.json();
-                renderCards(json.data);
+                cachedAnimeList = json.data || [];
+                applyFiltersAndRender();
             } catch (error) {
-                catalogGrid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#ef233c; padding:20px;">Failed to load data. Network rate limits met.</div>';
+                catalogGrid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#ef233c; padding:20px;">Failed to load trending items. Rate limit hit.</div>';
             }
         }
 
-        // Fetch Queried Search Data using Jikan API v4
+        // Live Asynchronous Query Search with Fixed API Endpoint URL Path
         async function searchAnime(query) {
             if (query.trim().length < 3) return;
             catalogGrid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:20px;">Searching database...</div>';
             try {
-                const response = await fetch(`https://jikan.moe{encodeURIComponent(query)}&limit=20`);
+                const response = await fetch(`https://jikan.moe{encodeURIComponent(query)}&limit=24`);
                 const json = await response.json();
-                renderCards(json.data);
+                cachedAnimeList = json.data || [];
+                applyFiltersAndRender();
             } catch (error) {
-                catalogGrid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#ef233c; padding:20px;">Error processing search parameters.</div>';
+                catalogGrid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#ef233c; padding:20px;">Error fetching search data.</div>';
             }
         }
 
-        // Dynamic Card DOM Rendering
-        function renderCards(animeArray) {
-            catalogGrid.innerHTML = "";
-            if (!animeArray || animeArray.length === 0) {
-                catalogGrid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#aaaab8; padding:20px;">No matching content found.</div>';
-                return;
-            }
-
-            animeArray.forEach(anime => {
-                const title = anime.title;
-                const image = anime.images?.jpg?.large_image_url || anime.images?.jpg?.image_url || '';
-                const episodesCount = anime.episodes || '??';
-                const rating = anime.score ? `★ ${anime.score}` : 'Unrated';
-
-                const card = document.createElement('div');
-                card.className = 'anime-card';
-                card.innerHTML = `
-                    <div class="poster-wrapper">
-                        <img src="${image}" alt="${title}" loading="lazy">
-                    </div>
-                    <div class="card-info">
-                        <h3>${title}</h3>
-                        <p>${rating} &middot; ${episodesCount} Eps</p>
-                    </div>
-                `;
-                
-                // Track dynamic structure parameters locally
-                card.addEventListener('click', () => openPlayer(anime));
-                catalogGrid.appendChild(card);
-            });
-        }
-
-        function openPlayer(anime) {
-            selectedAnime = anime;
-            activeEpisodeIdx = 0;
-            
-            homeView.classList.add('hidden');
-            watchView.classList.remove('hidden');
-            streamTitle.textContent = anime.title;
-
-            buildEpisodeButtons();
-            playEpisode();
-        }
-
-        function closePlayer() {
-            mainVideoPlayer.pause();
-            mainVideoPlayer.src = "";
-            selectedAnime = null;
-            watchView.classList.add('hidden');
-            homeView.classList.remove('hidden');
-        }
-
-        function buildEpisodeButtons() {
-            episodeGrid.innerHTML = "";
+        // Handles rendering cards combined with active category tab constraints
