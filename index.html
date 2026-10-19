@@ -57,11 +57,11 @@
         @media (min-width: 768px) { .catalog-grid { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; } }
         
         .anime-card { background: var(--panel); border: 1px solid #1f1f26; border-radius: 6px; overflow: hidden; cursor: pointer; position: relative; width: 100%; display: block; }
-        .card-cover { height: 140px; background: #252533; display: flex; align-items: center; justify-content: center; font-size: 36px; }
-        .stream-tag { position: absolute; bottom: 6px; left: 6px; padding: 2px 6px; font-size: 10px; font-weight: bold; border-radius: 3px; color: #fff; }
+        .card-cover { height: 260px; background: #252533; background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; position: relative; }
+        .stream-tag { position: absolute; bottom: 6px; left: 6px; padding: 2px 6px; font-size: 10px; font-weight: bold; border-radius: 3px; color: #fff; z-index: 2; }
         .tag-sub { background: var(--sub-badge); }
         .tag-dub { background: var(--dub-badge); }
-        .card-info { padding: 10px; }
+        .card-info { padding: 10px; background: var(--panel); }
         .card-info h3 { font-size: 13px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #fff; margin-bottom: 4px; }
         .card-info p { font-size: 11px; color: var(--muted); }
         .hidden { display: none !important; }
@@ -131,10 +131,7 @@
 
     <!-- Combined Application Controller Logic -->
     <script>
-        // Force reset old browser state storage issues if they exist
-        try { localStorage.clear(); } catch(e){}
-
-        // 1. Data Store Engine: Setup structural arrays safely
+        // 1. Updated Data Store Engine: Replace poster image paths and video URLs here
         const animeCatalog = [
             {
                 id: "naruto-shippuden",
@@ -142,9 +139,11 @@
                 type: "ongoing",
                 tag: "SUB",
                 tagClass: "tag-sub",
+                // Replace this URL string with a real portrait poster image asset link
+                poster: "https://unsplash.com", 
                 episodes: [
-                    { title: "Episode 1", url: "https://w3schools.com" },
-                    { title: "Episode 2", url: "https://w3schools.com" }
+                    { title: "Episode 1", url: "https://googleapis.com" },
+                    { title: "Episode 2", url: "https://googleapis.com" }
                 ]
             },
             {
@@ -153,8 +152,9 @@
                 type: "ongoing",
                 tag: "DUB",
                 tagClass: "tag-dub",
+                poster: "https://unsplash.com",
                 episodes: [
-                    { title: "Episode 1", url: "https://w3schools.com" }
+                    { title: "Episode 1", url: "https://googleapis.com" }
                 ]
             },
             {
@@ -163,20 +163,7 @@
                 type: "movies",
                 tag: "SUB",
                 tagClass: "tag-sub",
+                poster: "https://unsplash.com",
                 episodes: [
-                    { title: "Full Movie", url: "https://w3schools.com" }
+                    { title: "Full Movie", url: "https://googleapis.com" }
                 ]
-            }
-        ];
-
-        let watchlist = [];
-        let currentAnime = null;
-
-        // 2. Element Selectors
-        const latestGrid = document.getElementById('latestGrid');
-        const popularGrid = document.getElementById('popularGrid');
-        const shelfRowA = document.getElementById('shelfRowA');
-        const shelfRowB = document.getElementById('shelfRowB');
-        const adSlotA = document.getElementById('adSlotA');
-        const adSlotB = document.getElementById('adSlotB');
-        const theaterView = document.getElementById('theaterView');
