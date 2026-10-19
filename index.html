@@ -109,6 +109,19 @@
             border-radius: 12px;
             overflow: hidden;
             cursor: pointer;
+            position: relative;
+        }
+
+        .watchlist-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(239, 35, 60, 0.9);
+            color: white;
+            padding: 4px 6px;
+            border-radius: 5px;
+            font-size: 11px;
+            z-index: 2;
         }
 
         .poster-wrapper {
@@ -167,6 +180,24 @@
             margin-bottom: 16px;
         }
 
+        .action-tray {
+            margin-bottom: 15px;
+        }
+
+        .watchlist-btn {
+            background: var(--red);
+            color: white;
+            border: 0;
+            border-radius: 7px;
+            padding: 11px 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .watchlist-btn.in-list {
+            background: #30303b;
+        }
+
         .player {
             width: 100%;
             background: black;
@@ -201,6 +232,29 @@
 
         .w2g-link:hover {
             text-decoration: underline;
+        }
+
+        .toolbar-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-arrow {
+            background: #252530;
+            border: none;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .camera-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px;
         }
 
         .episode-list {
@@ -252,11 +306,11 @@
         <input class="search" id="animeSearch" type="search" placeholder="Search anime...">
     </header>
 
-    <!-- Genre Filters Bar -->
     <div class="filter-row">
         <button class="filter-btn active" data-genre="all">All Items</button>
         <button class="filter-btn" data-genre="Action">Action</button>
         <button class="filter-btn" data-genre="Adventure">Adventure</button>
+        <button class="filter-btn" data-genre="watchlist">❤ Watchlist</button>
     </div>
 
     <main>
@@ -266,21 +320,29 @@
             <div class="catalog" id="catalogGrid"></div>
         </section>
 
-        <!-- Dynamic Stream Player View -->
+        <!-- Player Watch View -->
         <section id="watchView" class="hidden">
             <button class="back-btn" id="btnBack">← Back to Catalog</button>
             <h2 id="streamTitle">Loading Title...</h2>
             
+            <div class="action-tray">
+                <button class="watchlist-btn" id="toggleWatchlistBtn">❤ Add to Watchlist</button>
+            </div>
+
             <div class="player">
-                <video id="mainVideoPlayer" controls playsinline>
+                <video id="mainVideoPlayer" controls playsinline crossorigin="anonymous">
                     Your browser does not support video playback.
                 </video>
             </div>
 
-            <!-- Utilities Toolbar -->
             <div class="player-toolbar">
                 <div>
                     <a href="https://watch2gether.com" class="w2g-link" id="w2gLink" target="_blank">Watch2Gether Room ↗</a>
+                </div>
+                <div class="toolbar-right">
+                    <button id="prevEpisodeBtn" class="nav-arrow">◀ Prev</button>
+                    <button id="nextEpisodeBtn" class="nav-arrow">Next ▶</button>
+                    <button class="camera-btn" id="screenshotBtn" title="Take Screenshot">📷</button>
                 </div>
             </div>
 
@@ -307,6 +369,9 @@
         let selectedAnime = null;
         let activeEpisodeIdx = 0;
         let debounceTimer;
+        
+        // Persistent Browser Storage Watchlist Array
+        let localWatchlist = JSON.parse(localStorage.getItem('anime_watchlist')) || [];
 
         // UI Selectors
         const catalogGrid = document.getElementById('catalogGrid');
@@ -314,37 +379,3 @@
         const watchView = document.getElementById('watchView');
         const animeSearch = document.getElementById('animeSearch');
         const logoHome = document.getElementById('logoHome');
-        const btnBack = document.getElementById('btnBack');
-        const streamTitle = document.getElementById('streamTitle');
-        const mainVideoPlayer = document.getElementById('mainVideoPlayer');
-        const episodeGrid = document.getElementById('episodeGrid');
-        const viewHeading = document.getElementById('viewHeading');
-
-        // Fetch Global Trends from Jikan
-        async function fetchTrendingAnime() {
-            catalogGrid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:20px;">Fetching global trends...</div>';
-            try {
-                const response = await fetch('https://jikan.moe');
-                const json = await response.json();
-                cachedAnimeList = json.data || [];
-                applyFiltersAndRender();
-            } catch (error) {
-                catalogGrid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#ef233c; padding:20px;">Failed to load trending items. Rate limit hit.</div>';
-            }
-        }
-
-        // Live Asynchronous Query Search with Fixed API Endpoint URL Path
-        async function searchAnime(query) {
-            if (query.trim().length < 3) return;
-            catalogGrid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:20px;">Searching database...</div>';
-            try {
-                const response = await fetch(`https://jikan.moe{encodeURIComponent(query)}&limit=24`);
-                const json = await response.json();
-                cachedAnimeList = json.data || [];
-                applyFiltersAndRender();
-            } catch (error) {
-                catalogGrid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#ef233c; padding:20px;">Error fetching search data.</div>';
-            }
-        }
-
-        // Handles rendering cards combined with active category tab constraints
