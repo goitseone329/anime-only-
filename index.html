@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anime Only</title>
+    <title>Anime Only - Test Variant</title>
     <style>
         :root {
             --bg: #0b0b0f;
@@ -13,9 +13,7 @@
             --text: #f7f7fb;
             --muted: #aaaab8;
         }
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
         body {
             margin: 0;
             background: var(--bg);
@@ -43,9 +41,7 @@
             text-transform: uppercase;
             margin: 0;
         }
-        .logo span {
-            color: white;
-        }
+        .logo span { color: white; }
         .go-pro-btn {
             background: linear-gradient(45deg, var(--gold), #ff8500);
             color: #000;
@@ -57,9 +53,6 @@
             cursor: pointer;
             transition: transform 0.2s;
         }
-        .go-pro-btn:hover {
-            transform: scale(1.05);
-        }
         .search {
             width: 100%;
             padding: 12px 16px;
@@ -70,9 +63,6 @@
             outline: none;
             font-size: 15px;
         }
-        .search:focus {
-            border-color: var(--red);
-        }
         .filter-row {
             display: flex;
             gap: 8px;
@@ -80,9 +70,6 @@
             overflow-x: auto;
             white-space: nowrap;
             border-bottom: 1px solid #1c1c24;
-        }
-        .filter-row::-webkit-scrollbar {
-            display: none;
         }
         .filter-btn {
             background: #1c1c24;
@@ -98,8 +85,6 @@
             background: var(--red);
             border-color: var(--red);
         }
-        
-        /* Monetization Ad Space Elements */
         .ad-banner {
             background: #1a1a24;
             border: 2px dashed #3a3a4f;
@@ -109,27 +94,10 @@
             margin: 12px 16px;
             border-radius: 8px;
             font-size: 12px;
-            letter-spacing: 1px;
             text-transform: uppercase;
-            position: relative;
         }
-        .ad-banner::before {
-            content: "SPONSORED ADVERTISEMENT";
-            display: block;
-            font-size: 9px;
-            color: #ef233c;
-            margin-bottom: 6px;
-            font-weight: bold;
-        }
-
-        main {
-            padding: 16px;
-        }
-        .section-title {
-            margin: 8px 0 20px;
-            font-size: 24px;
-            font-weight: bold;
-        }
+        main { padding: 16px; }
+        .section-title { margin: 8px 0 20px; font-size: 24px; font-weight: bold; }
         .catalog {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -152,82 +120,26 @@
             padding: 4px 6px;
             border-radius: 5px;
             font-size: 11px;
-            z-index: 2;
         }
         .poster-wrapper {
             height: 210px;
-            width: 100%;
-            overflow: hidden;
             background: #1c1c24;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        .poster-wrapper img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .card-info {
-            padding: 10px;
-        }
-        .card-info h3 {
-            font-size: 14px;
-            margin: 0 0 4px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .card-info p {
-            color: var(--muted);
-            font-size: 12px;
-            margin: 0;
-        }
-        .hidden {
-            display: none !important;
-        }
-        #watchView {
-            background: var(--panel);
-            border: 1px solid #242430;
-            border-radius: 12px;
-            padding: 16px;
-        }
-        .back-btn {
-            background: #242430;
-            color: white;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-bottom: 16px;
-        }
-        .action-tray {
-            margin-bottom: 15px;
-        }
-        .watchlist-btn {
-            background: var(--red);
-            color: white;
-            border: 0;
-            border-radius: 7px;
-            padding: 11px 14px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .watchlist-btn.in-list {
-            background: #30303b;
-        }
-        .player {
-            width: 100%;
-            background: black;
-            border-radius: 8px;
-            overflow: hidden;
-            margin: 12px 0;
-        }
-        video {
-            width: 100%;
-            display: block;
-        }
+        .poster-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+        .card-info { padding: 10px; }
+        .card-info h3 { font-size: 14px; margin: 0 0 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .card-info p { color: var(--muted); font-size: 12px; margin: 0; }
+        .hidden { display: none !important; }
+        #watchView { background: var(--panel); border: 1px solid #242430; border-radius: 12px; padding: 16px; }
+        .back-btn { background: #242430; color: white; border: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-bottom: 16px; }
+        .action-tray { margin-bottom: 15px; }
+        .watchlist-btn { background: var(--red); color: white; border: 0; border-radius: 7px; padding: 11px 14px; font-weight: bold; cursor: pointer; }
+        .watchlist-btn.in-list { background: #30303b; }
+        .player { width: 100%; background: black; border-radius: 8px; overflow: hidden; margin: 12px 0; }
+        video { width: 100%; display: block; }
         .player-toolbar {
             display: flex;
             gap: 12px;
@@ -239,55 +151,13 @@
             margin: 15px 0;
             border: 1px solid #292933;
         }
-        .w2g-link {
-            color: #ef233c;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 14px;
-        }
-        .w2g-link:hover {
-            text-decoration: underline;
-        }
-        .toolbar-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .nav-arrow {
-            background: #252530;
-            border: none;
-            color: white;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .camera-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            padding: 4px;
-        }
-        .episode-list {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-top: 12px;
-        }
-        .episode-btn {
-            background: #242430;
-            color: white;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .episode-btn.active {
-            background: var(--red);
-        }
+        .w2g-link { color: #ef233c; text-decoration: none; font-weight: bold; font-size: 14px; }
+        .nav-arrow { background: #252530; border: none; color: white; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
+        .camera-btn { background: none; border: none; cursor: pointer; font-size: 16px; padding: 4px; }
+        .episode-list { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+        .episode-btn { background: #242430; color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .episode-btn.active { background: var(--red); }
         
-        /* Paywall Modal/Overlay styles */
         .paywall-modal {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -307,59 +177,41 @@
             width: 100%;
             text-align: center;
         }
-        .paywall-content h2 {
-            color: var(--gold);
-            margin-top: 0;
-        }
-        .paywall-features {
-            text-align: left;
-            margin: 20px 0;
-            padding-left: 20px;
-        }
-        .paywall-features li {
-            margin-bottom: 10px;
-            color: #d1d1de;
-        }
-        .pay-now-btn {
-            background: linear-gradient(45deg, #ef233c, #ff4d6d);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            width: 100%;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .close-paywall {
-            background: transparent;
-            color: var(--muted);
-            border: none;
-            margin-top: 12px;
-            cursor: pointer;
-            font-size: 14px;
-        }
+        .pay-now-btn { background: linear-gradient(45deg, #ef233c, #ff4d6d); color: white; border: none; padding: 12px 24px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        .close-paywall { background: transparent; color: var(--muted); border: none; margin-top: 12px; cursor: pointer; }
 
-        footer {
-            text-align: center;
-            padding: 30px 16px;
-            margin-top: 40px;
-            border-top: 1px solid #292933;
+        /* --- DIAGNOSTIC TEST PANEL UI STYLES --- */
+        #testConsole {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 320px;
+            background: #1e1e2f;
+            border: 2px solid #3f3f5f;
+            border-radius: 8px;
+            padding: 12px;
+            font-family: monospace;
+            font-size: 11px;
+            z-index: 9999;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 15px;
-        }
-        .social-links a {
-            color: var(--muted);
-            text-decoration: none;
-            font-weight: bold;
-        }
+        .test-title { font-weight: bold; color: var(--gold); margin-bottom: 8px; display: flex; justify-content: space-between; }
+        .test-btn { background: #34344a; color: #fff; border: 1px solid #555; padding: 4px 8px; cursor: pointer; margin: 2px; border-radius: 4px; font-size: 10px; }
+        .test-btn:hover { background: #4e4e6a; }
+        .log-box { background: #0c0c14; height: 100px; overflow-y: auto; padding: 6px; border-radius: 4px; margin-top: 8px; color: #00ff00; border: 1px solid #222; }
     </style>
 </head>
 <body>
+
+    <!-- Floating Test Diagnostic Suite Panel Component -->
+    <div id="testConsole">
+        <div class="test-title">🛠️ ENGINE TESTING SUITE <span>v1.0</span></div>
+        <button class="test-btn" onclick="TestSuite.runJikanMock()">1. Mock API Data</button>
+        <button class="test-btn" onclick="TestSuite.testSearchDebounce()">2. Test Search</button>
+        <button class="test-btn" onclick="TestSuite.toggleMockPremium()">3. Toggle Premium</button>
+        <button class="test-btn" onclick="TestSuite.clearStorage()">4. Reset Storage</button>
+        <div class="log-box" id="testLogs">System initialized. Click a routine to benchmark.</div>
+    </div>
 
     <header>
         <div class="header-top">
@@ -369,4 +221,29 @@
         <input class="search" id="animeSearch" type="search" placeholder="Search anime...">
     </header>
 
-    <!-- Top Native Ad Banner Slot -->
+    <div class="ad-banner" id="topAdSlot">NordVPN Special Sponsorship Placement</div>
+
+    <div class="filter-row">
+        <button class="filter-btn active" data-genre="all">All Items</button>
+        <button class="filter-btn" data-genre="Action">Action</button>
+        <button class="filter-btn" data-genre="Adventure">Adventure</button>
+        <button class="filter-btn" data-genre="watchlist" id="watchlistTabBtn">❤ Watchlist</button>
+    </div>
+
+    <main>
+        <section id="homeView">
+            <h2 class="section-title" id="viewHeading"># Trending Anime</h2>
+            <div class="catalog" id="catalogGrid"></div>
+        </section>
+
+        <section id="watchView" class="hidden">
+            <button class="back-btn" id="btnBack">← Back to Catalog</button>
+            <h2 id="streamTitle">Loading Title...</h2>
+            <div class="action-tray"><button class="watchlist-btn" id="toggleWatchlistBtn">❤ Add to Watchlist</button></div>
+            <div class="player">
+                <video id="mainVideoPlayer" controls playsinline crossorigin="anonymous"></video>
+            </div>
+            <div class="player-toolbar">
+                <div><a href="#" class="w2g-link" id="w2gLink">Watch2Gether Room ↗</a></div>
+                <div class="toolbar-right">
+                    <button id="prevEpisodeBtn" class="nav-arrow">◀ Prev</button>
