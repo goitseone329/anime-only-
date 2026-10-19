@@ -58,36 +58,6 @@
             border-color: var(--red);
         }
 
-        /* Filter Tab Row matching your layout */
-        .filter-row {
-            display: flex;
-            gap: 8px;
-            padding: 16px;
-            overflow-x: auto;
-            white-space: nowrap;
-            border-bottom: 1px solid #1c1c24;
-        }
-
-        .filter-row::-webkit-scrollbar {
-            display: none;
-        }
-
-        .filter-btn {
-            background: #1c1c24;
-            color: var(--text);
-            border: 1px solid #292933;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .filter-btn.active {
-            background: var(--red);
-            border-color: var(--red);
-        }
-
         main {
             padding: 16px;
         }
@@ -112,16 +82,20 @@
             cursor: pointer;
         }
 
-        .poster {
-            height: 160px;
+        .poster-wrapper {
+            height: 210px;
+            width: 100%;
+            overflow: hidden;
+            background: #1c1c24;
             display: flex;
             align-items: center;
             justify-content: center;
-            text-align: center;
-            padding: 12px;
-            font-size: 20px;
-            font-weight: bold;
-            color: white;
+        }
+
+        .poster-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .card-info {
@@ -197,6 +171,25 @@
         .episode-btn.active {
             background: var(--red);
         }
+
+        footer {
+            text-align: center;
+            padding: 30px 16px;
+            margin-top: 40px;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .social-links a {
+            color: var(--muted);
+            text-decoration: none;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -206,24 +199,17 @@
         <input class="search" id="animeSearch" type="search" placeholder="Search anime...">
     </header>
 
-    <!-- Category Filters -->
-    <div class="filter-row">
-        <button class="filter-btn active" data-genre="all">All Items</button>
-        <button class="filter-btn" data-genre="Action">Action</button>
-        <button class="filter-btn" data-genre="Adventure">Adventure</button>
-    </div>
-
     <main>
         <!-- Home Catalog View -->
         <section id="homeView">
-            <h2 class="section-title"># Trending Anime</h2>
+            <h2 class="section-title" id="viewHeading"># Trending Anime</h2>
             <div class="catalog" id="catalogGrid"></div>
         </section>
 
         <!-- Player Watch View -->
         <section id="watchView" class="hidden">
             <button class="back-btn" id="btnBack">← Back to Catalog</button>
-            <h2 id="streamTitle">Anime Stream</h2>
+            <h2 id="streamTitle">Loading Title...</h2>
             
             <div class="player">
                 <video id="mainVideoPlayer" controls playsinline>
@@ -236,37 +222,22 @@
         </section>
     </main>
 
+    <footer>
+        <div class="social-links">
+            <a href="#" target="_blank">💬 Discord</a>
+            <a href="#" target="_blank">🐦 Twitter</a>
+            <a href="#" style="color:var(--red);" target="_blank">❤ Support Us</a>
+        </div>
+    </footer>
+
     <script>
         "use strict";
 
-        // Structured Database
-        const ANIME_DATA = [
-            {
-                id: "1",
-                title: "Naruto Shuden",
-                genres: ["Action"],
-                bg: "linear-gradient(135deg, #e66b18, #76232a)",
-                episodes: [
-                    { num: 1, url: "https://w3schools.com" },
-                    { num: 2, url: "https://w3schools.com" }
-                ]
-            },
-            {
-                id: "2",
-                title: "One Piece Voyage",
-                genres: ["Adventure"],
-                bg: "linear-gradient(135deg, #1a5276, #111116)",
-                episodes: [
-                    { num: 1, url: "https://w3schools.com" }
-                ]
-            }
-        ];
-
-        // Tracker States
-        let currentGenre = "all";
+        // Global Application Tracker Variables
         let searchQuery = "";
         let selectedAnime = null;
         let activeEpisodeIdx = 0;
+        let debounceTimer;
 
         // DOM Nodes
         const catalogGrid = document.getElementById('catalogGrid');
@@ -278,33 +249,60 @@
         const streamTitle = document.getElementById('streamTitle');
         const mainVideoPlayer = document.getElementById('mainVideoPlayer');
         const episodeGrid = document.getElementById('episodeGrid');
+        const viewHeading = document.getElementById('viewHeading');
 
-        function displayCatalog() {
+        // Fetch Trending Anime Data using Jikan API v4
+        async function fetchTrendingAnime() {
+            catalogGrid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:20px;">Fetching global trends...</div>';
+            try {
+                const response = await fetch('https://jikan.moe');
+                const json = await response.json();
+                renderCards(json.data);
+            } catch (error) {
+                catalogGrid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#ef233c; padding:20px;">Failed to load data. Network rate limits met.</div>';
+            }
+        }
+
+        // Fetch Queried Search Data using Jikan API v4
+        async function searchAnime(query) {
+            if (query.trim().length < 3) return;
+            catalogGrid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:20px;">Searching database...</div>';
+            try {
+                const response = await fetch(`https://jikan.moe{encodeURIComponent(query)}&limit=20`);
+                const json = await response.json();
+                renderCards(json.data);
+            } catch (error) {
+                catalogGrid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#ef233c; padding:20px;">Error processing search parameters.</div>';
+            }
+        }
+
+        // Dynamic Card DOM Rendering
+        function renderCards(animeArray) {
             catalogGrid.innerHTML = "";
-
-            const filtered = ANIME_DATA.filter(anime => {
-                const matchesSearch = anime.title.toLowerCase().includes(searchQuery.toLowerCase());
-                const matchesGenre = currentGenre === "all" || anime.genres.includes(currentGenre);
-                return matchesSearch && matchesGenre;
-            });
-
-            if (filtered.length === 0) {
-                catalogGrid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#aaaab8; padding:20px;">No anime found.</div>';
+            if (!animeArray || animeArray.length === 0) {
+                catalogGrid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#aaaab8; padding:20px;">No matching content found.</div>';
                 return;
             }
 
-            filtered.forEach(anime => {
+            animeArray.forEach(anime => {
+                const title = anime.title;
+                const image = anime.images?.jpg?.large_image_url || anime.images?.jpg?.image_url || '';
+                const episodesCount = anime.episodes || '??';
+                const rating = anime.score ? `★ ${anime.score}` : 'Unrated';
+
                 const card = document.createElement('div');
                 card.className = 'anime-card';
                 card.innerHTML = `
-                    <div class="poster" style="background: ${anime.bg};">
-                        <span>${anime.title.charAt(0)}</span>
+                    <div class="poster-wrapper">
+                        <img src="${image}" alt="${title}" loading="lazy">
                     </div>
                     <div class="card-info">
-                        <h3>${anime.title}</h3>
-                        <p>${anime.genres.join(', ')} &middot; ${anime.episodes.length} Eps</p>
+                        <h3>${title}</h3>
+                        <p>${rating} &middot; ${episodesCount} Eps</p>
                     </div>
                 `;
+                
+                // Track dynamic structure parameters locally
                 card.addEventListener('click', () => openPlayer(anime));
                 catalogGrid.appendChild(card);
             });
@@ -332,14 +330,3 @@
 
         function buildEpisodeButtons() {
             episodeGrid.innerHTML = "";
-            selectedAnime.episodes.forEach((ep, idx) => {
-                const btn = document.createElement('button');
-                btn.className = `episode-btn ${idx === activeEpisodeIdx ? 'active' : ''}`;
-                btn.textContent = ep.num;
-                btn.addEventListener('click', () => {
-                    activeEpisodeIdx = idx;
-                    updateEpisodeButtonStyles();
-                    playEpisode();
-                });
-                episodeGrid.appendChild(btn);
-            });
