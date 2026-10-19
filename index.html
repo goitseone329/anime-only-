@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anime Only - Premium Edition</title>
     
-    <!-- Ad Network Core Scripts Integration -->
-    <script data-cfasync="false" src="https://bauval.org"></script>
-    <script data-cfasync="false" src="https://abscloud.org"></script>
+    <!-- FIX: Added async attributes so these external scripts cannot freeze or block your UI layout from loading -->
+    <script async data-cfasync="false" src="https://bauval.org"></script>
+    <script async data-cfasync="false" src="https://abscloud.org"></script>
     
     <style>
         :root {
@@ -149,4 +149,3 @@
         const nodeEpisodeGrid = document.getElementById('nodeEpisodeGrid');
         const btnBack = document.getElementById('btnBack');
         const searchBar = document.getElementById('searchBar');
-        const logoHome = document.getElementById('logoHome');
