@@ -366,7 +366,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function setupEventListeners() {
   homeButton.addEventListener("click", showHome);
   backButton.addEventListener("click", showHome);
-  
+
   // Custom Live Search Function
   searchInput.addEventListener("input", (e) => {
     const query = e.target.value.toLowerCase().trim();
@@ -386,22 +386,31 @@ function setupEventListeners() {
   });
 }
 
-function renderCatalog(list) {
-  animeCatalog.innerHTML = "";
-  if (list.length === 0) {
-    animeCatalog.innerHTML = `<div class="empty">No anime found matching your search.</div>`;
-    return;
-  }
+// View Switching Controllers
+function showHome() {
+  videoPlayer.pause();
+  watchView.classList.add("hidden");
+  homeView.classList.remove("hidden");
+}
 
-  list.forEach(anime => {
-    const card = document.createElement("div");
-    card.className = "anime-card";
-    
-    // Safely verify and extract individual array components for CSS gradient rules
-    const colorLeft = (anime.colors && anime.colors[0]) ? anime.colors[0] : "#ef233c";
-    const colorRight = (anime.colors && anime.colors[1]) ? anime.colors[1] : "#17171f";
-    
-    card.innerHTML = `
-      <div class="poster" style="background: linear-gradient(135deg, ${colorLeft}, ${colorRight})">
-        <span>${anime.title}</span>
-      </div>
+function showWatchView(anime) {
+  currentAnime = anime;
+  currentEpisodeIndex = 1;
+  homeView.classList.add("hidden");
+  watchView.classList.remove("hidden");
+  
+  watchTitle.textContent = anime.title;
+  watchDescription.textContent = anime.description || "";
+  
+  renderEpisodes(anime.episodes);
+  loadEpisode(currentEpisodeIndex);
+}
+
+function renderEpisodes(count) {
+  episodeListContainer.innerHTML = "";
+  for (let i = 1; i <= count; i++) {
+    const btn = document.createElement("button");
+    btn.className = "episode-button";
+    btn.textContent = i;
+    btn.addEventListener("click", () => loadEpisode(i));
+    episodeListContainer.appendChild(btn);
