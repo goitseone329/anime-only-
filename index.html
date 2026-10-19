@@ -94,7 +94,6 @@
         .card-info h3 { font-size: 14px; margin: 0 0 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .card-info p { color: var(--muted); font-size: 12px; margin: 0; }
         
-        /* Error Diagnostic Banner Style */
         .error-banner {
             grid-column: span 2;
             background: rgba(239, 35, 60, 0.1);
@@ -132,6 +131,29 @@
     <script>
         "use strict";
 
+        // =======================================================
+        // 1. CLEAN SLATE TESTING SUITE (RUNS ONCE EVERY RELOAD)
+        // =======================================================
+        (function runCleanSlateEngine() {
+            console.log("🛠️ CLEAN SLATE SUITE: Purging application states...");
+            localStorage.clear();
+            sessionStorage.clear();
+            if ('caches' in window) {
+                caches.keys().then(function(names) {
+                    for (let name of names) caches.delete(name);
+                });
+            }
+            const urlParams = new URLSearchParams(window.location.search);
+            if (!urlParams.has('nocache')) {
+                urlParams.set('nocache', Date.now());
+                window.location.search = urlParams.toString();
+            }
+            console.log("✅ STATE PURGED: Application starting up entirely from scratch.");
+        })();
+
+        // =======================================================
+        // 2. LIVE ANIME DATA FETCHER ENGINE (JIKAN API v4)
+        // =======================================================
         const BASE_URL = "https://jikan.moe";
         let cachedAnimeList = [];
         let searchQuery = "";
@@ -155,7 +177,6 @@
                 fetchTrendingAnime();
             });
 
-            // 500ms Search Debounce to protect Jikan API rate limit rules
             let debounceTimer;
             animeSearch.addEventListener('input', (e) => {
                 clearTimeout(debounceTimer);
@@ -246,11 +267,3 @@
             catalogGrid.innerHTML = `
                 <div class="error-banner">
                     <strong>⚠️ Engine Error Context [${source}]:</strong><br>
-                    ${message}<br><br>
-                    <em>Suggestions: The Jikan API has a limit of 3 requests per second. Try refreshing the page in a moment.</em>
-                </div>
-            `;
-        }
-    </script>
-</body>
-</html>
