@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -244,12 +243,6 @@ footer {
 <script>
 "use strict";
 
-/*
-  DEMO CATALOG:
-  These are sample entries to help you build your website.
-  Add authorized video URLs to episodeSources when available.
-*/
-
 const animeDatabase = [
   {
     id: 1,
@@ -353,230 +346,52 @@ const animeDatabase = [
   {
     id: 12,
     title: "Fullmetal Alchemist",
-    genre: "Fantasy",
+    genre: "Action",
     episodes: 5,
-    description: "Two brothers search for a way to restore what they lost.",
-    colors: ["#ad583a", "#38242c"],
+    description: "Two brothers use alchemy in an attempt to restore their bodies.",
+    colors: ["#a6212b", "#1f1d24"],
     episodeSources: {}
   }
 ];
 
-const catalog = document.getElementById("animeCatalog");
-const searchInput = document.getElementById("searchInput");
+// UI Control Variables
+let currentAnime = null;
+let currentEpisode = 1;
+
+// Element Selectors
 const homeView = document.getElementById("homeView");
 const watchView = document.getElementById("watchView");
-const videoPlayer = document.getElementById("videoPlayer");
-const playerMessage = document.getElementById("playerMessage");
+const animeCatalog = document.getElementById("animeCatalog");
+const searchInput = document.getElementById("searchInput");
+const homeButton = document.getElementById("homeButton");
+const backButton = document.getElementById("backButton");
 const watchTitle = document.getElementById("watchTitle");
 const watchDescription = document.getElementById("watchDescription");
+const videoPlayer = document.getElementById("videoPlayer");
+const playerMessage = document.getElementById("playerMessage");
 const episodeLabel = document.getElementById("episodeLabel");
 const episodeList = document.getElementById("episodeList");
 const previousButton = document.getElementById("previousButton");
 const nextButton = document.getElementById("nextButton");
 const downloadLink = document.getElementById("downloadLink");
 
-let activeAnime = null;
-let activeEpisode = 1;
+// Render regular display grid
+function displayCatalog(filterText = "") {
+  animeCatalog.innerHTML = "";
+  const match = filterText.toLowerCase().trim();
 
-function renderCatalog(items) {
-  catalog.innerHTML = "";
+  const filteredList = animeDatabase.filter(item => 
+    item.title.toLowerCase().includes(match) || 
+    item.genre.toLowerCase().includes(match)
+  );
 
-  if (items.length === 0) {
-    catalog.innerHTML =
-      '<p class="empty">No anime found. Try another search.</p>';
+  if (filteredList.length === 0) {
+    animeCatalog.innerHTML = `<div class="empty">No results found for "${filterText}"</div>`;
     return;
   }
 
-  items.forEach(function(anime) {
-    const card = document.createElement("article");
+  filteredList.forEach(anime => {
+    const card = document.createElement("div");
     card.className = "anime-card";
-    card.tabIndex = 0;
-    card.setAttribute("role", "button");
-    card.setAttribute("aria-label", "Open " + anime.title);
-
-    const poster = document.createElement("div");
-    poster.className = "poster";
-    poster.style.background =
-      "linear-gradient(145deg, " +
-      anime.colors[0] + ", " + anime.colors[1] + ")";
-
-    const posterText = document.createElement("span");
-    posterText.textContent = anime.title;
-    poster.appendChild(posterText);
-
-    const info = document.createElement("div");
-    info.className = "card-info";
-
-    const title = document.createElement("h3");
-    title.textContent = anime.title;
-
-    const genre = document.createElement("p");
-    genre.textContent = anime.genre;
-
-    const tag = document.createElement("span");
-    tag.className = "tag";
-    tag.textContent = anime.episodes + " demo episodes";
-
-    info.append(title, genre, tag);
-    card.append(poster, info);
-
-    card.addEventListener("click", function() {
-      openAnime(anime);
-    });
-
-    card.addEventListener("keydown", function(event) {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        openAnime(anime);
-      }
-    });
-
-    catalog.appendChild(card);
-  });
-}
-
-function searchAnime() {
-  const query = searchInput.value.trim().toLowerCase();
-
-  const filtered = animeDatabase.filter(function(anime) {
-    return anime.title.toLowerCase().includes(query) ||
-      anime.genre.toLowerCase().includes(query);
-  });
-
-  renderCatalog(filtered);
-}
-
-function openAnime(anime) {
-  activeAnime = anime;
-  activeEpisode = 1;
-
-  homeView.classList.add("hidden");
-  watchView.classList.remove("hidden");
-  searchInput.classList.add("hidden");
-
-  watchTitle.textContent = anime.title;
-  watchDescription.textContent = anime.description;
-
-  showEpisode(activeEpisode);
-  window.scrollTo({ top: 0, behavior: "smooth" });
-}
-
-function showEpisode(episodeNumber) {
-  if (!activeAnime) return;
-
-  activeEpisode = Math.max(
-    1,
-    Math.min(episodeNumber, activeAnime.episodes)
-  );
-
-  episodeLabel.textContent =
-    "Episode " + activeEpisode + " of " + activeAnime.episodes;
-
-  previousButton.disabled = activeEpisode === 1;
-  nextButton.disabled = activeEpisode === activeAnime.episodes;
-
-  episodeList.innerHTML = "";
-
-  for (let i = 1; i <= activeAnime.episodes; i++) {
-    const button = document.createElement("button");
-    button.className = "episode-button" +
-      (i === activeEpisode ? " active" : "");
-    button.textContent = i;
-    button.setAttribute("aria-label", "Episode " + i);
-
-    button.addEventListener("click", function() {
-      showEpisode(i);
-    });
-
-    episodeList.appendChild(button);
-  }
-
-  videoPlayer.pause();
-  videoPlayer.removeAttribute("src");
-  videoPlayer.load();
-
-  const source = activeAnime.episodeSources[activeEpisode];
-
-  downloadLink.removeAttribute("href");
-  downloadLink.removeAttribute("download");
-  downloadLink.setAttribute("aria-disabled", "true");
-  downloadLink.style.opacity = ".4";
-  downloadLink.style.pointerEvents = "none";
-
-  if (source && isValidVideoUrl(source)) {
-    videoPlayer.src = source;
-    playerMessage.textContent =
-      "Episode " + activeEpisode + " is ready. Press play to watch.";
-    playerMessage.classList.remove("hidden");
-
-    downloadLink.href = source;
-    downloadLink.download =
-      activeAnime.title.replace(/[^a-z0-9]/gi, "_") +
-      "_episode_" + activeEpisode + ".mp4";
-    downloadLink.setAttribute("aria-disabled", "false");
-    downloadLink.style.opacity = "1";
-    downloadLink.style.pointerEvents = "auto";
-
-    videoPlayer.load();
-  } else {
-    playerMessage.classList.remove("hidden");
-    playerMessage.textContent =
-      "Episode " + activeEpisode +
-      " is selected, but no video file has been added yet. " +
-      "The catalogue and episode controls work; playback and downloads " +
-      "need a valid, authorized video URL.";
-  }
-}
-
-function isValidVideoUrl(value) {
-  try {
-    const url = new URL(value, window.location.href);
-    return url.protocol === "https:" || url.protocol === "http:";
-  } catch (error) {
-    return false;
-  }
-}
-
-function returnHome() {
-  videoPlayer.pause();
-  videoPlayer.removeAttribute("src");
-  videoPlayer.load();
-
-  activeAnime = null;
-  watchView.classList.add("hidden");
-  homeView.classList.remove("hidden");
-  searchInput.classList.remove("hidden");
-
-  searchAnime();
-  window.scrollTo({ top: 0, behavior: "smooth" });
-}
-
-searchInput.addEventListener("input", searchAnime);
-
-document.getElementById("backButton").addEventListener("click", returnHome);
-document.getElementById("homeButton").addEventListener("click", returnHome);
-
-previousButton.addEventListener("click", function() {
-  if (activeAnime && activeEpisode > 1) {
-    showEpisode(activeEpisode - 1);
-  }
-});
-
-nextButton.addEventListener("click", function() {
-  if (activeAnime && activeEpisode < activeAnime.episodes) {
-    showEpisode(activeEpisode + 1);
-  }
-});
-
-downloadLink.addEventListener("click", function(event) {
-  if (downloadLink.getAttribute("aria-disabled") === "true") {
-    event.preventDefault();
-    playerMessage.textContent =
-      "Download is unavailable until a valid video URL is added.";
-  }
-});
-
-renderCatalog(animeDatabase);
-</script>
-</body>
-</html>
+    card.innerHTML = `
+      <div class="poster" style="background: linear-gradient(145deg, ${anime.colors[0]}, ${anime.colors[1]})">
