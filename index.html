@@ -402,6 +402,12 @@ function renderCatalog(list) {
     const colorRight = (anime.colors && anime.colors[1]) ? anime.colors[1] : "#17171f";
     
     card.innerHTML = `
-      <div class="poster" style="background: linear-gradient(135deg, ${colorLeft}, ${colorRight})">
-        <span>${anime.title}</span>
-      </div>
+  <div class="poster" style="background: linear-gradient(135deg, ${colorLeft}, ${colorRight})">
+    <span>${anime.title}</span>
+  </div>
+  <div class="card-info">
+    <h3>${anime.title}</h3>
+    <p>${anime.description.substring(0, 55)}...</p>
+    <span class="tag">${anime.genre}</span>
+  </div>
+`; // <-- Make sure this backtick and semicolon close out the innerHTML string cleanly!
