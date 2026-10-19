@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anime Only - Test Baseline</title>
+    <title>Anime Only</title>
     <style>
         :root {
             --bg: #0b0b0f;
@@ -18,22 +18,57 @@
             background: var(--bg);
             color: var(--text);
             font-family: Arial, sans-serif;
-            padding: 16px;
         }
         header {
             background: #111116;
             border-bottom: 1px solid #292933;
             padding: 16px;
-            text-align: center;
-            margin-bottom: 20px;
         }
         .logo {
             color: var(--red);
             font-size: 23px;
             font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 16px;
             text-transform: uppercase;
         }
         .logo span { color: white; }
+        .search {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid #292933;
+            background: #1c1c24;
+            color: white;
+            outline: none;
+            font-size: 15px;
+        }
+        .search:focus { border-color: var(--red); }
+        .filter-row {
+            display: flex;
+            gap: 8px;
+            padding: 16px;
+            overflow-x: auto;
+            white-space: nowrap;
+            border-bottom: 1px solid #1c1c24;
+        }
+        .filter-row::-webkit-scrollbar { display: none; }
+        .filter-btn {
+            background: #1c1c24;
+            color: var(--text);
+            border: 1px solid #292933;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .filter-btn.active {
+            background: var(--red);
+            border-color: var(--red);
+        }
+        main { padding: 16px; }
+        .section-title { margin: 8px 0 20px; font-size: 24px; font-weight: bold; }
         .catalog {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -44,62 +79,177 @@
             border: 1px solid #242430;
             border-radius: 12px;
             overflow: hidden;
-            padding: 12px;
-            text-align: center;
+            cursor: pointer;
         }
-        .poster-placeholder {
-            height: 150px;
+        .poster-wrapper {
+            height: 210px;
             background: #1c1c24;
-            border-radius: 8px;
-            margin-bottom: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--muted);
-            font-weight: bold;
+            overflow: hidden;
         }
-        h3 { font-size: 14px; margin: 4px 0; }
+        .poster-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+        .card-info { padding: 10px; }
+        .card-info h3 { font-size: 14px; margin: 0 0 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .card-info p { color: var(--muted); font-size: 12px; margin: 0; }
+        
+        /* Error Diagnostic Banner Style */
+        .error-banner {
+            grid-column: span 2;
+            background: rgba(239, 35, 60, 0.1);
+            border: 1px solid var(--red);
+            color: #ff4d6d;
+            padding: 16px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 13px;
+        }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo">Anime <span>Only (Testing Baseline)</span></div>
+        <div class="logo" id="logoHome">Anime <span>Only</span></div>
+        <input class="search" id="animeSearch" type="search" placeholder="Search anime...">
     </header>
 
+    <div class="filter-row">
+        <button class="filter-btn active" data-genre="all">All Items</button>
+        <button class="filter-btn" data-genre="Action">Action</button>
+        <button class="filter-btn" data-genre="Adventure">Adventure</button>
+    </div>
+
     <main>
-        <h2 style="font-size: 20px; margin-bottom: 16px;"># Verification Catalog</h2>
-        <div class="catalog" id="testGrid">
-            <!-- JavaScript will insert items here if deployment updates correctly -->
-        </div>
+        <section id="homeView">
+            <h2 class="section-title" id="viewHeading"># Trending Anime</h2>
+            <div class="catalog" id="catalogGrid">
+                <p style="padding: 20px; color: var(--muted);">Loading live catalog from Jikan API...</p>
+            </div>
+        </section>
     </main>
 
     <script>
         "use strict";
-        
-        console.log("TEST ENGINE: Running baseline rendering script...");
 
-        // Simple local mock data array to isolate layout generation from live API fetching
-        const baselineData = [
-            { id: 1, title: "Baseline Test Card A" },
-            { id: 2, title: "Baseline Test Card B" }
-        ];
+        const BASE_URL = "https://jikan.moe";
+        let cachedAnimeList = [];
+        let searchQuery = "";
+        let currentGenre = "all";
 
-        const testGrid = document.getElementById('testGrid');
+        const catalogGrid = document.getElementById('catalogGrid');
+        const animeSearch = document.getElementById('animeSearch');
+        const viewHeading = document.getElementById('viewHeading');
+        const logoHome = document.getElementById('logoHome');
+        const filterButtons = document.querySelectorAll('.filter-btn');
 
-        if (testGrid) {
-            baselineData.forEach(item => {
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchTrendingAnime();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            logoHome.addEventListener('click', () => {
+                animeSearch.value = "";
+                searchQuery = "";
+                fetchTrendingAnime();
+            });
+
+            // 500ms Search Debounce to protect Jikan API rate limit rules
+            let debounceTimer;
+            animeSearch.addEventListener('input', (e) => {
+                clearTimeout(debounceTimer);
+                searchQuery = e.target.value.trim();
+                debounceTimer = setTimeout(() => {
+                    if (searchQuery.length > 2) {
+                        searchAnime(searchQuery);
+                    } else if (searchQuery.length === 0) {
+                        fetchTrendingAnime();
+                    }
+                }, 500);
+            });
+
+            filterButtons.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    filterButtons.forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    currentGenre = e.target.dataset.genre;
+                    renderCatalog(cachedAnimeList);
+                });
+            });
+        }
+
+        async function fetchTrendingAnime() {
+            try {
+                viewHeading.textContent = "# Trending Anime";
+                catalogGrid.innerHTML = `<p style="padding: 20px; color: var(--muted);">Loading live items...</p>`;
+                
+                const response = await fetch(`${BASE_URL}/top/anime?filter=bypopularity&limit=10`);
+                if (!response.ok) throw new Error(`API returned HTTP status ${response.status}`);
+                
+                const result = await response.json();
+                cachedAnimeList = result.data || [];
+                renderCatalog(cachedAnimeList);
+            } catch (error) {
+                displayError("fetchTrendingAnime", error.message);
+            }
+        }
+
+        async function searchAnime(query) {
+            try {
+                viewHeading.textContent = `Search Results for: "${query}"`;
+                catalogGrid.innerHTML = `<p style="padding: 20px; color: var(--muted);">Searching items...</p>`;
+                
+                const response = await fetch(`${BASE_URL}/anime?q=${encodeURIComponent(query)}&limit=10`);
+                if (!response.ok) throw new Error(`API returned HTTP status ${response.status}`);
+                
+                const result = await response.json();
+                cachedAnimeList = result.data || [];
+                renderCatalog(cachedAnimeList);
+            } catch (error) {
+                displayError("searchAnime", error.message);
+            }
+        }
+
+        function renderCatalog(animeArray) {
+            catalogGrid.innerHTML = "";
+            let filteredList = animeArray;
+
+            if (currentGenre !== "all") {
+                filteredList = animeArray.filter(anime => 
+                    anime.genres && anime.genres.some(g => g.name.toLowerCase() === currentGenre.toLowerCase())
+                );
+            }
+
+            if (filteredList.length === 0) {
+                catalogGrid.innerHTML = `<p style="padding: 20px; color: var(--muted);">No matching anime records found under this view.</p>`;
+                return;
+            }
+
+            filteredList.forEach(anime => {
                 const card = document.createElement('div');
                 card.className = 'anime-card';
                 card.innerHTML = `
-                    <div class="poster-placeholder">IMAGE</div>
-                    <h3>${item.title}</h3>
+                    <div class="poster-wrapper">
+                        <img src="${anime.images.jpg.large_image_url}" alt="${anime.title}" loading="lazy">
+                    </div>
+                    <div class="card-info">
+                        <h3>${anime.title}</h3>
+                        <p>${anime.type || 'TV'} • ${anime.episodes || '??'} Eps</p>
+                    </div>
                 `;
-                testGrid.appendChild(card);
+                catalogGrid.appendChild(card);
             });
-            console.log("TEST ENGINE: Baseline render successful.");
-        } else {
-            console.error("TEST ENGINE: Could not find target DOM grid container.");
+        }
+
+        function displayError(source, message) {
+            catalogGrid.innerHTML = `
+                <div class="error-banner">
+                    <strong>⚠️ Engine Error Context [${source}]:</strong><br>
+                    ${message}<br><br>
+                    <em>Suggestions: The Jikan API has a limit of 3 requests per second. Try refreshing the page in a moment.</em>
+                </div>
+            `;
         }
     </script>
 </body>
