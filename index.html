@@ -9,6 +9,7 @@
             --bg: #0b0b0f;
             --panel: #17171f;
             --red: #ef233c;
+            --gold: #ffb703;
             --text: #f7f7fb;
             --muted: #aaaab8;
         }
@@ -23,16 +24,34 @@
             background: #111116;
             border-bottom: 1px solid #292933;
             padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         .logo {
             color: var(--red);
             font-size: 23px;
             font-weight: bold;
             cursor: pointer;
-            margin-bottom: 16px;
             text-transform: uppercase;
+            margin: 0;
         }
         .logo span { color: white; }
+        .go-pro-btn {
+            background: linear-gradient(45deg, var(--gold), #ff8500);
+            color: #000;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 13px;
+            cursor: pointer;
+        }
         .search {
             width: 100%;
             padding: 12px 16px;
@@ -43,7 +62,6 @@
             outline: none;
             font-size: 15px;
         }
-        .search:focus { border-color: var(--red); }
         .filter-row {
             display: flex;
             gap: 8px;
@@ -67,6 +85,17 @@
             background: var(--red);
             border-color: var(--red);
         }
+        .ad-banner {
+            background: #1a1a24;
+            border: 2px dashed #3a3a4f;
+            color: var(--muted);
+            text-align: center;
+            padding: 20px;
+            margin: 12px 16px;
+            border-radius: 8px;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
         main { padding: 16px; }
         .section-title { margin: 8px 0 20px; font-size: 24px; font-weight: bold; }
         .catalog {
@@ -80,190 +109,159 @@
             border-radius: 12px;
             overflow: hidden;
             cursor: pointer;
+            position: relative;
         }
-        .poster-wrapper {
-            height: 210px;
-            background: #1c1c24;
+        .watchlist-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(239, 35, 60, 0.9);
+            color: white;
+            padding: 4px 6px;
+            border-radius: 5px;
+            font-size: 11px;
+            z-index: 2;
+        }
+        .poster-placeholder {
+            height: 180px;
+            background: #252538;
+            font-size: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
+            font-weight: bold;
         }
-        .poster-wrapper img { width: 100%; height: 100%; object-fit: cover; }
         .card-info { padding: 10px; }
         .card-info h3 { font-size: 14px; margin: 0 0 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .card-info p { color: var(--muted); font-size: 12px; margin: 0; }
+        .hidden { display: none !important; }
         
-        .error-banner {
-            grid-column: span 2;
-            background: rgba(239, 35, 60, 0.1);
-            border: 1px solid var(--red);
-            color: #ff4d6d;
-            padding: 16px;
+        #watchView { background: var(--panel); border: 1px solid #242430; border-radius: 12px; padding: 16px; }
+        .back-btn { background: #242430; color: white; border: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-bottom: 16px; }
+        .action-tray { margin-bottom: 15px; }
+        .watchlist-btn { background: var(--red); color: white; border: 0; border-radius: 7px; padding: 11px 14px; font-weight: bold; cursor: pointer; }
+        .watchlist-btn.in-list { background: #30303b; }
+        .player { width: 100%; background: black; border-radius: 8px; overflow: hidden; margin: 12px 0; }
+        video { width: 100%; display: block; }
+        
+        .player-toolbar {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            justify-content: space-between;
+            background: #111116;
+            padding: 12px 16px;
             border-radius: 8px;
-            font-family: monospace;
-            font-size: 13px;
+            margin: 15px 0;
+            border: 1px solid #292933;
         }
+        .w2g-link { color: #ef233c; text-decoration: none; font-weight: bold; font-size: 14px; }
+        .toolbar-right { display: flex; align-items: center; gap: 10px; }
+        .nav-arrow { background: #252530; border: none; color: white; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
+        .episode-list { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+        .episode-btn { background: #242430; color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .episode-btn.active { background: var(--red); }
+        
+        .paywall-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 5, 8, 0.95);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        .paywall-content {
+            background: #171724;
+            border: 1px solid #2b2b3d;
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        .pay-now-btn { background: linear-gradient(45deg, #ef233c, #ff4d6d); color: white; border: none; padding: 12px 24px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        .close-paywall { background: transparent; color: var(--muted); border: none; margin-top: 12px; cursor: pointer; }
+        footer { text-align: center; padding: 30px 16px; margin-top: 40px; border-top: 1px solid #292933; color: var(--muted); }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo" id="logoHome">Anime <span>Only</span></div>
+        <div class="header-top">
+            <div class="logo" id="logoHome">Anime <span>Only</span></div>
+            <button class="go-pro-btn" id="goProBtn">👑 Go Pro</button>
+        </div>
         <input class="search" id="animeSearch" type="search" placeholder="Search anime...">
     </header>
+
+    <div class="ad-banner" id="topAdSlot">Premium Sponsor Layout Slot</div>
 
     <div class="filter-row">
         <button class="filter-btn active" data-genre="all">All Items</button>
         <button class="filter-btn" data-genre="Action">Action</button>
         <button class="filter-btn" data-genre="Adventure">Adventure</button>
+        <button class="filter-btn" data-genre="watchlist" id="watchlistTabBtn">❤ Watchlist</button>
     </div>
 
     <main>
         <section id="homeView">
-            <h2 class="section-title" id="viewHeading"># Trending Anime</h2>
-            <div class="catalog" id="catalogGrid">
-                <p style="padding: 20px; color: var(--muted);">Loading live catalog from Jikan API...</p>
+            <h2 class="section-title" id="viewHeading"># Local Experiment Catalog</h2>
+            <div class="catalog" id="catalogGrid"></div>
+        </section>
+
+        <section id="watchView" class="hidden">
+            <button class="back-btn" id="btnBack">← Back to Catalog</button>
+            <h2 id="streamTitle">Loading Title...</h2>
+            
+            <div class="action-tray">
+                <button class="watchlist-btn" id="toggleWatchlistBtn">❤ Add to Watchlist</button>
             </div>
+
+            <div class="player">
+                <video id="mainVideoPlayer" controls playsinline></video>
+            </div>
+
+            <div class="player-toolbar">
+                <div><a href="#" class="w2g-link" id="w2gLink">Watch2Gether Room ↗</a></div>
+                <div class="toolbar-right">
+                    <button id="prevEpisodeBtn" class="nav-arrow">◀ Prev</button>
+                    <button id="nextEpisodeBtn" class="nav-arrow">Next ▶</button>
+                </div>
+            </div>
+
+            <h3>Episodes</h3>
+            <div id="episodeGrid" class="episode-list"></div>
         </section>
     </main>
+
+    <div class="paywall-modal hidden" id="paywallModal">
+        <div class="paywall-content">
+            <h2>Unlock Premium Mode</h2>
+            <p>Upgrade to access custom watchlists and shared watch rooms.</p>
+            <button class="pay-now-btn" id="purchasePremiumBtn">Upgrade for $2.99</button>
+            <button class="close-paywall" id="closePaywallBtn">Continue Basic</button>
+        </div>
+    </div>
+
+    <footer>Anime Only · Pure Experimental Core</footer>
 
     <script>
         "use strict";
 
         // =======================================================
-        // 1. CLEAN SLATE TESTING SUITE (RUNS ONCE EVERY RELOAD)
+        // 1. CLEAN SLATE TESTING SUITE
         // =======================================================
         (function runCleanSlateEngine() {
-            console.log("🛠️ CLEAN SLATE SUITE: Purging application states...");
             localStorage.clear();
             sessionStorage.clear();
-            if ('caches' in window) {
-                caches.keys().then(function(names) {
-                    for (let name of names) caches.delete(name);
-                });
-            }
             const urlParams = new URLSearchParams(window.location.search);
             if (!urlParams.has('nocache')) {
                 urlParams.set('nocache', Date.now());
                 window.location.search = urlParams.toString();
             }
-            console.log("✅ STATE PURGED: Application starting up entirely from scratch.");
         })();
 
         // =======================================================
-        // 2. LIVE ANIME DATA FETCHER ENGINE (JIKAN API v4)
-        // =======================================================
-        const BASE_URL = "https://jikan.moe";
-        let cachedAnimeList = [];
-        let searchQuery = "";
-        let currentGenre = "all";
-
-        const catalogGrid = document.getElementById('catalogGrid');
-        const animeSearch = document.getElementById('animeSearch');
-        const viewHeading = document.getElementById('viewHeading');
-        const logoHome = document.getElementById('logoHome');
-        const filterButtons = document.querySelectorAll('.filter-btn');
-
-        document.addEventListener('DOMContentLoaded', () => {
-            fetchTrendingAnime();
-            setupEventListeners();
-        });
-
-        function setupEventListeners() {
-            logoHome.addEventListener('click', () => {
-                animeSearch.value = "";
-                searchQuery = "";
-                fetchTrendingAnime();
-            });
-
-            let debounceTimer;
-            animeSearch.addEventListener('input', (e) => {
-                clearTimeout(debounceTimer);
-                searchQuery = e.target.value.trim();
-                debounceTimer = setTimeout(() => {
-                    if (searchQuery.length > 2) {
-                        searchAnime(searchQuery);
-                    } else if (searchQuery.length === 0) {
-                        fetchTrendingAnime();
-                    }
-                }, 500);
-            });
-
-            filterButtons.forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    filterButtons.forEach(b => b.classList.remove('active'));
-                    e.target.classList.add('active');
-                    currentGenre = e.target.dataset.genre;
-                    renderCatalog(cachedAnimeList);
-                });
-            });
-        }
-
-        async function fetchTrendingAnime() {
-            try {
-                viewHeading.textContent = "# Trending Anime";
-                catalogGrid.innerHTML = `<p style="padding: 20px; color: var(--muted);">Loading live items...</p>`;
-                
-                const response = await fetch(`${BASE_URL}/top/anime?filter=bypopularity&limit=10`);
-                if (!response.ok) throw new Error(`API returned HTTP status ${response.status}`);
-                
-                const result = await response.json();
-                cachedAnimeList = result.data || [];
-                renderCatalog(cachedAnimeList);
-            } catch (error) {
-                displayError("fetchTrendingAnime", error.message);
-            }
-        }
-
-        async function searchAnime(query) {
-            try {
-                viewHeading.textContent = `Search Results for: "${query}"`;
-                catalogGrid.innerHTML = `<p style="padding: 20px; color: var(--muted);">Searching items...</p>`;
-                
-                const response = await fetch(`${BASE_URL}/anime?q=${encodeURIComponent(query)}&limit=10`);
-                if (!response.ok) throw new Error(`API returned HTTP status ${response.status}`);
-                
-                const result = await response.json();
-                cachedAnimeList = result.data || [];
-                renderCatalog(cachedAnimeList);
-            } catch (error) {
-                displayError("searchAnime", error.message);
-            }
-        }
-
-        function renderCatalog(animeArray) {
-            catalogGrid.innerHTML = "";
-            let filteredList = animeArray;
-
-            if (currentGenre !== "all") {
-                filteredList = animeArray.filter(anime => 
-                    anime.genres && anime.genres.some(g => g.name.toLowerCase() === currentGenre.toLowerCase())
-                );
-            }
-
-            if (filteredList.length === 0) {
-                catalogGrid.innerHTML = `<p style="padding: 20px; color: var(--muted);">No matching anime records found under this view.</p>`;
-                return;
-            }
-
-            filteredList.forEach(anime => {
-                const card = document.createElement('div');
-                card.className = 'anime-card';
-                card.innerHTML = `
-                    <div class="poster-wrapper">
-                        <img src="${anime.images.jpg.large_image_url}" alt="${anime.title}" loading="lazy">
-                    </div>
-                    <div class="card-info">
-                        <h3>${anime.title}</h3>
-                        <p>${anime.type || 'TV'} • ${anime.episodes || '??'} Eps</p>
-                    </div>
-                `;
-                catalogGrid.appendChild(card);
-            });
-        }
-
-        function displayError(source, message) {
-            catalogGrid.innerHTML = `
-                <div class="error-banner">
-                    <strong>⚠️ Engine Error Context [${source}]:</strong><br>
+        // 2. INTERNAL DATABASE (NO INTERNET REQUIRED)
