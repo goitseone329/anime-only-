@@ -1,136 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anime Only - Premium Edition</title>
-    <style>
-        :root {
-            --bg: #0b0b0c;
-            --panel: #141416;
-            --panel-light: #1c1c21;
-            --blue: #2563eb;
-            --blue-light: #3b82f6;
-            --gold: #ffb703;
-            --text: #ffffff;
-            --muted: #7a7a85;
-            --sub-badge: #00b4d8;
-            --dub-badge: #9b5de5;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: Arial, sans-serif;
-            padding-top: 70px;
-        }
-        header {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 70px;
-            background: #000000;
-            border-bottom: 2px solid var(--blue);
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 16px; z-index: 1000;
-        }
-        .brand { font-size: 20px; font-weight: 900; text-transform: uppercase; cursor: pointer; }
-        .brand span { background: var(--blue); color: #fff; padding: 2px 6px; border-radius: 4px; margin-left: 2px; }
-        .search-container { flex: 1; max-width: 450px; margin: 0 16px; }
-        .search-bar { width: 100%; padding: 10px 16px; background: var(--panel-light); border: 1px solid #292933; border-radius: 20px; color: #fff; outline: none; }
-        .search-bar:focus { border-color: var(--blue-light); }
-        .pro-trigger { background: linear-gradient(45deg, var(--gold), #ff8500); color: #000; border: none; padding: 8px 16px; border-radius: 20px; font-weight: bold; cursor: pointer; }
-        .ad-zone { background: #101014; border: 1px dashed #3a3a4f; color: var(--muted); text-align: center; padding: 15px; margin: 16px; border-radius: 6px; font-size: 11px; font-weight: bold; }
-        .ad-zone::before { content: "ADVERTISEMENT"; display: block; color: var(--blue-light); font-size: 9px; margin-bottom: 4px; }
-        .nav-ribbon { display: flex; gap: 8px; padding: 0 16px 12px; overflow-x: auto; }
-        .ribbon-btn { background: var(--panel); color: var(--muted); border: 1px solid #23232a; padding: 8px 18px; border-radius: 4px; font-weight: bold; cursor: pointer; }
-        .ribbon-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
-        main { padding: 0 16px 40px; }
-        .shelf-container { margin-bottom: 30px; }
-        .shelf-title { font-size: 18px; font-weight: 800; border-left: 4px solid var(--blue); padding-left: 10px; margin-bottom: 16px; text-transform: uppercase; }
-        
-        .catalog-grid { 
-            display: grid !important; 
-            grid-template-columns: repeat(2, minmax(0, 1fr)) !important; 
-            gap: 12px !important; 
-            width: 100% !important;
-            margin-bottom: 20px;
-        }
-        @media (min-width: 768px) { .catalog-grid { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; } }
-        
-        .anime-card { background: var(--panel); border: 1px solid #1f1f26; border-radius: 6px; overflow: hidden; cursor: pointer; position: relative; width: 100%; display: block; }
-        .card-cover { height: 140px; background: #252533; display: flex; align-items: center; justify-content: center; font-size: 36px; }
-        .stream-tag { position: absolute; bottom: 6px; left: 6px; padding: 2px 6px; font-size: 10px; font-weight: bold; border-radius: 3px; color: #fff; }
-        .tag-sub { background: var(--sub-badge); }
-        .tag-dub { background: var(--dub-badge); }
-        .card-info { padding: 10px; }
-        .card-info h3 { font-size: 13px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #fff; margin-bottom: 4px; }
-        .card-info p { font-size: 11px; color: var(--muted); }
-        .hidden { display: none !important; }
-        #theaterView { background: var(--panel); border-radius: 8px; padding: 16px; border: 1px solid #23232a; }
-        .back-link { color: var(--blue-light); font-size: 13px; font-weight: bold; cursor: pointer; display: inline-block; margin-bottom: 14px; }
-        .video-wrapper { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 6px; overflow: hidden; }
-        video { width: 100%; height: 100%; }
-        .control-ribbon { display: flex; justify-content: space-between; background: var(--panel-light); padding: 12px; margin: 12px 0; border-radius: 6px; }
-        .w2g-anchor { color: var(--blue-light); font-weight: bold; text-decoration: none; }
-        .episode-deck { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
-        .ep-node { background: var(--panel-light); color: #fff; border: 1px solid #292933; padding: 10px 16px; font-weight: bold; border-radius: 4px; cursor: pointer; }
-        .ep-node.active { background: var(--blue); border-color: var(--blue); }
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); z-index: 2000; display: flex; align-items: center; justify-content: center; }
-        .modal-card { background: var(--panel); padding: 24px; border-radius: 12px; text-align: center; max-width: 380px; width: 100%; }
-        .checkout-btn { background: var(--blue); color: #fff; border: none; padding: 12px; width: 100%; border-radius: 6px; margin-top: 16px; font-weight: bold; cursor: pointer; }
-        .cancel-btn { background: transparent; color: var(--muted); border: none; margin-top: 12px; cursor: pointer; }
-    </style>
-</head>
-<body>
-
-    <header>
-        <div class="brand" id="logoHome">Anime<span>Only</span></div>
-        <div class="search-container"><input type="search" class="search-bar" id="searchBar" placeholder="Search entries..."></div>
-        <button class="pro-trigger" id="proBtn">👑 Go Pro</button>
-    </header>
-
-    <div class="ad-zone" id="adSlotA">Secure Streams Enabled with ExpressVPN Support</div>
-
-    <div class="nav-ribbon">
-        <button class="ribbon-btn active" data-filter="all">All Releases</button>
-        <button class="ribbon-btn" data-filter="ongoing">Ongoing Series</button>
-        <button class="ribbon-btn" data-filter="movies">Standalone Movies</button>
-        <button class="ribbon-btn" data-filter="watchlist" id="watchlistBtn">❤ My List</button>
-    </div>
-
-    <main>
-        <div id="shelfRowA" class="shelf-container">
-            <div class="shelf-title"># Latest Episodes</div>
-            <div class="catalog-grid" id="latestGrid"></div>
-        </div>
-
-        <div class="ad-zone" id="adSlotB">Upgrade to Premium to clear inline ad content frames.</div>
-
-        <div id="shelfRowB" class="shelf-container">
-            <div class="shelf-title"># Popular Ongoing Series</div>
-            <div class="catalog-grid" id="popularGrid"></div>
-        </div>
-
-        <div id="theaterView" class="hidden">
-            <div class="back-link" id="btnBack">← Back to Portal Catalog</div>
-            <h2 id="mediaTitle" style="font-size: 20px; margin-bottom: 12px;">Loading Title...</h2>
-            <button class="ribbon-btn" id="btnSaveFavorite" style="padding: 6px 12px; margin-bottom: 12px;">❤ Add to List</button>
-            <div class="video-wrapper"><video id="videoCorePlayer" controls playsinline></video></div>
-            <div class="control-ribbon"><a href="#" class="w2g-anchor" id="w2gRoomLink">Launch Synced Watch2Gether Room ↗</a></div>
-            <h3 style="font-size: 15px; margin-top: 16px;">Select Episode</h3>
-            <div class="episode-deck" id="nodeEpisodeGrid"></div>
-        </div>
-    </main>
-
-    <div class="modal-overlay hidden" id="billingModal">
-        <div class="modal-card">
-            <h2>Unlock Pro Core</h2>
-            <button class="checkout-btn" id="btnConfirmPurchase">Upgrade Now for $2.99</button>
-            <button class="cancel-btn" id="btnCancelPaywall">Dismiss</button>
-        </div>
-    </div>
-
-    <!-- Application Controller Logic -->
+    <!-- Combined Application Controller Logic -->
     <script>
+        // Force reset old storage corruptions if any exist
+        try { localStorage.clear(); } catch(e){}
+
         // 1. Data Store Engine: Setup structural arrays safely
         const animeCatalog = [
             {
@@ -167,11 +39,6 @@
         ];
 
         let watchlist = [];
-        try {
-            watchlist = JSON.parse(localStorage.getItem('animeWatchlist')) || [];
-        } catch(e) {
-            watchlist = [];
-        }
         let currentAnime = null;
 
         // 2. Element Selectors
@@ -181,3 +48,189 @@
         const shelfRowB = document.getElementById('shelfRowB');
         const adSlotA = document.getElementById('adSlotA');
         const adSlotB = document.getElementById('adSlotB');
+        const theaterView = document.getElementById('theaterView');
+        const searchBar = document.getElementById('searchBar');
+        
+        const videoPlayer = document.getElementById('videoCorePlayer');
+        const mediaTitle = document.getElementById('mediaTitle');
+        const nodeEpisodeGrid = document.getElementById('nodeEpisodeGrid');
+        const btnBack = document.getElementById('btnBack');
+        const btnSaveFavorite = document.getElementById('btnSaveFavorite');
+        
+        const billingModal = document.getElementById('billingModal');
+        const proBtn = document.getElementById('proBtn');
+        const btnCancelPaywall = document.getElementById('btnCancelPaywall');
+        const btnConfirmPurchase = document.getElementById('btnConfirmPurchase');
+        const logoHome = document.getElementById('logoHome');
+
+        // 3. Grid Renderer
+        function renderGrid(items, targetGrid) {
+            if (!targetGrid) return;
+            targetGrid.innerHTML = '';
+            if (items.length === 0) {
+                targetGrid.innerHTML = '<p style="color: var(--muted); padding: 10px;">No entries found.</p>';
+                return;
+            }
+            
+            items.forEach(anime => {
+                try {
+                    const card = document.createElement('div');
+                    card.className = 'anime-card';
+                    card.innerHTML = `
+                        <div class="card-cover">📺
+                            <span class="stream-tag ${anime.tagClass || 'tag-sub'}">${anime.tag || 'SUB'}</span>
+                        </div>
+                        <div class="card-info">
+                            <h3>${anime.title || 'Untitled'}</h3>
+                            <p>${anime.episodes ? anime.episodes.length : 0} Episodes</p>
+                        </div>
+                    `;
+                    card.addEventListener('click', () => openTheater(anime));
+                    targetGrid.appendChild(card);
+                } catch(err) {
+                    console.error("Error creating anime card item:", err);
+                }
+            });
+        }
+
+        // 4. Catalog Router Engine
+        function initCatalog(filter = 'all', searchQuery = '') {
+            try {
+                let filtered = [...animeCatalog];
+
+                if (filter !== 'all') {
+                    if (filter === 'watchlist') {
+                        filtered = animeCatalog.filter(item => watchlist.includes(item.id));
+                    } else {
+                        filtered = animeCatalog.filter(item => item.type === filter);
+                    }
+                }
+
+                if (searchQuery.trim() !== '') {
+                    filtered = filtered.filter(item => item.title.toLowerCase().includes(searchQuery.toLowerCase()));
+                }
+
+                renderGrid(filtered, latestGrid);
+                renderGrid([...filtered].reverse(), popularGrid);
+            } catch(err) {
+                console.error("Catalog engine structural breakdown:", err);
+            }
+        }
+
+        // 5. Video Portal System Actions
+        function openTheater(anime) {
+            try {
+                currentAnime = anime;
+                
+                if(shelfRowA) shelfRowA.classList.add('hidden');
+                if(shelfRowB) shelfRowB.classList.add('hidden');
+                if(adSlotA) adSlotA.classList.add('hidden');
+                if(adSlotB) adSlotB.classList.add('hidden');
+                if(theaterView) theaterView.classList.remove('hidden');
+                
+                if(mediaTitle) mediaTitle.textContent = anime.title;
+                updateFavoriteButtonState(anime.id);
+                
+                if(nodeEpisodeGrid && anime.episodes) {
+                    nodeEpisodeGrid.innerHTML = '';
+                    anime.episodes.forEach((ep, index) => {
+                        const btn = document.createElement('button');
+                        btn.className = `ep-node ${index === 0 ? 'active' : ''}`;
+                        btn.textContent = ep.title;
+                        btn.addEventListener('click', () => {
+                            document.querySelectorAll('.ep-node').forEach(n => n.classList.remove('active'));
+                            btn.classList.add('active');
+                            playVideo(ep.url);
+                        });
+                        nodeEpisodeGrid.appendChild(btn);
+                    });
+                }
+
+                if (anime.episodes && anime.episodes.length > 0) {
+                    playVideo(anime.episodes[0].url);
+                }
+            } catch(err) {
+                console.error("Failed to safely expand display player window:", err);
+            }
+        }
+
+        function playVideo(url) {
+            if (!videoPlayer || !url) return;
+            try {
+                videoPlayer.src = url;
+                videoPlayer.load();
+                videoPlayer.play().catch(err => console.log("Autoplay context waiting user tap action."));
+            } catch(e) {}
+        }
+
+        function closeTheater() {
+            if (videoPlayer) {
+                try { videoPlayer.pause(); videoPlayer.src = ''; } catch(e){}
+            }
+            if(theaterView) theaterView.classList.add('hidden');
+            
+            if(shelfRowA) shelfRowA.classList.remove('hidden');
+            if(shelfRowB) shelfRowB.classList.remove('hidden');
+            if(adSlotA) adSlotA.classList.remove('hidden');
+            if(adSlotB) adSlotB.classList.remove('hidden');
+        }
+
+        // 6. Watchlist Data Persistence 
+        function updateFavoriteButtonState(id) {
+            if (!btnSaveFavorite) return;
+            if (watchlist.includes(id)) {
+                btnSaveFavorite.textContent = '💔 Remove from List';
+                btnSaveFavorite.style.background = '#e63946';
+            } else {
+                btnSaveFavorite.textContent = '❤ Add to List';
+                btnSaveFavorite.style.background = 'var(--panel)';
+            }
+        }
+
+        if(btnSaveFavorite) {
+            btnSaveFavorite.addEventListener('click', () => {
+                if (!currentAnime) return;
+                const index = watchlist.indexOf(currentAnime.id);
+                if (index > -1) {
+                    watchlist.splice(index, 1);
+                } else {
+                    watchlist.push(currentAnime.id);
+                }
+                try { localStorage.setItem('animeWatchlist', JSON.stringify(watchlist)); } catch(e){}
+                updateFavoriteButtonState(currentAnime.id);
+            });
+        }
+
+        // 7. Click Interceptors
+        document.querySelectorAll('.nav-ribbon .ribbon-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                if (!button.hasAttribute('data-filter')) return;
+                
+                document.querySelectorAll('.nav-ribbon .ribbon-btn').forEach(b => b.classList.remove('active'));
+                button.classList.add('active');
+                
+                closeTheater();
+                initCatalog(button.getAttribute('data-filter'), searchBar ? searchBar.value : '');
+            });
+        });
+
+        if(searchBar) {
+            searchBar.addEventListener('input', (e) => {
+                const activeRibbon = document.querySelector('.nav-ribbon .ribbon-btn.active');
+                const activeFilter = activeRibbon ? activeRibbon.getAttribute('data-filter') : 'all';
+                initCatalog(activeFilter, e.target.value);
+            });
+        }
+
+        if(btnBack) btnBack.addEventListener('click', closeTheater);
+        if(logoHome) {
+            logoHome.addEventListener('click', () => {
+                closeTheater();
+                if(searchBar) searchBar.value = '';
+                const allBtn = document.querySelector('[data-filter="all"]');
+                if(allBtn) allBtn.click();
+            });
+        }
+
+        if(proBtn) proBtn.addEventListener('click', () => billingModal && billingModal.classList.remove('hidden'));
+
