@@ -314,13 +314,11 @@
     </div>
 
     <main>
-        <!-- Catalog Grid Section -->
         <section id="homeView">
             <h2 class="section-title" id="viewHeading"># Trending Anime</h2>
             <div class="catalog" id="catalogGrid"></div>
         </section>
 
-        <!-- Player Watch View -->
         <section id="watchView" class="hidden">
             <button class="back-btn" id="btnBack">← Back to Catalog</button>
             <h2 id="streamTitle">Loading Title...</h2>
@@ -362,20 +360,19 @@
     <script>
         "use strict";
 
-        // Global State Trackers
         let searchQuery = "";
         let currentGenre = "all";
         let cachedAnimeList = [];
         let selectedAnime = null;
         let activeEpisodeIdx = 0;
         let debounceTimer;
-        
-        // Persistent Browser Storage Watchlist Array
         let localWatchlist = JSON.parse(localStorage.getItem('anime_watchlist')) || [];
 
-        // UI Selectors
         const catalogGrid = document.getElementById('catalogGrid');
         const homeView = document.getElementById('homeView');
         const watchView = document.getElementById('watchView');
         const animeSearch = document.getElementById('animeSearch');
         const logoHome = document.getElementById('logoHome');
+        const btnBack = document.getElementById('btnBack');
+        const streamTitle = document.getElementById('streamTitle');
+        const mainVideoPlayer = document.getElementById('mainVideoPlayer');
