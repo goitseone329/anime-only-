@@ -1,381 +1,260 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anime Only</title>
-    <style>
-        :root {
-            --bg: #0b0b0f;
-            --panel: #17171f;
-            --red: #ef233c;
-            --text: #f7f7fb;
-            --muted: #aaaab8;
+"use strict";
+
+// Global State Trackers
+let searchQuery = "";
+let currentGenre = "all";
+let cachedAnimeList = [];
+let selectedAnime = null;
+let activeEpisodeIdx = 0;
+let debounceTimer;
+
+// Persistent Browser Storage Watchlist Array
+let localWatchlist = JSON.parse(localStorage.getItem('anime_watchlist')) || [];
+
+// UI Selectors
+const catalogGrid = document.getElementById('catalogGrid');
+const homeView = document.getElementById('homeView');
+const watchView = document.getElementById('watchView');
+const animeSearch = document.getElementById('animeSearch');
+const logoHome = document.getElementById('logoHome');
+const btnBack = document.getElementById('btnBack');
+const streamTitle = document.getElementById('streamTitle');
+const mainVideoPlayer = document.getElementById('mainVideoPlayer');
+const episodeGrid = document.getElementById('episodeGrid');
+const viewHeading = document.getElementById('viewHeading');
+const toggleWatchlistBtn = document.getElementById('toggleWatchlistBtn');
+const prevEpisodeBtn = document.getElementById('prevEpisodeBtn');
+const nextEpisodeBtn = document.getElementById('nextEpisodeBtn');
+const screenshotBtn = document.getElementById('screenshotBtn');
+
+// Fetch Global Trends from Jikan API v4
+async function fetchTrendingAnime() {
+    catalogGrid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:20px;">Fetching global trends...</div>';
+    try {
+        const response = await fetch('https://jikan.moe');
+        const json = await response.json();
+        cachedAnimeList = json.data || [];
+        applyFiltersAndRender();
+    } catch (error) {
+        catalogGrid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#ef233c; padding:20px;">Failed to load trending items. Rate limit hit.</div>';
+    }
+}
+
+// Live Asynchronous Query Search
+async function searchAnime(query) {
+    if (query.trim().length < 3) return;
+    catalogGrid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:20px;">Searching database...</div>';
+    try {
+        const response = await fetch(`https://jikan.moe{encodeURIComponent(query)}&limit=24`);
+        const json = await response.json();
+        cachedAnimeList = json.data || [];
+        applyFiltersAndRender();
+    } catch (error) {
+        catalogGrid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#ef233c; padding:20px;">Error fetching search data.</div>';
+    }
+}
+
+// Render Cards with Filter and Watchlist Logic
+function applyFiltersAndRender() {
+    catalogGrid.innerHTML = "";
+    
+    const filtered = cachedAnimeList.filter(anime => {
+        if (currentGenre === "watchlist") {
+            return localWatchlist.includes(String(anime.mal_id));
         }
+        if (currentGenre === "all") return true;
+        if (!anime.genres) return false;
+        return anime.genres.some(g => g.name.toLowerCase() === currentGenre.toLowerCase());
+    });
 
-        * {
-            box-sizing: border-box;
-        }
+    if (filtered.length === 0) {
+        catalogGrid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#aaaab8; padding:20px;">No content fits criteria.</div>';
+        return;
+    }
 
-        body {
-            margin: 0;
-            background: var(--bg);
-            color: var(--text);
-            font-family: Arial, sans-serif;
-        }
+    filtered.forEach(anime => {
+        const animeId = String(anime.mal_id);
+        const title = anime.title;
+        const image = anime.images?.jpg?.large_image_url || anime.images?.jpg?.image_url || '';
+        const episodesCount = anime.episodes || '??';
+        const rating = anime.score ? `★ ${anime.score}` : 'Unrated';
+        const isSaved = localWatchlist.includes(animeId);
 
-        header {
-            background: #111116;
-            border-bottom: 1px solid #292933;
-            padding: 16px;
-        }
-
-        .logo {
-            color: var(--red);
-            font-size: 23px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-bottom: 16px;
-            text-transform: uppercase;
-        }
-
-        .logo span {
-            color: white;
-        }
-
-        .search {
-            width: 100%;
-            padding: 12px 16px;
-            border-radius: 8px;
-            border: 1px solid #292933;
-            background: #1c1c24;
-            color: white;
-            outline: none;
-            font-size: 15px;
-        }
-
-        .search:focus {
-            border-color: var(--red);
-        }
-
-        .filter-row {
-            display: flex;
-            gap: 8px;
-            padding: 16px;
-            overflow-x: auto;
-            white-space: nowrap;
-            border-bottom: 1px solid #1c1c24;
-        }
-
-        .filter-row::-webkit-scrollbar {
-            display: none;
-        }
-
-        .filter-btn {
-            background: #1c1c24;
-            color: var(--text);
-            border: 1px solid #292933;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .filter-btn.active {
-            background: var(--red);
-            border-color: var(--red);
-        }
-
-        main {
-            padding: 16px;
-        }
-
-        .section-title {
-            margin: 8px 0 20px;
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        .catalog {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 12px;
-        }
-
-        .anime-card {
-            background: var(--panel);
-            border: 1px solid #242430;
-            border-radius: 12px;
-            overflow: hidden;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .watchlist-badge {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: rgba(239, 35, 60, 0.9);
-            color: white;
-            padding: 4px 6px;
-            border-radius: 5px;
-            font-size: 11px;
-            z-index: 2;
-        }
-
-        .poster-wrapper {
-            height: 210px;
-            width: 100%;
-            overflow: hidden;
-            background: #1c1c24;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .poster-wrapper img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .card-info {
-            padding: 10px;
-        }
-
-        .card-info h3 {
-            font-size: 14px;
-            margin: 0 0 4px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .card-info p {
-            color: var(--muted);
-            font-size: 12px;
-            margin: 0;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        #watchView {
-            background: var(--panel);
-            border: 1px solid #242430;
-            border-radius: 12px;
-            padding: 16px;
-        }
-
-        .back-btn {
-            background: #242430;
-            color: white;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-bottom: 16px;
-        }
-
-        .action-tray {
-            margin-bottom: 15px;
-        }
-
-        .watchlist-btn {
-            background: var(--red);
-            color: white;
-            border: 0;
-            border-radius: 7px;
-            padding: 11px 14px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .watchlist-btn.in-list {
-            background: #30303b;
-        }
-
-        .player {
-            width: 100%;
-            background: black;
-            border-radius: 8px;
-            overflow: hidden;
-            margin: 12px 0;
-        }
-
-        video {
-            width: 100%;
-            display: block;
-        }
-
-        .player-toolbar {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            justify-content: space-between;
-            background: #111116;
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin: 15px 0;
-            border: 1px solid #292933;
-        }
-
-        .w2g-link {
-            color: #ef233c;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 14px;
-        }
-
-        .w2g-link:hover {
-            text-decoration: underline;
-        }
-
-        .toolbar-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .nav-arrow {
-            background: #252530;
-            border: none;
-            color: white;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .camera-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            padding: 4px;
-        }
-
-        .episode-list {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-top: 12px;
-        }
-
-        .episode-btn {
-            background: #242430;
-            color: white;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .episode-btn.active {
-            background: var(--red);
-        }
-
-        footer {
-            text-align: center;
-            padding: 30px 16px;
-            margin-top: 40px;
-            border-top: 1px solid #292933;
-        }
-
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 15px;
-        }
-
-        .social-links a {
-            color: var(--muted);
-            text-decoration: none;
-            font-weight: bold;
-        }
-    </style>
-</head>
-<body>
-
-    <header>
-        <div class="logo" id="logoHome">Anime <span>Only</span></div>
-        <input class="search" id="animeSearch" type="search" placeholder="Search anime...">
-    </header>
-
-    <div class="filter-row">
-        <button class="filter-btn active" data-genre="all">All Items</button>
-        <button class="filter-btn" data-genre="Action">Action</button>
-        <button class="filter-btn" data-genre="Adventure">Adventure</button>
-        <button class="filter-btn" data-genre="watchlist">❤ Watchlist</button>
-    </div>
-
-    <main>
-        <!-- Catalog Grid Section -->
-        <section id="homeView">
-            <h2 class="section-title" id="viewHeading"># Trending Anime</h2>
-            <div class="catalog" id="catalogGrid"></div>
-        </section>
-
-        <!-- Player Watch View -->
-        <section id="watchView" class="hidden">
-            <button class="back-btn" id="btnBack">← Back to Catalog</button>
-            <h2 id="streamTitle">Loading Title...</h2>
-            
-            <div class="action-tray">
-                <button class="watchlist-btn" id="toggleWatchlistBtn">❤ Add to Watchlist</button>
+        const card = document.createElement('div');
+        card.className = 'anime-card';
+        card.innerHTML = `
+            ${isSaved ? '<div class="watchlist-badge">❤ Saved</div>' : ''}
+            <div class="poster-wrapper">
+                <img src="${image}" alt="${title}" loading="lazy">
             </div>
-
-            <div class="player">
-                <video id="mainVideoPlayer" controls playsinline crossorigin="anonymous">
-                    Your browser does not support video playback.
-                </video>
+            <div class="card-info">
+                <h3>${title}</h3>
+                <p>${rating} &middot; ${episodesCount} Eps</p>
             </div>
+        `;
+        card.addEventListener('click', () => openPlayer(anime));
+        catalogGrid.appendChild(card);
+    });
+}
 
-            <div class="player-toolbar">
-                <div>
-                    <a href="https://watch2gether.com" class="w2g-link" id="w2gLink" target="_blank">Watch2Gether Room ↗</a>
-                </div>
-                <div class="toolbar-right">
-                    <button id="prevEpisodeBtn" class="nav-arrow">◀ Prev</button>
-                    <button id="nextEpisodeBtn" class="nav-arrow">Next ▶</button>
-                    <button class="camera-btn" id="screenshotBtn" title="Take Screenshot">📷</button>
-                </div>
-            </div>
+function openPlayer(anime) {
+    selectedAnime = anime;
+    activeEpisodeIdx = 0;
+    
+    homeView.classList.add('hidden');
+    watchView.classList.remove('hidden');
+    streamTitle.textContent = anime.title;
 
-            <h3>Episodes</h3>
-            <div id="episodeGrid" class="episode-list"></div>
-        </section>
-    </main>
+    updateWatchlistButtonUI();
+    buildEpisodeButtons();
+    playEpisode();
+}
 
-    <footer>
-        <div class="social-links">
-            <a href="#" target="_blank">💬 Discord</a>
-            <a href="#" target="_blank">🐦 Twitter</a>
-            <a href="#" style="color:var(--red);" target="_blank">❤ Support Us</a>
-        </div>
-    </footer>
+function closePlayer() {
+    mainVideoPlayer.pause();
+    mainVideoPlayer.src = "";
+    selectedAnime = null;
+    watchView.classList.add('hidden');
+    homeView.classList.remove('hidden');
+    applyFiltersAndRender();
+}
 
-    <script>
-        "use strict";
+function updateWatchlistButtonUI() {
+    if (!selectedAnime) return;
+    const animeId = String(selectedAnime.mal_id);
+    const isSaved = localWatchlist.includes(animeId);
+    
+    if (isSaved) {
+        toggleWatchlistBtn.classList.add('in-list');
+        toggleWatchlistBtn.textContent = '❤ Saved in Watchlist';
+    } else {
+        toggleWatchlistBtn.classList.remove('in-list');
+        toggleWatchlistBtn.textContent = '❤ Add to Watchlist';
+    }
+}
 
-        // Global State Trackers
-        let searchQuery = "";
-        let currentGenre = "all";
-        let cachedAnimeList = [];
-        let selectedAnime = null;
-        let activeEpisodeIdx = 0;
-        let debounceTimer;
+function buildEpisodeButtons() {
+    episodeGrid.innerHTML = "";
+    const totalEps = selectedAnime.episodes || 12;
+    const renderLimit = Math.min(totalEps, 24); 
+
+    for (let i = 1; i <= renderLimit; i++) {
+        const btn = document.createElement('button');
+        btn.className = `episode-btn ${i === 1 ? 'active' : ''}`;
+        btn.textContent = i;
+        btn.addEventListener('click', (e) => {
+            activeEpisodeIdx = i - 1;
+            syncEpisodeNavigationUI();
+            playEpisode();
+        });
+        episodeGrid.appendChild(btn);
+    }
+    syncEpisodeNavigationUI();
+}
+
+function syncEpisodeNavigationUI() {
+    const buttons = document.querySelectorAll('.episode-btn');
+    buttons.forEach((btn, idx) => {
+        if (idx === activeEpisodeIdx) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+
+    prevEpisodeBtn.disabled = activeEpisodeIdx === 0;
+    nextEpisodeBtn.disabled = activeEpisodeIdx === (buttons.length - 1);
+}
+
+function playEpisode() {
+    mainVideoPlayer.src = "https://w3schools.com";
+    mainVideoPlayer.play().catch(() => {});
+}
+
+// Action Hook Listeners
+logoHome.addEventListener('click', closePlayer);
+btnBack.addEventListener('click', closePlayer);
+
+animeSearch.addEventListener('input', (e) => {
+    searchQuery = e.target.value;
+    clearTimeout(debounceTimer);
+    
+    if (searchQuery.trim() === "") {
+        viewHeading.textContent = "# Trending Anime";
+        fetchTrendingAnime();
+    } else {
+        viewHeading.textContent = "Search Results";
+        debounceTimer = setTimeout(() => {
+            searchAnime(searchQuery);
+        }, 500);
+    }
+});
+
+// Watchlist Modification Events
+toggleWatchlistBtn.addEventListener('click', () => {
+    if (!selectedAnime) return;
+    const animeId = String(selectedAnime.mal_id);
+    const idx = localWatchlist.indexOf(animeId);
+    
+    if (idx > -1) {
+        localWatchlist.splice(idx, 1);
+    } else {
+        localWatchlist.push(animeId);
+    }
+    
+    localStorage.setItem('anime_watchlist', JSON.stringify(localWatchlist));
+    updateWatchlistButtonUI();
+});
+
+// Toolbar Button Streams Control
+prevEpisodeBtn.addEventListener('click', () => {
+    if (activeEpisodeIdx > 0) {
+        activeEpisodeIdx--;
+        syncEpisodeNavigationUI();
+        playEpisode();
+    }
+});
+
+nextEpisodeBtn.addEventListener('click', () => {
+    const buttons = document.querySelectorAll('.episode-btn');
+    if (activeEpisodeIdx < buttons.length - 1) {
+        activeEpisodeIdx++;
+        syncEpisodeNavigationUI();
+        playEpisode();
+    }
+});
+
+// Instant Canvas Frame Snapshot Tool
+screenshotBtn.addEventListener('click', () => {
+    if (mainVideoPlayer.paused || mainVideoPlayer.ended) {
+        alert("Please start playing the video first!");
+        return;
+    }
+    try {
+        const canvas = document.createElement('canvas');
+        canvas.width = mainVideoPlayer.videoWidth;
+        canvas.height = mainVideoPlayer.videoHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(mainVideoPlayer, 0, 0, canvas.width, canvas.height);
         
-        // Persistent Browser Storage Watchlist Array
-        let localWatchlist = JSON.parse(localStorage.getItem('anime_watchlist')) || [];
+        const link = document.createElement('a');
+        link.download = `${selectedAnime.title}-Snapshot.png`;
+        link.href = canvas.toDataURL();
+        link.click();
+    } catch (e) {
+        alert("Browser canvas origin rules restricted capture processing.");
+    }
+});
 
-        // UI Selectors
-        const catalogGrid = document.getElementById('catalogGrid');
-        const homeView = document.getElementById('homeView');
-        const watchView = document.getElementById('watchView');
-        const animeSearch = document.getElementById('animeSearch');
-        const logoHome = document.getElementById('logoHome');
+// Category Filter Tab Click Events
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+        currentGenre = e.target.getAttribute('data-genre');
+        applyFiltersAndRender();
+    });
+});
+
+// Launch Application
+fetchTrendingAnime();
