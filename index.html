@@ -365,7 +365,6 @@ function renderCatalog(animeArray) {
     const card = document.createElement("div");
     card.className = "anime-card";
     
-    // Setting up clean backticks correctly for the styling rule
     const gradient = (anime.colors && anime.colors.length >= 2) 
       ? `linear-gradient(145deg, ${anime.colors[0]}, ${anime.colors[1]})` 
       : '#17171f';
@@ -415,3 +414,4 @@ function loadEpisode(episodeNum) {
     }
   });
 
+  if (currentAnime.episodeSources && currentAnime.episodeSources[episodeNum]) {
