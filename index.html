@@ -1,4 +1,4 @@
-OCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -44,18 +44,27 @@ OCTYPE html>
         .ribbon-btn { background: var(--panel); color: var(--muted); border: 1px solid #23232a; padding: 8px 18px; border-radius: 4px; font-weight: bold; cursor: pointer; }
         .ribbon-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
         main { padding: 0 16px 40px; }
-        .shelf-container { margin-bottom: 30px; display: block !important; }
+        .shelf-container { margin-bottom: 30px; }
         .shelf-title { font-size: 18px; font-weight: 800; border-left: 4px solid var(--blue); padding-left: 10px; margin-bottom: 16px; text-transform: uppercase; }
-        .catalog-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; min-height: 50px; }
-        @media (min-width: 768px) { .catalog-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-        .anime-card { background: var(--panel); border: 1px solid #1f1f26; border-radius: 6px; overflow: hidden; cursor: pointer; position: relative; }
-        .card-cover { height: 160px; background: #252533; display: flex; align-items: center; justify-content: center; font-size: 36px; }
-        .stream-tag { position: absolute; bottom: 6px; left: 6px; padding: 2px 6px; font-size: 10px; font-weight: bold; border-radius: 3px; color: #fff; }
+        
+        /* Updated Grid Architecture to guarantee visual layout visibility */
+        .catalog-grid { 
+            display: grid !important; 
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important; 
+            gap: 12px !important; 
+            width: 100% !important;
+            margin-bottom: 20px;
+        }
+        @media (min-width: 768px) { .catalog-grid { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; } }
+        
+        .anime-card { background: var(--panel); border: 1px solid #1f1f26; border-radius: 6px; overflow: hidden; cursor: pointer; position: relative; width: 100%; display: block; }
+        .card-cover { height: 140px; background: #252533; display: flex; align-items: center; justify-content: center; font-size: 36px; }
+        .stream-tag { position: absolute; top: 110px; left: 6px; padding: 2px 6px; font-size: 10px; font-weight: bold; border-radius: 3px; color: #fff; }
         .tag-sub { background: var(--sub-badge); }
         .tag-dub { background: var(--dub-badge); }
         .card-info { padding: 10px; }
-        .card-info h3 { font-size: 13px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #fff; }
-        .card-info p { font-size: 11px; color: var(--muted); margin-top: 4px; }
+        .card-info h3 { font-size: 13px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #fff; margin-bottom: 4px; }
+        .card-info p { font-size: 11px; color: var(--muted); }
         .hidden { display: none !important; }
         #theaterView { background: var(--panel); border-radius: 8px; padding: 16px; border: 1px solid #23232a; }
         .back-link { color: var(--blue-light); font-size: 13px; font-weight: bold; cursor: pointer; display: inline-block; margin-bottom: 14px; }
@@ -121,7 +130,7 @@ OCTYPE html>
         </div>
     </div>
 
-    <!-- Move external ad network tags to the footer so they cannot freeze interface layout components -->
+    <!-- Ad script tags moved cleanly behind interface layout blocks -->
     <script data-cfasync="false" src="https://bauval.org"></script>
     <script data-cfasync="false" src="https://abscloud.org"></script>
 
@@ -141,9 +150,6 @@ OCTYPE html>
         let localWatchlist = [];
         let activeFilter = "all";
 
-        const latestGrid = document.getElementById('latestGrid');
-        const popularGrid = document.getElementById('popularGrid');
-        const theaterView = document.getElementById('theaterView');
-        const videoCorePlayer = document.getElementById('videoCorePlayer');
-        const mediaTitle = document.getElementById('mediaTitle');
-        const nodeEpisodeGrid = document.getElementById('nodeEpisodeGrid');
+        // Pre-bind elements directly to bypass slow mobile DOM initialization drops
+        const latestGrid = document.querySelector('#latestGrid');
+        const popularGrid = document.querySelector('#popularGrid');
