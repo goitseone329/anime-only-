@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anime Only - Stream</title>
+    <title>Anime Only - Stream & Watchlist</title>
     <style>
         :root {
             --bg: #0b0b0f;
@@ -11,6 +11,7 @@
             --red: #ef233c;
             --text: #f7f7fb;
             --muted: #aaaab8;
+            --yellow: #ffb703;
         }
         * {
             box-sizing: border-box;
@@ -55,6 +56,34 @@
         .search:focus {
             border-color: var(--red);
         }
+        
+        /* New Genre Filter Styling */
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            padding: 15px 20px 5px;
+            max-width: 1200px;
+            margin: auto;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        .filter-btn {
+            background: #1c1c24;
+            color: var(--muted);
+            border: 1px solid #2d2d3d;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--red);
+            color: white;
+            border-color: var(--red);
+        }
+
         main {
             max-width: 1200px;
             margin: auto;
@@ -63,11 +92,15 @@
         .section-title {
             margin: 24px 0 16px;
             font-size: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
         .catalog {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
             gap: 17px;
+            margin-bottom: 35px;
         }
         .anime-card {
             background: var(--panel);
@@ -76,6 +109,7 @@
             overflow: hidden;
             cursor: pointer;
             transition: transform .2s, border-color .2s;
+            position: relative;
         }
         .anime-card:hover {
             transform: translateY(-4px);
@@ -107,6 +141,46 @@
             font-size: 12px;
             margin: 0;
         }
+        
+        /* Watchlist Buttons */
+        .watchlist-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.75);
+            color: var(--yellow);
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            z-index: 2;
+        }
+        .action-tray {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .watchlist-btn {
+            background: #30303b;
+            color: white;
+            border: 0;
+            border-radius: 7px;
+            padding: 11px 14px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .watchlist-btn.in-list {
+            background: #40131e;
+            color: #ff9ca8;
+            border: 1px solid var(--red);
+        }
+
         button, .download-btn {
             background: var(--red);
             color: white;
@@ -283,68 +357,15 @@
         <input class="search" id="searchInput" type="search" placeholder="Search anime..." aria-label="Search anime">
     </header>
 
+    <!-- Genre Navigation Strip -->
+    <div class="filter-bar" id="filterBar">
+        <button class="filter-btn active" data-genre="all">All Items</button>
+        <button class="filter-btn" data-genre="Action">Action</button>
+        <button class="filter-btn" data-genre="Adventure">Adventure</button>
+        <button class="filter-btn" data-genre="watchlist">❤ My Watchlist</button>
+    </div>
+
     <main>
         <!-- Catalog Page View -->
         <section id="homeView">
-            <h2 class="section-title"># Trending Anime</h2>
-            <div class="catalog" id="animeCatalog"></div>
-        </section>
-
-        <!-- Video Player View -->
-        <section id="watchView" class="hidden">
-            <button class="secondary back-button" id="backButton">← Back to Anime</button>
-            <h2 id="watchTitle">Anime Title</h2>
-            <p id="watchDescription" style="color:#aaaab8; line-height:1.6"></p>
-            
-            <div class="player">
-                <video id="videoPlayer" controls playsinline preload="metadata" class="hidden">
-                    Your browser does not support video playback.
-                </video>
-                <div id="playerMessage">
-                    Choose an episode below. A playable video source must be added by the site owner.
-                </div>
-            </div>
-
-            <div class="player-toolbar">
-                <div class="toolbar-left">
-                    <a href="#" class="w2g-link" id="w2gLink" target="_blank">W2G 🔗</a>
-                </div>
-                <div class="toolbar-right">
-                    <button id="previousButton" class="nav-arrow">←</button>
-                    <button id="nextButton" class="nav-arrow">→</button>
-                    <button class="camera-btn" id="screenshotButton" title="Take Screenshot">📷</button>
-                </div>
-            </div>
-
-            <div class="download-container">
-                <a id="downloadLink" class="download-btn" href="#" aria-disabled="true">Download Episode 1</a>
-            </div>
-
-            <h3>Episodes</h3>
-            <div id="episodeList" class="episode-list"></div>
-        </section>
-    </main>
-
-    <footer>
-        <div class="social-links">
-            <a href="#" target="_blank">💬 Discord</a>
-            <a href="#" target="_blank">🐦 Twitter</a>
-            <a href="#" class="heart" target="_blank">❤ Support</a>
-        </div>
-        <div>Anime Only · Fan-made demo website</div>
-    </footer>
-
-    <script>
-        "use strict";
-
-        // --- DATABASE DATASET ---
-        const animeDatabase = [
-            {
-                id: 1,
-                title: "Naruto",
-                genre: "Action",
-                episodes: 5,
-                description: "A young ninja works toward his dream of becoming a leader.",
-                colors: ["#e66b18", "#76232a"],
-                episodeSources: {
-                    1: "https://w3schools.com",
+            <h2 class="section-title" id="catalogTitle"># Trending Anime</h2>
