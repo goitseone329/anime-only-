@@ -354,11 +354,9 @@ const animeDatabase = [
   }
 ];
 
-// UI Control Variables
 let currentAnime = null;
 let currentEpisode = 1;
 
-// Element Selectors
 const homeView = document.getElementById("homeView");
 const watchView = document.getElementById("watchView");
 const animeCatalog = document.getElementById("animeCatalog");
@@ -375,7 +373,6 @@ const previousButton = document.getElementById("previousButton");
 const nextButton = document.getElementById("nextButton");
 const downloadLink = document.getElementById("downloadLink");
 
-// Render regular display grid
 function displayCatalog(filterText = "") {
   animeCatalog.innerHTML = "";
   const match = filterText.toLowerCase().trim();
@@ -395,3 +392,6 @@ function displayCatalog(filterText = "") {
     card.className = "anime-card";
     card.innerHTML = `
       <div class="poster" style="background: linear-gradient(145deg, ${anime.colors[0]}, ${anime.colors[1]})">
+        <span>${anime.title}</span>
+      </div>
+      <div class="card-info">
