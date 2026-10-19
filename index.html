@@ -401,18 +401,17 @@ function showHomeView() {
   videoPlayer.src = "";
 }
 
-fnLoadEpisode();
+function loadEpisode(episodeNum) {
+  currentEpisodeIndex = episodeNum;
+  downloadLink.textContent = `Download Episode ${episodeNum}`;
+  
+  const buttons = episodeListContainer.querySelectorAll(".episode-button");
+  buttons.forEach(btn => {
+    if (parseInt(btn.textContent) === episodeNum) {
+      btn.classList.add("active");
+    } else {
+      btn.classList.remove("active");
+    }
+  });
 
-function fnLoadEpisode() {
-  window.loadEpisode = function(episodeNum) {
-    currentEpisodeIndex = episodeNum;
-    downloadLink.textContent = `Download Episode ${episodeNum}`;
-    
-    const buttons = episodeListContainer.querySelectorAll(".episode-button");
-    buttons.forEach(btn => {
-      if (parseInt(btn.textContent) === episodeNum) {
-        btn.classList.add("active");
-      } else {
-        btn.classList.remove("active");
-      }
-    });
+  if (currentAnime.episodeSources && currentAnime.episodeSources[episodeNum]) {
