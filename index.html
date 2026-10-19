@@ -364,7 +364,7 @@ function renderCatalog(animeArray) {
   animeArray.forEach(anime => {
     const card = document.createElement("div");
     card.className = "anime-card";
-    const gradient = anime.colors ? `linear-gradient(145deg, ${anime.colors}, ${anime.colors})` : '#17171f';
+    const gradient = anime.colors ? `linear-gradient(145deg, ${anime.colors[0]}, ${anime.colors[1]})` : '#17171f';
     
     card.innerHTML = `
       <div class="poster" style="background: ${gradient}">
