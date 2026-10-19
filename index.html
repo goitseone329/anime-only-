@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anime Only - Test Variant</title>
+    <title>Anime Only - Test Baseline</title>
     <style>
         :root {
             --bg: #0b0b0f;
             --panel: #17171f;
             --red: #ef233c;
-            --gold: #ffb703;
             --text: #f7f7fb;
             --muted: #aaaab8;
         }
@@ -19,85 +18,22 @@
             background: var(--bg);
             color: var(--text);
             font-family: Arial, sans-serif;
+            padding: 16px;
         }
         header {
             background: #111116;
             border-bottom: 1px solid #292933;
             padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            text-align: center;
+            margin-bottom: 20px;
         }
         .logo {
             color: var(--red);
             font-size: 23px;
             font-weight: bold;
-            cursor: pointer;
             text-transform: uppercase;
-            margin: 0;
         }
         .logo span { color: white; }
-        .go-pro-btn {
-            background: linear-gradient(45deg, var(--gold), #ff8500);
-            color: #000;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 13px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        .search {
-            width: 100%;
-            padding: 12px 16px;
-            border-radius: 8px;
-            border: 1px solid #292933;
-            background: #1c1c24;
-            color: white;
-            outline: none;
-            font-size: 15px;
-        }
-        .filter-row {
-            display: flex;
-            gap: 8px;
-            padding: 16px;
-            overflow-x: auto;
-            white-space: nowrap;
-            border-bottom: 1px solid #1c1c24;
-        }
-        .filter-btn {
-            background: #1c1c24;
-            color: var(--text);
-            border: 1px solid #292933;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .filter-btn.active {
-            background: var(--red);
-            border-color: var(--red);
-        }
-        .ad-banner {
-            background: #1a1a24;
-            border: 2px dashed #3a3a4f;
-            color: var(--muted);
-            text-align: center;
-            padding: 20px;
-            margin: 12px 16px;
-            border-radius: 8px;
-            font-size: 12px;
-            text-transform: uppercase;
-        }
-        main { padding: 16px; }
-        .section-title { margin: 8px 0 20px; font-size: 24px; font-weight: bold; }
         .catalog {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -108,142 +44,63 @@
             border: 1px solid #242430;
             border-radius: 12px;
             overflow: hidden;
-            cursor: pointer;
-            position: relative;
-        }
-        .watchlist-badge {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: rgba(239, 35, 60, 0.9);
-            color: white;
-            padding: 4px 6px;
-            border-radius: 5px;
-            font-size: 11px;
-        }
-        .poster-wrapper {
-            height: 210px;
-            background: #1c1c24;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .poster-wrapper img { width: 100%; height: 100%; object-fit: cover; }
-        .card-info { padding: 10px; }
-        .card-info h3 { font-size: 14px; margin: 0 0 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .card-info p { color: var(--muted); font-size: 12px; margin: 0; }
-        .hidden { display: none !important; }
-        #watchView { background: var(--panel); border: 1px solid #242430; border-radius: 12px; padding: 16px; }
-        .back-btn { background: #242430; color: white; border: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-bottom: 16px; }
-        .action-tray { margin-bottom: 15px; }
-        .watchlist-btn { background: var(--red); color: white; border: 0; border-radius: 7px; padding: 11px 14px; font-weight: bold; cursor: pointer; }
-        .watchlist-btn.in-list { background: #30303b; }
-        .player { width: 100%; background: black; border-radius: 8px; overflow: hidden; margin: 12px 0; }
-        video { width: 100%; display: block; }
-        .player-toolbar {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            justify-content: space-between;
-            background: #111116;
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin: 15px 0;
-            border: 1px solid #292933;
-        }
-        .w2g-link { color: #ef233c; text-decoration: none; font-weight: bold; font-size: 14px; }
-        .nav-arrow { background: #252530; border: none; color: white; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
-        .camera-btn { background: none; border: none; cursor: pointer; font-size: 16px; padding: 4px; }
-        .episode-list { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
-        .episode-btn { background: #242430; color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; }
-        .episode-btn.active { background: var(--red); }
-        
-        .paywall-modal {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5, 5, 8, 0.95);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
-        }
-        .paywall-content {
-            background: #171724;
-            border: 1px solid #2b2b3d;
-            border-radius: 16px;
-            padding: 30px;
-            max-width: 400px;
-            width: 100%;
+            padding: 12px;
             text-align: center;
         }
-        .pay-now-btn { background: linear-gradient(45deg, #ef233c, #ff4d6d); color: white; border: none; padding: 12px 24px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; }
-        .close-paywall { background: transparent; color: var(--muted); border: none; margin-top: 12px; cursor: pointer; }
-
-        /* --- DIAGNOSTIC TEST PANEL UI STYLES --- */
-        #testConsole {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 320px;
-            background: #1e1e2f;
-            border: 2px solid #3f3f5f;
+        .poster-placeholder {
+            height: 150px;
+            background: #1c1c24;
             border-radius: 8px;
-            padding: 12px;
-            font-family: monospace;
-            font-size: 11px;
-            z-index: 9999;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted);
+            font-weight: bold;
         }
-        .test-title { font-weight: bold; color: var(--gold); margin-bottom: 8px; display: flex; justify-content: space-between; }
-        .test-btn { background: #34344a; color: #fff; border: 1px solid #555; padding: 4px 8px; cursor: pointer; margin: 2px; border-radius: 4px; font-size: 10px; }
-        .test-btn:hover { background: #4e4e6a; }
-        .log-box { background: #0c0c14; height: 100px; overflow-y: auto; padding: 6px; border-radius: 4px; margin-top: 8px; color: #00ff00; border: 1px solid #222; }
+        h3 { font-size: 14px; margin: 4px 0; }
     </style>
 </head>
 <body>
 
-    <!-- Floating Test Diagnostic Suite Panel Component -->
-    <div id="testConsole">
-        <div class="test-title">🛠️ ENGINE TESTING SUITE <span>v1.0</span></div>
-        <button class="test-btn" onclick="TestSuite.runJikanMock()">1. Mock API Data</button>
-        <button class="test-btn" onclick="TestSuite.testSearchDebounce()">2. Test Search</button>
-        <button class="test-btn" onclick="TestSuite.toggleMockPremium()">3. Toggle Premium</button>
-        <button class="test-btn" onclick="TestSuite.clearStorage()">4. Reset Storage</button>
-        <div class="log-box" id="testLogs">System initialized. Click a routine to benchmark.</div>
-    </div>
-
     <header>
-        <div class="header-top">
-            <div class="logo" id="logoHome">Anime <span>Only</span></div>
-            <button class="go-pro-btn" id="goProBtn">👑 Go Pro</button>
-        </div>
-        <input class="search" id="animeSearch" type="search" placeholder="Search anime...">
+        <div class="logo">Anime <span>Only (Testing Baseline)</span></div>
     </header>
 
-    <div class="ad-banner" id="topAdSlot">NordVPN Special Sponsorship Placement</div>
-
-    <div class="filter-row">
-        <button class="filter-btn active" data-genre="all">All Items</button>
-        <button class="filter-btn" data-genre="Action">Action</button>
-        <button class="filter-btn" data-genre="Adventure">Adventure</button>
-        <button class="filter-btn" data-genre="watchlist" id="watchlistTabBtn">❤ Watchlist</button>
-    </div>
-
     <main>
-        <section id="homeView">
-            <h2 class="section-title" id="viewHeading"># Trending Anime</h2>
-            <div class="catalog" id="catalogGrid"></div>
-        </section>
+        <h2 style="font-size: 20px; margin-bottom: 16px;"># Verification Catalog</h2>
+        <div class="catalog" id="testGrid">
+            <!-- JavaScript will insert items here if deployment updates correctly -->
+        </div>
+    </main>
 
-        <section id="watchView" class="hidden">
-            <button class="back-btn" id="btnBack">← Back to Catalog</button>
-            <h2 id="streamTitle">Loading Title...</h2>
-            <div class="action-tray"><button class="watchlist-btn" id="toggleWatchlistBtn">❤ Add to Watchlist</button></div>
-            <div class="player">
-                <video id="mainVideoPlayer" controls playsinline crossorigin="anonymous"></video>
-            </div>
-            <div class="player-toolbar">
-                <div><a href="#" class="w2g-link" id="w2gLink">Watch2Gether Room ↗</a></div>
-                <div class="toolbar-right">
-                    <button id="prevEpisodeBtn" class="nav-arrow">◀ Prev</button>
+    <script>
+        "use strict";
+        
+        console.log("TEST ENGINE: Running baseline rendering script...");
+
+        // Simple local mock data array to isolate layout generation from live API fetching
+        const baselineData = [
+            { id: 1, title: "Baseline Test Card A" },
+            { id: 2, title: "Baseline Test Card B" }
+        ];
+
+        const testGrid = document.getElementById('testGrid');
+
+        if (testGrid) {
+            baselineData.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'anime-card';
+                card.innerHTML = `
+                    <div class="poster-placeholder">IMAGE</div>
+                    <h3>${item.title}</h3>
+                `;
+                testGrid.appendChild(card);
+            });
+            console.log("TEST ENGINE: Baseline render successful.");
+        } else {
+            console.error("TEST ENGINE: Could not find target DOM grid container.");
+        }
+    </script>
+</body>
+</html>
